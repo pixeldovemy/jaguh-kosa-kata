@@ -1,0 +1,64 @@
+```html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game AI Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0f172a;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            padding: 30px;
+            background: #1e293b;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 85%;
+            max-width: 350px;
+            border: 1px solid #334155;
+        }
+        h1 { color: #22d3ee; margin: 0 0 10px 0; font-size: 1.5rem; }
+        #score { font-size: 4rem; margin: 20px 0; color: #fbbf24; font-weight: bold; }
+        button {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
+        }
+        button:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HERO QUEST</h1>
+        <div id="score">0</div>
+        <button onclick="tap()">TAP!</button>
+    </div>
+    <script>
+        let count = 0;
+        function tap() {
+            count++;
+            document.getElementById('score').innerText = count;
+        }
+    </script>
+</body>
+</html>
+```
