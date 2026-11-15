@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Word Master - Modern Game Edition</title>
+    <title>AI Word Master - Kaching Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -38,6 +38,7 @@
         .hint-section { margin-top: 20px; background: #f1f2f6; padding: 15px; border-radius: 20px; border: 2px dashed #ccc; }
         .hint-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 80px; overflow-y: auto; padding: 5px; scrollbar-width: thin; }
         .hint-item { background: #fff; padding: 5px 12px; border-radius: 12px; font-size: 13px; color: #666; border: 1px solid #ddd; }
+        
         .coin-anim {
             position: fixed; width: 45px; height: 45px; background: #ffd32a;
             border-radius: 50%; border: 4px solid #f0932b; color: white;
@@ -72,14 +73,18 @@
     </div>
 </div>
 
-<!-- Bunyi Ding yang Snappy -->
-<audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
-<!-- Bunyi Buzzer yang Pendek -->
-<audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3"></audio>
+<!-- Sound Kaching (Betul) -->
+<audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
+<!-- Sound Awhhh (Salah) -->
+<audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
 
 <script>
-    const correctSound = document.getElementById('snd-correct');
-    const wrongSound = document.getElementById('snd-wrong');
+    const correctSound = document.getElementById('snd-kaching');
+    const wrongSound = document.getElementById('snd-aww');
+
+    // ADJUST VOLUME (0.0 to 1.0)
+    correctSound.volume = 0.5; // Sederhana kuat
+    wrongSound.volume = 0.4;   // Lembut sikit
 
     const gameData = [];
     gameData.push({ word: "menebar", vid: "videos/menebar.mp4" });
@@ -106,12 +111,12 @@
         let answer = inputField.value.toLowerCase().trim();
 
         if (answer === gameData[currentLevel].word) {
-            // BETUL
+            // BETUL - KACHING!
             correctSound.currentTime = 0;
             correctSound.play();
             spawnCoin();
             fireworks();
-            resultText.innerText = "YESS! BETUL! 🎉";
+            resultText.innerText = "KACHING! BETUL! 💰";
             resultText.style.color = "#2ed573";
             
             setTimeout(() => {
@@ -122,14 +127,14 @@
                     videoElement.load(); videoElement.play();
                     inputField.value = ""; resultText.innerText = "";
                 } else {
-                    document.querySelector('.container').innerHTML = `<h1>🏆</h1><h2>MAHARAJA AI!</h2><p>Markah Akhir: ${score}</p><button onclick="location.reload()">MAIN SEMULA</button>`;
+                    document.querySelector('.container').innerHTML = `<h1>🏆</h1><h2>MAHARAJA KATA KERJA!</h2><p>Markah Akhir: ${score}</p><button onclick="location.reload()">MAIN SEMULA</button>`;
                 }
             }, 1800);
         } else {
-            // SALAH
+            // SALAH - AWHHH..
             wrongSound.currentTime = 0;
             wrongSound.play();
-            resultText.innerText = "Ops.. salah tu! 🙊";
+            resultText.innerText = "Awhhh.. salah tu. 🙊";
             resultText.style.color = "#ff4757";
             document.getElementById('game-box').classList.add('shake');
             setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500);
@@ -137,14 +142,14 @@
     }
 
     function fireworks() {
-        var duration = 2 * 1000;
+        var duration = 2.5 * 1000;
         var animationEnd = Date.now() + duration;
         var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
         function randomInRange(min, max) { return Math.random() * (max - min) + min; }
         var interval = setInterval(function() {
             var timeLeft = animationEnd - Date.now();
             if (timeLeft <= 0) { return clearInterval(interval); }
-            var particleCount = 40 * (timeLeft / duration);
+            var particleCount = 50 * (timeLeft / duration);
             confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
             confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
         }, 250);
@@ -163,7 +168,7 @@
         setTimeout(() => {
             coin.style.left = destRect.left + 'px';
             coin.style.top = destRect.top + 'px';
-            coin.style.transform = 'scale(0.3) rotate(720deg)';
+            coin.style.transform = 'scale(0.3) rotate(1080deg)';
             coin.style.opacity = '0';
         }, 50);
         setTimeout(() => {
