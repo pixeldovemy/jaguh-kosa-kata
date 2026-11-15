@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Word Master Pro - Edisi Festival</title>
+    <title>AI Word Master - Festival Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Script Confetti -->
+    <!-- Library Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         * { box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
@@ -41,12 +41,12 @@
         }
         button:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
 
-        /* Hint Box */
+        /* Clue Box Scroll */
         .hint-section { margin-top: 20px; background: #f1f2f6; padding: 15px; border-radius: 20px; border: 2px dashed #ccc; }
         .hint-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 80px; overflow-y: auto; padding: 5px; scrollbar-width: thin; }
-        .hint-item { background: #fff; padding: 5px 12px; border-radius: 12px; font-size: 13px; color: #666; }
+        .hint-item { background: #fff; padding: 5px 12px; border-radius: 12px; font-size: 13px; color: #666; border: 1px solid #ddd; }
 
-        /* Coin Animation */
+        /* Coin Terbang Animation */
         .coin-anim {
             position: fixed; width: 45px; height: 45px; background: #ffd32a;
             border-radius: 50%; border: 4px solid #f0932b; color: white;
@@ -80,7 +80,7 @@
         </video>
     </div>
 
-    <input type="text" id="user-input" placeholder="Teka aksi di sini..." autocomplete="off">
+    <input type="text" id="user-input" placeholder="Teka jawapan..." autocomplete="off">
     <button onclick="checkAnswer()">HANTAR JAWAPAN 🚀</button>
     <p id="result"></p>
 
@@ -90,15 +90,16 @@
     </div>
 </div>
 
-<!-- Audio Elements -->
-<audio id="snd-clap" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
-<audio id="snd-sad" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
+<!-- Bunyi Tepuk Tangan Meriah -->
+<audio id="snd-clap" src="https://www.myinstants.com/media/sounds/applause-8.mp3"></audio>
+<!-- Bunyi Kecewa Lembut -->
+<audio id="snd-sad" src="https://www.myinstants.com/media/sounds/sad-meow-song.mp3"></audio>
 
 <script>
     const clapSound = document.getElementById('snd-clap');
     const sadSound = document.getElementById('snd-sad');
 
-    // SETUP DATA GAME
+    // SETUP DATA GAME (20 LEVELS)
     const gameData = [];
     gameData.push({ word: "menebar", vid: "videos/menebar.mp4" }); // Level 1
     for (let i = 2; i <= 20; i++) {
@@ -125,15 +126,14 @@
         let answer = inputField.value.toLowerCase().trim();
 
         if (answer === gameData[currentLevel].word) {
-            // BETUL - Bunyi Tepuk Tangan & Coin
+            // BETUL - Mainkan Bunyi Tepuk Tangan
             clapSound.currentTime = 0;
             clapSound.play();
-            spawnCoin();
             
-            // Confetti Bunga Api Meriah
-            fireworks();
+            spawnCoin(); // Animasi Coin
+            fireworks(); // Confetti Bunga Api
 
-            resultText.innerText = "MANTAP! TEPAT SEKALI! 🎊";
+            resultText.innerText = "YESS! BETUL TEPAT! 🎉";
             resultText.style.color = "#2ed573";
             
             setTimeout(() => {
@@ -146,11 +146,11 @@
                     inputField.value = "";
                     resultText.innerText = "";
                 } else {
-                    fireworks(); // Bunga api besar-besaran
+                    fireworks(); 
                     document.querySelector('.container').innerHTML = `
                         <h1 style="font-size: 80px; margin:0;">🏆</h1>
-                        <h2 style="color:#6c5ce7">MAHARAJA KATA KERJA!</h2>
-                        <p style="font-size: 20px;">Markah Anda: <b>${score}</b></p>
+                        <h2>MAHARAJA KATA KERJA!</h2>
+                        <p>Markah Akhir: <b>${score}</b></p>
                         <button onclick="location.reload()">MAIN SEMULA</button>
                     `;
                 }
@@ -159,16 +159,16 @@
             // SALAH - Bunyi Kecewa Lembut
             sadSound.currentTime = 0;
             sadSound.play();
-            resultText.innerText = "Aww.. bukan tu. Cuba lagi! 🙊";
+            resultText.innerText = "Aww.. salah tu. Cuba lagi! 🙊";
             resultText.style.color = "#ff4757";
             document.getElementById('game-box').classList.add('shake');
             setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500);
         }
     }
 
-    // Fungsi Confetti Gaya Bunga Api
+    // Fungsi Confetti Gaya Bunga Api (Fireworks)
     function fireworks() {
-        var duration = 2 * 1000;
+        var duration = 3 * 1000;
         var animationEnd = Date.now() + duration;
         var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
@@ -178,13 +178,21 @@
             var timeLeft = animationEnd - Date.now();
             if (timeLeft <= 0) { return clearInterval(interval); }
             var particleCount = 50 * (timeLeft / duration);
-            // Meletup dari kiri dan kanan
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            // Letupan bunga api dari pelbagai sudut
+            confetti(Object.assign({}, defaults, { 
+                particleCount, 
+                origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff']
+            }));
+            confetti(Object.assign({}, defaults, { 
+                particleCount, 
+                origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                colors: ['#ffffff', '#ff9a9e', '#fad0c4', '#6c5ce7']
+            }));
         }, 250);
     }
 
-    // Fungsi Coin Terbang
+    // Fungsi Coin Terbang 💰
     function spawnCoin() {
         const coin = document.createElement('div');
         coin.className = 'coin-anim';
@@ -203,7 +211,7 @@
         setTimeout(() => {
             coin.style.left = destRect.left + 'px';
             coin.style.top = destRect.top + 'px';
-            coin.style.transform = 'scale(0.3) rotate(360deg)';
+            coin.style.transform = 'scale(0.3) rotate(720deg)';
             coin.style.opacity = '0';
         }, 50);
 
