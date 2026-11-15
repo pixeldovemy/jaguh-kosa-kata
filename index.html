@@ -3,72 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Word Master Pro - Ultimate Edition</title>
+    <title>AI Word Master Pro - Premium UI</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         * { box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
+        
         body { 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
-            overflow: hidden;
+            margin: 0; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Animasi Masuk */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .container { 
-            background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 40px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-width: 450px; width: 100%; text-align: center;
-            position: relative; border: 8px solid #fff;
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 35px 25px; 
+            border-radius: 40px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3); 
+            max-width: 450px; 
+            width: 100%; 
+            text-align: center;
+            position: relative; 
+            border: 8px solid #ffffff;
+            animation: fadeIn 0.6s ease-out;
         }
 
         /* 1. STARTUP PAGE */
         #startup-page { display: flex; justify-content: center; width: 100%; }
-        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+        h1 { color: #6c5ce7; font-size: 32px; margin-bottom: 5px; letter-spacing: -1px; }
+        .tagline { color: #777; font-size: 14px; margin-bottom: 25px; }
+        
+        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 25px 0; }
         .avatar-item { 
-            cursor: pointer; border-radius: 50%; border: 4px solid transparent; 
-            transition: 0.3s; padding: 5px; background: #f1f2f6; font-size: 30px;
+            cursor: pointer; border-radius: 20px; border: 4px solid transparent; 
+            transition: 0.3s; padding: 10px; background: #f8f9fa; font-size: 32px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .avatar-item.selected { border-color: #6c5ce7; background: #e8e8ff; transform: scale(1.1); }
+        .avatar-item.selected { border-color: #6c5ce7; background: #eeebff; transform: scale(1.1); }
         
         /* 2. GAME PAGE */
         #game-page { display: none; justify-content: center; width: 100%; }
         .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-        .user-profile { display: flex; align-items: center; gap: 10px; background: #eee; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
-        .score-box { background: #ffd32a; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 0 #e1b12c; transition: 0.2s; }
-        .score-box.bump { transform: scale(1.2); }
-        .btn-quit { background: #ff4757; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #b33939; }
+        .user-profile { display: flex; align-items: center; gap: 12px; background: #f1f2f6; padding: 6px 16px; border-radius: 25px; border: 2px solid #fff; }
+        .score-box { background: #ffd32a; padding: 8px 18px; border-radius: 20px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 0 #e1b12c; }
+        .btn-quit { background: #ff4757; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #b33939; display: flex; align-items: center; justify-content: center; }
         
-        .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #fff; margin-bottom: 20px; background: #000; }
+        .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 20px; background: #000; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
         video { width: 100%; display: block; }
         
-        input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 20px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
+        input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 18px; font-size: 18px; text-align: center; outline: none; transition: 0.3s; background: #fdfdfd; }
+        input:focus { border-color: #6c5ce7; background: #fff; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.1); }
         
         .btn-main { 
-            padding: 18px; background: #6c5ce7; color: white; border: none; border-radius: 20px; 
+            padding: 18px; background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); 
+            color: white; border: none; border-radius: 22px; 
             cursor: pointer; font-size: 20px; font-weight: bold; width: 100%; 
             box-shadow: 0 8px 0 #4834d4; transition: 0.2s;
         }
+        .btn-main:hover { filter: brightness(1.1); }
         .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
 
         /* 3. QUIT PAGE (OVERLAY) */
         #quit-page { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+            background: rgba(45, 52, 54, 0.95); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+            backdrop-filter: blur(5px);
         }
 
-        .hint-section { margin-top: 20px; background: #f1f2f6; padding: 15px; border-radius: 20px; }
-        .hint-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 60px; overflow-y: auto; padding: 5px; }
-        .hint-item { background: #fff; padding: 4px 10px; border-radius: 10px; font-size: 12px; color: #666; border: 1px solid #ddd; }
+        .hint-section { margin-top: 25px; background: #f8f9fa; padding: 15px; border-radius: 25px; border: 2px dashed #dcdde1; }
+        .hint-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 70px; overflow-y: auto; padding: 5px; scrollbar-width: thin; }
+        .hint-item { background: #fff; padding: 5px 12px; border-radius: 12px; font-size: 12px; color: #7f8c8d; border: 1px solid #eee; }
         
-        .coin-anim {
-            position: fixed; width: 45px; height: 45px; background: #ffd32a;
-            border-radius: 50%; border: 4px solid #f0932b; color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 20px; z-index: 9999;
-            pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
         #result { margin-top: 15px; font-size: 20px; font-weight: bold; min-height: 30px; }
+        .footer-credit { margin-top: 30px; color: rgba(255,255,255,0.6); font-size: 12px; letter-spacing: 1px; }
+
+        /* Animation Helpers */
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .coin-anim { position: fixed; width: 45px; height: 45px; background: #ffd32a; border-radius: 50%; border: 4px solid #f0932b; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; z-index: 9999; pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
 <body>
@@ -76,16 +100,19 @@
     <!-- PAGE 1: STARTUP -->
     <div id="startup-page">
         <div class="container">
-            <h1>AI Word Master 🎮</h1>
-            <p>Masukkan nama & pilih avatar anda:</p>
-            <input type="text" id="player-name" placeholder="Nama Hero..." maxlength="12">
+            <h1>AI Master 🎮</h1>
+            <p class="tagline">Teka kata kerja AI dan kumpul coin!</p>
+            
+            <input type="text" id="player-name" placeholder="Nama anda..." maxlength="12">
+            
             <div class="avatar-grid">
                 <div class="avatar-item selected" onclick="selectAvatar(this, '🤖')">🤖</div>
                 <div class="avatar-item" onclick="selectAvatar(this, '👩‍💻')">👩‍💻</div>
                 <div class="avatar-item" onclick="selectAvatar(this, '🥷')">🥷</div>
                 <div class="avatar-item" onclick="selectAvatar(this, '🦸‍♂️')">🦸‍♂️</div>
             </div>
-            <button class="btn-main" onclick="startGame()">MULA MAIN 🚀</button>
+
+            <button class="btn-main" onclick="startGame()">MULA BERMAIN 🚀</button>
         </div>
     </div>
 
@@ -94,38 +121,49 @@
         <div class="container" id="game-box">
             <div class="header-info">
                 <div class="user-profile">
-                    <span id="display-avatar">🤖</span>
-                    <span id="display-name">Player</span>
+                    <span id="display-avatar" style="font-size: 20px;">🤖</span>
+                    <span id="display-name" style="font-weight: 600; color: #2d3436;">Player</span>
                 </div>
-                <div style="display: flex; gap: 8px; align-items: center;">
+                <div style="display: flex; gap: 10px; align-items: center;">
                     <div class="score-box" id="score-container">💰 <span id="score">0</span></div>
-                    <button class="btn-quit" onclick="showQuitPage()">X</button>
+                    <button class="btn-quit" onclick="showQuitPage()">✕</button>
                 </div>
             </div>
-            <div id="level-text" style="font-size: 12px; margin-bottom: 10px; font-weight: bold; color: #666;">LEVEL 1/20</div>
+            
+            <div id="level-text" style="font-size: 12px; margin-bottom: 12px; font-weight: bold; color: #a29bfe; text-transform: uppercase;">LEVEL 1 / 20</div>
+
             <div class="video-wrapper">
                 <video id="game-video" autoplay loop muted playsinline>
                     <source id="video-source" src="videos/menebar.mp4" type="video/mp4">
                 </video>
             </div>
-            <input type="text" id="user-input" placeholder="Teka jawapan..." autocomplete="off">
-            <button class="btn-main" onclick="checkAnswer()">HANTAR 🚀</button>
+
+            <input type="text" id="user-input" placeholder="Teka aksi di atas..." autocomplete="off">
+            <button class="btn-main" onclick="checkAnswer()">SEMAK JAWAPAN 🚀</button>
+            
             <p id="result"></p>
-            <div class="hint-section"><div class="hint-list" id="clue-list"></div></div>
+
+            <div class="hint-section">
+                <div style="font-size: 10px; color: #b2bec3; font-weight: bold; margin-bottom: 8px; text-align: left; padding-left: 5px;">PILIHAN JAWAPAN:</div>
+                <div class="hint-list" id="clue-list"></div>
+            </div>
         </div>
     </div>
 
     <!-- PAGE 3: QUIT PAGE -->
     <div id="quit-page">
         <div class="container">
-            <h1 style="font-size: 50px; margin: 0;">🥺</h1>
-            <h2>Nak berhenti ke?</h2>
-            <p>Progress anda disimpan secara automatik.</p>
-            <button class="btn-main" onclick="continueGame()" style="margin-bottom: 10px;">SAMBUNG MAIN 🔥</button>
-            <button class="btn-main" onclick="resetGame()" style="background: #95a5a6; box-shadow: 0 8px 0 #7f8c8d;">PADAM & MULA BARU</button>
+            <h1 style="font-size: 60px; margin: 0;">🥺</h1>
+            <h2 style="color: #2d3436; margin-top: 10px;">Nak rehat ke?</h2>
+            <p style="color: #636e72; margin-bottom: 25px;">Progress anda tersimpan selamat dalam memori AI.</p>
+            <button class="btn-main" onclick="continueGame()" style="margin-bottom: 12px;">SAMBUNG MAIN 🔥</button>
+            <button class="btn-main" onclick="resetGame()" style="background: #b2bec3; box-shadow: 0 8px 0 #95a5a6;">MULA BALIK (RESET)</button>
         </div>
     </div>
 
+    <div class="footer-credit">POWERED BY STUDIO AI PRO</div>
+
+    <!-- Sounds -->
     <audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
     <audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
 
@@ -143,7 +181,6 @@
             gameData.push({ word: `jawapan${i}`, vid: `videos/clip${i}.mp4` });
         }
 
-        // LOAD PROGRESS DARI LOCALSTORAGE
         window.onload = function() {
             const savedName = localStorage.getItem('ai_name');
             const savedAvatar = localStorage.getItem('ai_avatar');
@@ -175,13 +212,11 @@
         function startGame() {
             const nameInput = document.getElementById('player-name').value.trim();
             if (nameInput === "") { alert("Masukkan nama dulu!"); return; }
-            
             localStorage.setItem('ai_name', nameInput);
             localStorage.setItem('ai_avatar', chosenAvatar);
             localStorage.setItem('ai_level', 0);
             localStorage.setItem('ai_score', 0);
-
-            location.reload(); // Refresh untuk load state baru
+            location.reload();
         }
 
         function initClues() {
@@ -197,7 +232,7 @@
 
         function loadLevel(levelIndex) {
             if (levelIndex < gameData.length) {
-                document.getElementById('level-text').innerText = `LEVEL ${levelIndex + 1}/20`;
+                document.getElementById('level-text').innerText = `LEVEL ${levelIndex + 1} / 20`;
                 document.getElementById('video-source').src = gameData[levelIndex].vid;
                 document.getElementById('game-video').load();
             }
@@ -216,8 +251,6 @@
                 
                 score += 10;
                 currentLevel++;
-                
-                // SAVE PROGRESS
                 localStorage.setItem('ai_score', score);
                 localStorage.setItem('ai_level', currentLevel);
 
@@ -227,12 +260,17 @@
                         inputField.value = ""; resultText.innerText = "";
                         document.getElementById('score').innerText = score;
                     } else {
-                        document.querySelector('#game-page .container').innerHTML = `<h1>🏆</h1><h2>JUARA AI!</h2><p>Markah: ${score}</p><button class="btn-main" onclick="resetGame()">MAIN SEMULA</button>`;
+                        document.querySelector('#game-page .container').innerHTML = `
+                            <h1 style="font-size: 80px; margin: 0;">🏆</h1>
+                            <h2 style="color:#6c5ce7">JUARA DUNIA!</h2>
+                            <p style="color:#555">Tahniah, anda telah tamat Level 20!</p>
+                            <button class="btn-main" onclick="resetGame()">MAIN SEMULA</button>
+                        `;
                     }
                 }, 1800);
             } else {
                 wrongSound.currentTime = 0; wrongSound.play();
-                resultText.innerText = "Awhhh.. salah tu. 🙊";
+                resultText.innerText = "Ops.. salah tu! 🙊";
                 resultText.style.color = "#ff4757";
                 document.getElementById('game-box').classList.add('shake');
                 setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500);
@@ -249,7 +287,7 @@
             var interval = setInterval(function() {
                 var timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
-                confetti({ particleCount: 40, origin: { x: Math.random(), y: Math.random() - 0.2 } });
+                confetti({ particleCount: 30, spread: 60, origin: { x: Math.random(), y: Math.random() - 0.2 } });
             }, 250);
         }
 
