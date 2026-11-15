@@ -1,72 +1,130 @@
-``html
+```html
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-<title>Game Teka Kata Kerja AI</title>
-<style>
-body { font-family: sans-serif; text-align: center; background: #f4f4f4; }
-.container { margin-top: 50px; padding: 20px; background: white; display: inline-block; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-img { width: 300px; border-radius: 10px; margin-bottom: 20px; }
-input { padding: 10px; width: 200px; border: 1px solid #ddd; }
-button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Teka Kata Kerja AI Pro</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; text-align: center; background: #eef2f7; margin: 0; padding: 20px; }
+        .container { margin-top: 20px; padding: 30px; background: white; display: inline-block; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 450px; width: 95%; }
+        
+        /* Level & Score Header */
+        .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; color: #555; }
+        .score-box { background: #ffd700; padding: 5px 15px; border-radius: 20px; }
+        
+        video { width: 100%; border-radius: 20px; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: #000; }
+        
+        input { padding: 15px; width: 85%; border: 2px solid #ddd; border-radius: 12px; margin-bottom: 15px; font-size: 16px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #4a90e2; box-shadow: 0 0 10px rgba(74,144,226,0.2); }
+        
+        button { padding: 15px; background: #4a90e2; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; width: 92%; transition: 0.3s; }
+        button:hover { background: #357abd; transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+
+        #result { margin-top: 20px; font-size: 18px; font-weight: bold; min-height: 25px; }
+
+        /* Animasi Salah */
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<h2>Teka Kata Kerja Ini!</h2>
-<!-- Gambar dari Image Generator STUDIO AI PRO letak sini -->
-```html
-<!-- Ganti tag <img> lama dengan yang ni -->
-<video id="game-video" width="300" autoplay loop muted playsinline style="border-radius: 10px; margin-bottom: 20px;">
-  <source id="video-source" src="berlari.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
 
-<script>
-const gameData = [
-  { word: "berlari", vid: "berlari.mp4" },
-  { word: "memasak", vid: "memasak.mp4" },
-  { word: "melompat", vid: "melompat.mp4" }
-];
+<div class="container" id="game-box">
+    <div class="header-info">
+        <div id="level-text">Level: 1/3</div>
+        <div class="score-box">Markah: <span id="score">0</span></div>
+    </div>
 
-function checkAnswer() {
-  let answer = document.getElementById('user-input').value.toLowerCase();
-  
-  // Contoh check untuk soalan pertama
-  if(answer === gameData[0].word) {
-    document.getElementById('result').innerText = "Betul! Power lah!";
-    document.getElementById('result').style.color = "green";
-  } else {
-    document.getElementById('result').innerText = "Salah tu, cuba lagi!";
-    document.getElementById('result').style.color = "red";
-  }
-}
-</script>
-```
-<br>
-<input type="text" id="user-input" placeholder="Apa dia buat ni?">
-<button onclick="checkAnswer()">Teka!</button>
-<p id="result"></p>
+    <h2>Teka Aksi Ini! 🎬</h2>
+    
+    <video id="game-video" autoplay loop muted playsinline>
+        <source id="video-source" src="berlari.mp4" type="video/mp4">
+    </video>
+
+    <input type="text" id="user-input" placeholder="Tulis kata kerja di sini..." autocomplete="off">
+    <button onclick="checkAnswer()">HANTAR JAWAPAN</button>
+    <p id="result"></p>
 </div>
 
 <script>
-const gameData = [
-{ word: "berlari", img: "URL_GAMBAR_1" },
-{ word: "memasak", img: "URL_GAMBAR_2" },
-{ word: "melompat", img: "URL_GAMBAR_3" }
-];
+    const gameData = [
+        { word: "berlari", vid: "berlari.mp4" },
+        { word: "memasak", vid: "memasak.mp4" },
+        { word: "melompat", vid: "melompat.mp4" },
+        { word: "berenang", vid: "berenang.mp4" }, // Tambah lagi kat sini
+        { word: "menari", vid: "menari.mp4" }
+    ];
 
-function checkAnswer() {
-let answer = document.getElementById('user-input').value.toLowerCase();
-if(answer === gameData[0].word) {
-document.getElementById('result').innerText = "Betul! Power lah!";
-document.getElementById('result').style.color = "green";
-} else {
-document.getElementById('result').innerText = "Salah tu, cuba lagi!";
-document.getElementById('result').style.color = "red";
-}
-}
+    let currentLevel = 0;
+    let score = 0;
+
+    // Fungsi tekan Enter
+    document.getElementById('user-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+    function checkAnswer() {
+        const inputField = document.getElementById('user-input');
+        const resultText = document.getElementById('result');
+        const videoElement = document.getElementById('game-video');
+        const videoSource = document.getElementById('video-source');
+        const gameBox = document.getElementById('game-box');
+        
+        let answer = inputField.value.toLowerCase().trim();
+
+        if (answer === gameData[currentLevel].word) {
+            // BETUL
+            score += 10;
+            document.getElementById('score').innerText = score;
+            resultText.innerText = "MANTAP! +10 Markah! 🎉";
+            resultText.style.color = "#28a745";
+            inputField.style.borderColor = "#28a745";
+
+            setTimeout(() => {
+                currentLevel++;
+                if (currentLevel < gameData.length) {
+                    // Update Level Text
+                    document.getElementById('level-text').innerText = `Level: ${currentLevel + 1}/${gameData.length}`;
+                    // Tukar video
+                    videoSource.src = gameData[currentLevel].vid;
+                    videoElement.load();
+                    videoElement.play();
+                    // Reset input
+                    inputField.value = "";
+                    inputField.style.borderColor = "#ddd";
+                    resultText.innerText = "";
+                } else {
+                    // Habis Game
+                    document.querySelector('.container').innerHTML = `
+                        <h2 style="font-size: 40px;">🏆</h2>
+                        <h2>Hebat Gila!</h2>
+                        <p>Kau dah score <b>${score}</b> markah!</p>
+                        <button onclick="location.reload()">MAIN SEMULA</button>
+                    `;
+                }
+            }, 1500);
+
+        } else {
+            // SALAH
+            resultText.innerText = "Aduhai, salah tu! Cuba lagi. 🔥";
+            resultText.style.color = "#dc3545";
+            inputField.style.borderColor = "#dc3545";
+            gameBox.classList.add('shake');
+            setTimeout(() => { gameBox.classList.remove('shake'); }, 500);
+        }
+    }
 </script>
+
 </body>
 </html>
 ```
