@@ -1,0 +1,22 @@
+```json
+{
+  "name": "Game AI Pro",
+  "short_name": "GameAI",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#06b6d4",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192/06b6d4/ffffff?text=AI",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512/06b6d4/ffffff?text=GAME+AI",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+```
