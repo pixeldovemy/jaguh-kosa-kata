@@ -15,7 +15,34 @@ button { padding: 10px 20px; background: #28a745; color: white; border: none; cu
 <div class="container">
 <h2>Teka Kata Kerja Ini!</h2>
 <!-- Gambar dari Image Generator STUDIO AI PRO letak sini -->
-<img id="game-image" src="https://via.placeholder.com/300" alt="Kata Kerja">
+```html
+<!-- Ganti tag <img> lama dengan yang ni -->
+<video id="game-video" width="300" autoplay loop muted playsinline style="border-radius: 10px; margin-bottom: 20px;">
+  <source id="video-source" src="berlari.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<script>
+const gameData = [
+  { word: "berlari", vid: "berlari.mp4" },
+  { word: "memasak", vid: "memasak.mp4" },
+  { word: "melompat", vid: "melompat.mp4" }
+];
+
+function checkAnswer() {
+  let answer = document.getElementById('user-input').value.toLowerCase();
+  
+  // Contoh check untuk soalan pertama
+  if(answer === gameData[0].word) {
+    document.getElementById('result').innerText = "Betul! Power lah!";
+    document.getElementById('result').style.color = "green";
+  } else {
+    document.getElementById('result').innerText = "Salah tu, cuba lagi!";
+    document.getElementById('result').style.color = "red";
+  }
+}
+</script>
+```
 <br>
 <input type="text" id="user-input" placeholder="Apa dia buat ni?">
 <button onclick="checkAnswer()">Teka!</button>
