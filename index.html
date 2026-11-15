@@ -1,9 +1,11 @@
+### 🚀 FULL CODING: JAGUH KOSA KATA AI (v2.1 - Custom UI Edition)
+
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAGUH KOSA KATA AI</title>
+    <title>JAGUH KOSA KATA AI - v2.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -24,8 +26,9 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- STARTUP & DASHBOARD STYLES --- */
         h1.brand { color: #6c5ce7; font-size: 36px; margin: 0; letter-spacing: -1.5px; text-transform: uppercase; }
+        
+        /* --- DASHBOARD STYLES --- */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
         .stat-card { background: #f1f2f6; padding: 15px; border-radius: 25px; border: 2px solid #fff; }
         .stat-value { display: block; font-size: 24px; font-weight: 600; color: #2d3436; }
@@ -34,11 +37,6 @@
         .profile-main { margin-bottom: 20px; }
         .avatar-circle { font-size: 60px; background: #eeebff; width: 100px; height: 100px; line-height: 100px; border-radius: 50%; margin: 0 auto 10px; border: 4px solid #6c5ce7; }
         .player-name-big { font-size: 22px; font-weight: 600; color: #2d3436; }
-
-        /* --- AVATAR PICKER --- */
-        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
-        .avatar-item { cursor: pointer; border-radius: 15px; border: 3px solid #eee; transition: 0.3s; padding: 10px; font-size: 30px; background: #fff; }
-        .avatar-item.selected { border-color: #6c5ce7; background: #eeebff; transform: scale(1.1); }
 
         /* --- BUTTONS --- */
         .btn-main { 
@@ -55,10 +53,11 @@
         video { width: 100%; display: block; }
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
         
-        /* --- QUIT MODAL --- */
-        #quit-page { 
+        /* --- MODAL / OVERLAY --- */
+        #quit-page, #reset-modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(45, 52, 54, 0.98); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+            backdrop-filter: blur(10px);
         }
 
         .hint-section { margin-top: 20px; background: #f8f9fa; padding: 10px; border-radius: 20px; }
@@ -66,11 +65,15 @@
         .hint-item { background: #fff; padding: 3px 8px; border-radius: 8px; font-size: 11px; color: #7f8c8d; border: 1px solid #eee; }
 
         .coin-anim { position: fixed; width: 45px; height: 45px; background: #ffd32a; border-radius: 50%; border: 4px solid #f0932b; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; z-index: 9999; pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+        .avatar-item { cursor: pointer; border-radius: 15px; border: 3px solid #eee; transition: 0.3s; padding: 10px; font-size: 30px; background: #fff; }
+        .avatar-item.selected { border-color: #6c5ce7; background: #eeebff; transform: scale(1.1); }
     </style>
 </head>
 <body>
 
-    <!-- 1. STARTUP PAGE (User Baru) -->
+    <!-- 1. STARTUP PAGE -->
     <div id="startup-page" class="container" style="display: none;">
         <h1 class="brand">JAGUH KOSA KATA</h1>
         <p style="color: #636e72;">Daftar profil jaguh anda</p>
@@ -84,7 +87,7 @@
         <button class="btn-main" onclick="saveProfile()">SIMPAN PROFIL 🚀</button>
     </div>
 
-    <!-- 2. DASHBOARD PAGE (Landing Page Pro) -->
+    <!-- 2. DASHBOARD PAGE -->
     <div id="dashboard-page" class="container" style="display: none;">
         <h1 class="brand">JAGUH KOSA KATA</h1>
         <div class="profile-main">
@@ -138,6 +141,19 @@
         </div>
     </div>
 
+    <!-- 5. CUSTOM RESET MODAL (Version 2.1) -->
+    <div id="reset-modal">
+        <div class="container" style="border: 6px solid #ff4757;">
+            <h1 style="font-size: 50px; margin: 0;">⚠️</h1>
+            <h2 style="color: #2d3436; margin-top: 10px;">Reset Permainan?</h2>
+            <p style="color: #636e72; margin-bottom: 25px; line-height: 1.5;">
+                Adakah anda yakin? Semua <b>koin terkumpul</b> dan <b>kemajuan level</b> anda akan dipadamkan secara kekal. Anda akan bermula semula dari <b>Level 1</b>.
+            </p>
+            <button class="btn-main" onclick="confirmReset()" style="background: #ff4757; box-shadow: 0 8px 0 #b33939; margin-bottom: 12px;">YA, RESET SEKARANG</button>
+            <button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, TERUSKAN BERMAIN</button>
+        </div>
+    </div>
+
     <!-- Audio -->
     <audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
     <audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
@@ -155,8 +171,10 @@
         };
 
         function showPage(id) {
-            ['startup-page', 'dashboard-page', 'game-page', 'quit-page'].forEach(p => document.getElementById(p).style.display = 'none');
-            document.getElementById(id).style.display = id === 'quit-page' ? 'flex' : 'block';
+            ['startup-page', 'dashboard-page', 'game-page', 'quit-page', 'reset-modal'].forEach(p => document.getElementById(p).style.display = 'none');
+            const el = document.getElementById(id);
+            if (id === 'quit-page' || id === 'reset-modal') el.style.display = 'flex';
+            else el.style.display = 'block';
         }
 
         function selectAvatar(el, avatar) {
@@ -195,6 +213,7 @@
         }
 
         function loadLevel(idx) {
+            if(idx >= 20) return;
             document.getElementById('level-text').innerText = `LEVEL ${idx + 1}/20`;
             const video = document.getElementById('game-video');
             document.getElementById('video-source').src = gameData[idx].vid;
@@ -229,10 +248,14 @@
             }
         }
 
+        // FUNGSI QUIT & RESET
         function showQuitPage() { document.getElementById('quit-page').style.display = 'flex'; }
-        function continueGame() { document.getElementById('quit-page').style.display = 'none'; }
+        function continueGame() { document.getElementById('quit-page').style.display = 'none'; document.getElementById('reset-modal').style.display = 'none'; }
         function exitToDashboard() { showDashboard(); }
-        function resetGame() { if(confirm("Mula balik dari 0?")) { localStorage.clear(); location.reload(); } }
+        
+        function resetGame() { document.getElementById('reset-modal').style.display = 'flex'; }
+        function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
+        function confirmReset() { localStorage.clear(); location.reload(); }
 
         function fireworks() {
             let end = Date.now() + 2000;
@@ -255,3 +278,4 @@
     </script>
 </body>
 </html>
+
