@@ -1,10 +1,10 @@
-<!-- VERSION: 2.5 | UPDATE: Main Question (Top) + Tabbed System (Bottom) | JAGUH KOSA KATA -->
+<!-- VERSION: 2.6 | UPDATE: Contoh Soalan (Isi Tempat Kosong) | JAGUH KOSA KATA -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAGUH KOSA KATA AI - v2.5</title>
+    <title>JAGUH KOSA KATA AI - v2.6</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -15,7 +15,7 @@
             min-height: 100vh; padding: 20px; overflow-x: hidden;
         }
         .container { 
-            background: rgba(255, 255, 255, 0.98); padding: 35px 25px; border-radius: 40px; 
+            background: rgba(255, 255, 255, 0.98); padding: 30px 25px; border-radius: 40px; 
             box-shadow: 0 25px 50px rgba(0,0,0,0.3); max-width: 450px; width: 100%; 
             text-align: center; position: relative; border: 8px solid #ffffff;
             animation: fadeIn 0.5s ease-out;
@@ -56,13 +56,12 @@
         .tab-btn.active { background: #6c5ce7; color: white; border-color: #6c5ce7; }
         .tab-content-area { 
             display: none; font-size: 14px; color: #444; background: #eeebff; 
-            padding: 12px; border-radius: 15px; margin-bottom: 15px; min-height: 50px;
-            animation: fadeIn 0.3s ease; line-height: 1.4; text-align: left;
+            padding: 15px; border-radius: 15px; margin-bottom: 15px; min-height: 60px;
+            animation: fadeIn 0.3s ease; line-height: 1.6; text-align: left; border-left: 5px solid #6c5ce7;
         }
 
         input { padding: 16px; width: 100%; border: 3px solid #eee; border-radius: 20px; margin-bottom: 10px; font-size: 18px; text-align: center; outline: none; }
         
-        /* MODALS */
         #quit-page, #reset-modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(45, 52, 54, 0.98); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px);
@@ -135,9 +134,9 @@
             <video id="game-video" autoplay loop muted playsinline><source id="video-source" src="videos/menebar.mp4" type="video/mp4"></video>
         </div>
 
-        <!-- TAB SYSTEM BAWAH VIDEO -->
+        <!-- TAB SYSTEM -->
         <div class="tab-container">
-            <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Detail Soalan</button>
+            <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
             <button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button>
         </div>
         <div id="tab-content" class="tab-content-area"></div>
@@ -179,22 +178,22 @@
         let activeTab = null;
 
         const gameData = [];
-        // Level 1
+        // Level 1: Menebar
         gameData.push({
             word: "menebar",
             vid: "videos/menebar.mp4",
             q: "Aksi apakah yang dilakukan oleh pemuda ini terhadap doh roti canai tersebut?",
-            detail: "Soalan ini menguji pengetahuan anda tentang penyediaan makanan popular di Malaysia.",
-            h: "Teringat dekat mamak? Perbuatan ini dilakukan untuk menipiskan doh."
+            example: "Ahmad sangat gigih _______ doh roti canai untuk dihidangkan kepada pelanggannya di warung.",
+            h: "Teringat dekat mamak? Perbuatan ini dilakukan untuk menipiskan doh secara memusing."
         });
-        // Level 2-20
+        // Level 2-20: Lorem Ipsum
         for (let i = 2; i <= 20; i++) {
             gameData.push({
                 word: `jawapan${i}`,
                 vid: `videos/clip${i}.mp4`,
                 q: "Lorem ipsum dolor sit amet, consectetur adipiscing elit? (Soalan Utama)",
-                detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. (Detail Soalan)",
-                h: "Lorem ipsum dolor sit amet. (Klu)"
+                example: "Pemain itu sedang mencuba _______ Lorem Ipsum dolor sit amet.",
+                h: "Lorem ipsum klu dolor sit amet."
             });
         }
 
@@ -225,11 +224,11 @@
                 contentArea.style.display = 'block';
                 activeTab = type;
                 if (type === 'q') {
-                    contentArea.innerText = data.detail; // Papar detail soalan
+                    contentArea.innerHTML = `<b>Ayat Contoh:</b><br>"${data.example}"`;
                     btnQ.classList.add('active');
                     btnH.classList.remove('active');
                 } else {
-                    contentArea.innerText = "Klu: " + data.h; // Papar klu
+                    contentArea.innerHTML = `<b>Klu:</b><br>${data.h}`;
                     btnH.classList.add('active');
                     btnQ.classList.remove('active');
                 }
@@ -239,7 +238,7 @@
         function loadLevel(idx) {
             if(idx >= gameData.length) return;
             document.getElementById('level-text').innerText = `LEVEL ${idx + 1}/20`;
-            document.getElementById('game-question').innerText = gameData[idx].q; // Update soalan atas video
+            document.getElementById('game-question').innerText = gameData[idx].q;
             
             // Reset Tab
             document.getElementById('tab-content').style.display = 'none';
@@ -306,7 +305,7 @@
                 localStorage.setItem('jaguh_score', score);
                 localStorage.setItem('jaguh_level', currentLevel);
                 setTimeout(() => {
-                    if (currentLevel < gameData.length) { loadLevel(currentLevel); input.value = ""; res.innerText = ""; document.getElementById('score').innerText = score; }
+                    if (currentLevel < 20) { loadLevel(currentLevel); input.value = ""; res.innerText = ""; document.getElementById('score').innerText = score; }
                     else { alert("TAHNIAH! ANDA JAGUH KOSA KATA!"); exitToDashboard(); }
                 }, 1500);
             } else {
