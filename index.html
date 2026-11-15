@@ -1,10 +1,10 @@
-<!-- VERSION: 2.4 | UPDATE: Tabbed Info System (Question vs Hint) | JAGUH KOSA KATA -->
+<!-- VERSION: 2.5 | UPDATE: Main Question (Top) + Tabbed System (Bottom) | JAGUH KOSA KATA -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAGUH KOSA KATA AI - v2.4</title>
+    <title>JAGUH KOSA KATA AI - v2.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -23,6 +23,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         h1.brand { color: #6c5ce7; font-size: 32px; margin: 0 0 10px 0; letter-spacing: -1px; text-transform: uppercase; }
         
+        /* PROFILE & DASHBOARD */
         .profile-main { margin-bottom: 20px; }
         .avatar-circle { font-size: 60px; background: #eeebff; width: 100px; height: 100px; line-height: 100px; border-radius: 50%; margin: 0 auto 10px; border: 4px solid #6c5ce7; }
         .player-name-big { font-size: 22px; font-weight: 600; color: #2d3436; margin-bottom: 20px; }
@@ -31,6 +32,7 @@
         .stat-value { display: block; font-size: 24px; font-weight: 600; color: #2d3436; }
         .stat-label { font-size: 11px; color: #636e72; text-transform: uppercase; font-weight: bold; }
 
+        /* BUTTONS */
         .btn-main { 
             padding: 16px; background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); 
             color: white; border: none; border-radius: 22px; cursor: pointer; font-size: 18px; 
@@ -39,11 +41,13 @@
         .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
         .btn-alt { background: #b2bec3; box-shadow: 0 8px 0 #95a5a6; }
 
+        /* GAMEPAGE ELEMENTS */
         .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        #game-question { font-size: 16px; font-weight: 600; color: #2d3436; margin: 0 0 15px 0; line-height: 1.4; min-height: 45px; }
         .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 15px; background: #000; }
         video { width: 100%; display: block; }
 
-        /* TAB STYLES */
+        /* TAB SYSTEM */
         .tab-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
         .tab-btn { 
             background: #f1f2f6; border: 1px solid #ddd; padding: 8px 15px; 
@@ -53,14 +57,17 @@
         .tab-content-area { 
             display: none; font-size: 14px; color: #444; background: #eeebff; 
             padding: 12px; border-radius: 15px; margin-bottom: 15px; min-height: 50px;
-            animation: fadeIn 0.3s ease; line-height: 1.4;
+            animation: fadeIn 0.3s ease; line-height: 1.4; text-align: left;
         }
 
         input { padding: 16px; width: 100%; border: 3px solid #eee; border-radius: 20px; margin-bottom: 10px; font-size: 18px; text-align: center; outline: none; }
+        
+        /* MODALS */
         #quit-page, #reset-modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(45, 52, 54, 0.98); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px);
         }
+
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
         .avatar-item { cursor: pointer; border-radius: 15px; border: 3px solid #eee; transition: 0.3s; padding: 10px; font-size: 30px; background: #fff; }
         .avatar-item.selected { border-color: #6c5ce7; background: #eeebff; transform: scale(1.1); }
@@ -119,15 +126,18 @@
                 <button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold;">✕</button>
             </div>
         </div>
-        <div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase; margin-bottom: 10px;" id="level-text">LEVEL 1/20</div>
+        <div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;" id="level-text">LEVEL 1/20</div>
         
+        <!-- SOALAN ATAS VIDEO -->
+        <p id="game-question">Memuatkan soalan...</p>
+
         <div class="video-wrapper">
             <video id="game-video" autoplay loop muted playsinline><source id="video-source" src="videos/menebar.mp4" type="video/mp4"></video>
         </div>
 
-        <!-- TAB SYSTEM -->
+        <!-- TAB SYSTEM BAWAH VIDEO -->
         <div class="tab-container">
-            <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
+            <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Detail Soalan</button>
             <button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button>
         </div>
         <div id="tab-content" class="tab-content-area"></div>
@@ -174,6 +184,7 @@
             word: "menebar",
             vid: "videos/menebar.mp4",
             q: "Aksi apakah yang dilakukan oleh pemuda ini terhadap doh roti canai tersebut?",
+            detail: "Soalan ini menguji pengetahuan anda tentang penyediaan makanan popular di Malaysia.",
             h: "Teringat dekat mamak? Perbuatan ini dilakukan untuk menipiskan doh."
         });
         // Level 2-20
@@ -181,7 +192,8 @@
             gameData.push({
                 word: `jawapan${i}`,
                 vid: `videos/clip${i}.mp4`,
-                q: "Lorem ipsum dolor sit amet, consectetur adipiscing elit? (Contoh Soalan)",
+                q: "Lorem ipsum dolor sit amet, consectetur adipiscing elit? (Soalan Utama)",
+                detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. (Detail Soalan)",
                 h: "Lorem ipsum dolor sit amet. (Klu)"
             });
         }
@@ -205,21 +217,19 @@
             const data = gameData[currentLevel];
 
             if (activeTab === type) {
-                // Tutup kalau klik tab yang sama
                 contentArea.style.display = 'none';
                 btnQ.classList.remove('active');
                 btnH.classList.remove('active');
                 activeTab = null;
             } else {
-                // Buka tab yang dipilih
                 contentArea.style.display = 'block';
                 activeTab = type;
                 if (type === 'q') {
-                    contentArea.innerText = data.q;
+                    contentArea.innerText = data.detail; // Papar detail soalan
                     btnQ.classList.add('active');
                     btnH.classList.remove('active');
                 } else {
-                    contentArea.innerText = "Klu: " + data.h;
+                    contentArea.innerText = "Klu: " + data.h; // Papar klu
                     btnH.classList.add('active');
                     btnQ.classList.remove('active');
                 }
@@ -229,6 +239,9 @@
         function loadLevel(idx) {
             if(idx >= gameData.length) return;
             document.getElementById('level-text').innerText = `LEVEL ${idx + 1}/20`;
+            document.getElementById('game-question').innerText = gameData[idx].q; // Update soalan atas video
+            
+            // Reset Tab
             document.getElementById('tab-content').style.display = 'none';
             document.getElementById('btn-tab-q').classList.remove('active');
             document.getElementById('btn-tab-h').classList.remove('active');
