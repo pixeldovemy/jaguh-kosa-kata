@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Word Master - Kaching Edition</title>
+    <title>AI Word Master Pro - Profile Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -13,173 +13,239 @@
             margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
             overflow: hidden;
         }
+
+        /* Page Transitions */
+        #startup-page, #game-page { width: 100%; display: flex; justify-content: center; }
+
         .container { 
-            background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 40px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-width: 500px; width: 100%; text-align: center;
+            background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 40px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-width: 450px; width: 100%; text-align: center;
             position: relative; border: 8px solid #fff;
         }
-        .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-        #level-text { background: #6c5ce7; color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; }
-        .score-box { 
-            background: #ffd32a; padding: 8px 20px; border-radius: 20px; 
-            font-size: 16px; font-weight: bold; display: flex; align-items: center; gap: 8px;
-            transition: transform 0.2s; box-shadow: 0 4px 0 #e1b12c;
+
+        /* STARTUP PAGE STYLES */
+        h1 { color: #6c5ce7; margin-bottom: 10px; }
+        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+        .avatar-item { 
+            cursor: pointer; border-radius: 50%; border: 4px solid transparent; 
+            transition: 0.3s; padding: 5px; background: #f1f2f6; font-size: 30px;
         }
-        .score-box.bump { transform: scale(1.2); }
+        .avatar-item.selected { border-color: #6c5ce7; background: #e8e8ff; transform: scale(1.1); }
+        
+        /* GAME PAGE STYLES */
+        .user-profile { display: flex; align-items: center; gap: 10px; background: #eee; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
+        .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        #level-text { background: #6c5ce7; color: white; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .score-box { background: #ffd32a; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 0 #e1b12c; }
+        
         .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #fff; margin-bottom: 20px; background: #000; }
         video { width: 100%; display: block; }
+        
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 20px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
-        button { 
+        input:focus { border-color: #6c5ce7; }
+
+        .btn-main { 
             padding: 18px; background: #6c5ce7; color: white; border: none; border-radius: 20px; 
             cursor: pointer; font-size: 20px; font-weight: bold; width: 100%; 
             box-shadow: 0 8px 0 #4834d4; transition: 0.2s;
         }
-        button:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
-        .hint-section { margin-top: 20px; background: #f1f2f6; padding: 15px; border-radius: 20px; border: 2px dashed #ccc; }
-        .hint-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 80px; overflow-y: auto; padding: 5px; scrollbar-width: thin; }
-        .hint-item { background: #fff; padding: 5px 12px; border-radius: 12px; font-size: 13px; color: #666; border: 1px solid #ddd; }
-        
+        .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
+
+        .hint-section { margin-top: 20px; background: #f1f2f6; padding: 15px; border-radius: 20px; }
+        .hint-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 60px; overflow-y: auto; padding: 5px; }
+        .hint-item { background: #fff; padding: 4px 10px; border-radius: 10px; font-size: 12px; color: #666; }
+
+        /* Coin Animation */
         .coin-anim {
             position: fixed; width: 45px; height: 45px; background: #ffd32a;
             border-radius: 50%; border: 4px solid #f0932b; color: white;
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; font-size: 20px; z-index: 9999;
             pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        #result { margin-top: 15px; font-size: 22px; font-weight: bold; min-height: 30px; }
+        #result { margin-top: 15px; font-size: 20px; font-weight: bold; min-height: 30px; }
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
     </style>
 </head>
 <body>
 
-<div class="container" id="game-box">
-    <div class="header-info">
-        <div id="level-text">LEVEL 1/20</div>
-        <div class="score-box" id="score-container">💰 <span id="score">0</span></div>
-    </div>
-    <div class="video-wrapper">
-        <video id="game-video" autoplay loop muted playsinline>
-            <source id="video-source" src="videos/menebar.mp4" type="video/mp4">
-        </video>
-    </div>
-    <input type="text" id="user-input" placeholder="Teka jawapan..." autocomplete="off">
-    <button onclick="checkAnswer()">HANTAR JAWAPAN 🚀</button>
-    <p id="result"></p>
-    <div class="hint-section">
-        <div style="font-size: 11px; color: #999; margin-bottom: 5px; font-weight: bold;">KLU JAWAPAN (SCROLL):</div>
-        <div class="hint-list" id="clue-list"></div>
-    </div>
-</div>
-
-<!-- Sound Kaching (Betul) -->
-<audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
-<!-- Sound Awhhh (Salah) -->
-<audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
-
-<script>
-    const correctSound = document.getElementById('snd-kaching');
-    const wrongSound = document.getElementById('snd-aww');
-
-    // ADJUST VOLUME (0.0 to 1.0)
-    correctSound.volume = 0.5; // Sederhana kuat
-    wrongSound.volume = 0.4;   // Lembut sikit
-
-    const gameData = [];
-    gameData.push({ word: "menebar", vid: "videos/menebar.mp4" });
-    for (let i = 2; i <= 20; i++) {
-        gameData.push({ word: `jawapan${i}`, vid: `videos/clip${i}.mp4` });
-    }
-
-    let currentLevel = 0;
-    let score = 0;
-
-    const clueList = document.getElementById('clue-list');
-    gameData.forEach(item => {
-        let span = document.createElement('span');
-        span.className = 'hint-item';
-        span.innerText = item.word;
-        clueList.appendChild(span);
-    });
-
-    function checkAnswer() {
-        const inputField = document.getElementById('user-input');
-        const resultText = document.getElementById('result');
-        const videoElement = document.getElementById('game-video');
-        
-        let answer = inputField.value.toLowerCase().trim();
-
-        if (answer === gameData[currentLevel].word) {
-            // BETUL - KACHING!
-            correctSound.currentTime = 0;
-            correctSound.play();
-            spawnCoin();
-            fireworks();
-            resultText.innerText = "KACHING! BETUL! 💰";
-            resultText.style.color = "#2ed573";
+    <!-- PAGE 1: STARTUP -->
+    <div id="startup-page">
+        <div class="container">
+            <h1>Selamat Datang! 🎮</h1>
+            <p>Masukkan nama dan pilih avatar AI anda:</p>
             
-            setTimeout(() => {
-                currentLevel++;
-                if (currentLevel < gameData.length) {
-                    document.getElementById('level-text').innerText = `LEVEL ${currentLevel + 1}/20`;
-                    document.getElementById('video-source').src = gameData[currentLevel].vid;
-                    videoElement.load(); videoElement.play();
-                    inputField.value = ""; resultText.innerText = "";
-                } else {
-                    document.querySelector('.container').innerHTML = `<h1>🏆</h1><h2>MAHARAJA KATA KERJA!</h2><p>Markah Akhir: ${score}</p><button onclick="location.reload()">MAIN SEMULA</button>`;
-                }
-            }, 1800);
-        } else {
-            // SALAH - AWHHH..
-            wrongSound.currentTime = 0;
-            wrongSound.play();
-            resultText.innerText = "Awhhh.. salah tu. 🙊";
-            resultText.style.color = "#ff4757";
-            document.getElementById('game-box').classList.add('shake');
-            setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500);
+            <input type="text" id="player-name" placeholder="Nama Hero Anda..." maxlength="12">
+            
+            <div class="avatar-grid" id="avatar-picker">
+                <div class="avatar-item selected" onclick="selectAvatar(this, '🤖')">🤖</div>
+                <div class="avatar-item" onclick="selectAvatar(this, '👩‍💻')">👩‍💻</div>
+                <div class="avatar-item" onclick="selectAvatar(this, '🥷')">🥷</div>
+                <div class="avatar-item" onclick="selectAvatar(this, '🦸‍♂️')">🦸‍♂️</div>
+            </div>
+
+            <button class="btn-main" onclick="startGame()">MULA MAIN 🚀</button>
+        </div>
+    </div>
+
+    <!-- PAGE 2: GAME -->
+    <div id="game-page" style="display: none;">
+        <div class="container" id="game-box">
+            <div class="header-info">
+                <div class="user-profile">
+                    <span id="display-avatar">🤖</span>
+                    <span id="display-name">Player</span>
+                </div>
+                <div class="score-box" id="score-container">💰 <span id="score">0</span></div>
+            </div>
+            
+            <div id="level-text" style="margin-bottom: 10px; display: inline-block;">LEVEL 1/20</div>
+
+            <div class="video-wrapper">
+                <video id="game-video" autoplay loop muted playsinline>
+                    <source id="video-source" src="videos/menebar.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <input type="text" id="user-input" placeholder="Teka jawapan..." autocomplete="off">
+            <button class="btn-main" onclick="checkAnswer()">HANTAR 🚀</button>
+            <p id="result"></p>
+
+            <div class="hint-section">
+                <div class="hint-list" id="clue-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sounds -->
+    <audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
+    <audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
+
+    <script>
+        let chosenAvatar = "🤖";
+        const correctSound = document.getElementById('snd-kaching');
+        const wrongSound = document.getElementById('snd-aww');
+        correctSound.volume = 0.5;
+        wrongSound.volume = 0.4;
+
+        // Level Data
+        const gameData = [];
+        gameData.push({ word: "menebar", vid: "videos/menebar.mp4" });
+        for (let i = 2; i <= 20; i++) {
+            gameData.push({ word: `jawapan${i}`, vid: `videos/clip${i}.mp4` });
         }
-    }
 
-    function fireworks() {
-        var duration = 2.5 * 1000;
-        var animationEnd = Date.now() + duration;
-        var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-        function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-        var interval = setInterval(function() {
-            var timeLeft = animationEnd - Date.now();
-            if (timeLeft <= 0) { return clearInterval(interval); }
-            var particleCount = 50 * (timeLeft / duration);
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-        }, 250);
-    }
+        let currentLevel = 0;
+        let score = 0;
 
-    function spawnCoin() {
-        const coin = document.createElement('div');
-        coin.className = 'coin-anim';
-        coin.innerText = '🪙';
-        document.body.appendChild(coin);
-        const startRect = document.getElementById('game-video').getBoundingClientRect();
-        const startX = startRect.left + (startRect.width / 2) - 20;
-        const startY = startRect.top + (startRect.height / 2) - 20;
-        coin.style.left = startX + 'px'; coin.style.top = startY + 'px';
-        const destRect = document.getElementById('score-container').getBoundingClientRect();
-        setTimeout(() => {
-            coin.style.left = destRect.left + 'px';
-            coin.style.top = destRect.top + 'px';
-            coin.style.transform = 'scale(0.3) rotate(1080deg)';
-            coin.style.opacity = '0';
-        }, 50);
-        setTimeout(() => {
-            score += 10;
-            document.getElementById('score').innerText = score;
-            document.getElementById('score-container').classList.add('bump');
-            setTimeout(() => document.getElementById('score-container').classList.remove('bump'), 200);
-            coin.remove();
-        }, 850);
-    }
-    document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
-</script>
+        // 1. Fungsi Pilih Avatar
+        function selectAvatar(el, avatar) {
+            document.querySelectorAll('.avatar-item').forEach(item => item.classList.remove('selected'));
+            el.classList.add('selected');
+            chosenAvatar = avatar;
+        }
+
+        // 2. Fungsi Mula Game
+        function startGame() {
+            const nameInput = document.getElementById('player-name').value.trim();
+            if (nameInput === "") {
+                alert("Sila masukkan nama anda dulu!");
+                return;
+            }
+            
+            // Set Profil
+            document.getElementById('display-name').innerText = nameInput;
+            document.getElementById('display-avatar').innerText = chosenAvatar;
+
+            // Tukar Page
+            document.getElementById('startup-page').style.display = 'none';
+            document.getElementById('game-page').style.display = 'flex';
+            
+            initClues();
+        }
+
+        // 3. Fungsi Init Klu
+        function initClues() {
+            const clueList = document.getElementById('clue-list');
+            clueList.innerHTML = "";
+            gameData.forEach(item => {
+                let span = document.createElement('span');
+                span.className = 'hint-item';
+                span.innerText = item.word;
+                clueList.appendChild(span);
+            });
+        }
+
+        function checkAnswer() {
+            const inputField = document.getElementById('user-input');
+            const resultText = document.getElementById('result');
+            const videoElement = document.getElementById('game-video');
+            
+            let answer = inputField.value.toLowerCase().trim();
+
+            if (answer === gameData[currentLevel].word) {
+                correctSound.currentTime = 0; correctSound.play();
+                spawnCoin(); fireworks();
+                resultText.innerText = "KACHING! BETUL! 💰";
+                resultText.style.color = "#2ed573";
+                
+                setTimeout(() => {
+                    currentLevel++;
+                    if (currentLevel < gameData.length) {
+                        document.getElementById('level-text').innerText = `LEVEL ${currentLevel + 1}/20`;
+                        document.getElementById('video-source').src = gameData[currentLevel].vid;
+                        videoElement.load(); videoElement.play();
+                        inputField.value = ""; resultText.innerText = "";
+                    } else {
+                        document.querySelector('#game-page .container').innerHTML = `<h1>🏆</h1><h2>MAHARAJA AI!</h2><p>${document.getElementById('display-name').innerText}, anda score: ${score}</p><button class="btn-main" onclick="location.reload()">MAIN SEMULA</button>`;
+                    }
+                }, 1800);
+            } else {
+                wrongSound.currentTime = 0; wrongSound.play();
+                resultText.innerText = "Awhhh.. salah tu. 🙊";
+                resultText.style.color = "#ff4757";
+                document.getElementById('game-box').classList.add('shake');
+                setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500);
+            }
+        }
+
+        // Fireworks & Coin Functions (Sama macam sebelum ni)
+        function fireworks() {
+            var duration = 2.5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                confetti({ particleCount: 40, origin: { x: Math.random(), y: Math.random() - 0.2 } });
+            }, 250);
+        }
+
+        function spawnCoin() {
+            const coin = document.createElement('div');
+            coin.className = 'coin-anim';
+            coin.innerText = '🪙';
+            document.body.appendChild(coin);
+            const startRect = document.getElementById('game-video').getBoundingClientRect();
+            coin.style.left = (startRect.left + startRect.width / 2 - 20) + 'px';
+            coin.style.top = (startRect.top + startRect.height / 2 - 20) + 'px';
+            const destRect = document.getElementById('score-container').getBoundingClientRect();
+            setTimeout(() => {
+                coin.style.left = destRect.left + 'px';
+                coin.style.top = destRect.top + 'px';
+                coin.style.transform = 'scale(0.3) rotate(1080deg)';
+                coin.style.opacity = '0';
+            }, 50);
+            setTimeout(() => {
+                score += 10;
+                document.getElementById('score').innerText = score;
+                document.getElementById('score-container').classList.add('bump');
+                setTimeout(() => document.getElementById('score-container').classList.remove('bump'), 200);
+                coin.remove();
+            }, 850);
+        }
+
+        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
+    </script>
 </body>
 </html>
