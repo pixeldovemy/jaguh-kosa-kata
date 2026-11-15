@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Word Master - Snappy Edition</title>
+    <title>AI Word Master - Modern Game Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -72,12 +72,14 @@
     </div>
 </div>
 
-<audio id="snd-clap" src="https://www.myinstants.com/media/sounds/applause-8.mp3"></audio>
-<audio id="snd-sad" src="https://www.myinstants.com/media/sounds/sad-meow-song.mp3"></audio>
+<!-- Bunyi Ding yang Snappy -->
+<audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+<!-- Bunyi Buzzer yang Pendek -->
+<audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3"></audio>
 
 <script>
-    const clapSound = document.getElementById('snd-clap');
-    const sadSound = document.getElementById('snd-sad');
+    const correctSound = document.getElementById('snd-correct');
+    const wrongSound = document.getElementById('snd-wrong');
 
     const gameData = [];
     gameData.push({ word: "menebar", vid: "videos/menebar.mp4" });
@@ -96,16 +98,6 @@
         clueList.appendChild(span);
     });
 
-    // FUNGSI POTONG BUNYI (TRIMMING)
-    function playTrimmedSound(audio, duration) {
-        audio.currentTime = 0;
-        audio.play();
-        setTimeout(() => {
-            audio.pause();
-            audio.currentTime = 0;
-        }, duration);
-    }
-
     function checkAnswer() {
         const inputField = document.getElementById('user-input');
         const resultText = document.getElementById('result');
@@ -114,10 +106,12 @@
         let answer = inputField.value.toLowerCase().trim();
 
         if (answer === gameData[currentLevel].word) {
-            playTrimmedSound(clapSound, 2000); // Main 2 saat je
+            // BETUL
+            correctSound.currentTime = 0;
+            correctSound.play();
             spawnCoin();
             fireworks();
-            resultText.innerText = "YESS! BETUL TEPAT! 🎉";
+            resultText.innerText = "YESS! BETUL! 🎉";
             resultText.style.color = "#2ed573";
             
             setTimeout(() => {
@@ -128,12 +122,14 @@
                     videoElement.load(); videoElement.play();
                     inputField.value = ""; resultText.innerText = "";
                 } else {
-                    document.querySelector('.container').innerHTML = `<h1>🏆</h1><h2>MAHARAJA AI!</h2><p>Markah: ${score}</p><button onclick="location.reload()">MAIN SEMULA</button>`;
+                    document.querySelector('.container').innerHTML = `<h1>🏆</h1><h2>MAHARAJA AI!</h2><p>Markah Akhir: ${score}</p><button onclick="location.reload()">MAIN SEMULA</button>`;
                 }
             }, 1800);
         } else {
-            playTrimmedSound(sadSound, 1200); // Main 1.2 saat je
-            resultText.innerText = "Aww.. salah tu. 🙊";
+            // SALAH
+            wrongSound.currentTime = 0;
+            wrongSound.play();
+            resultText.innerText = "Ops.. salah tu! 🙊";
             resultText.style.color = "#ff4757";
             document.getElementById('game-box').classList.add('shake');
             setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500);
