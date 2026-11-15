@@ -1,10 +1,10 @@
-<!-- VERSION: 2.3 | UPDATE: Level 1 (Original) + Level 2-20 (Lorem Ipsum) | JAGUH KOSA KATA -->
+<!-- VERSION: 2.4 | UPDATE: Tabbed Info System (Question vs Hint) | JAGUH KOSA KATA -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAGUH KOSA KATA AI - v2.3</title>
+    <title>JAGUH KOSA KATA AI - v2.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -21,7 +21,7 @@
             animation: fadeIn 0.5s ease-out;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        h1.brand { color: #6c5ce7; font-size: 32px; margin: 0 0 10px 0; letter-spacing: -1.5px; text-transform: uppercase; }
+        h1.brand { color: #6c5ce7; font-size: 32px; margin: 0 0 10px 0; letter-spacing: -1px; text-transform: uppercase; }
         
         .profile-main { margin-bottom: 20px; }
         .avatar-circle { font-size: 60px; background: #eeebff; width: 100px; height: 100px; line-height: 100px; border-radius: 50%; margin: 0 auto 10px; border: 4px solid #6c5ce7; }
@@ -42,8 +42,21 @@
         .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 15px; background: #000; }
         video { width: 100%; display: block; }
+
+        /* TAB STYLES */
+        .tab-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
+        .tab-btn { 
+            background: #f1f2f6; border: 1px solid #ddd; padding: 8px 15px; 
+            border-radius: 12px; cursor: pointer; font-size: 13px; color: #666; transition: 0.3s;
+        }
+        .tab-btn.active { background: #6c5ce7; color: white; border-color: #6c5ce7; }
+        .tab-content-area { 
+            display: none; font-size: 14px; color: #444; background: #eeebff; 
+            padding: 12px; border-radius: 15px; margin-bottom: 15px; min-height: 50px;
+            animation: fadeIn 0.3s ease; line-height: 1.4;
+        }
+
         input { padding: 16px; width: 100%; border: 3px solid #eee; border-radius: 20px; margin-bottom: 10px; font-size: 18px; text-align: center; outline: none; }
-        
         #quit-page, #reset-modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(45, 52, 54, 0.98); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px);
@@ -51,15 +64,9 @@
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
         .avatar-item { cursor: pointer; border-radius: 15px; border: 3px solid #eee; transition: 0.3s; padding: 10px; font-size: 30px; background: #fff; }
         .avatar-item.selected { border-color: #6c5ce7; background: #eeebff; transform: scale(1.1); }
-        
-        #game-question { font-size: 15px; font-weight: 600; color: #444; margin: 10px 0; line-height: 1.4; }
-        .hint-btn { background: #f1f2f6; border: 1px solid #ddd; padding: 6px 15px; border-radius: 12px; font-size: 12px; cursor: pointer; color: #666; margin-bottom: 10px; }
-        #hint-text { display: none; font-size: 12px; color: #6c5ce7; margin-bottom: 15px; font-style: italic; background: #eeebff; padding: 8px; border-radius: 10px; }
-
         .hint-section { margin-top: 15px; background: #f8f9fa; padding: 10px; border-radius: 20px; }
         .hint-list { display: flex; flex-wrap: wrap; gap: 5px; max-height: 50px; overflow-y: auto; padding: 5px; justify-content: center; }
         .hint-item { background: #fff; padding: 3px 8px; border-radius: 8px; font-size: 11px; color: #7f8c8d; border: 1px solid #eee; }
-        
         .coin-anim { position: fixed; width: 45px; height: 45px; background: #ffd32a; border-radius: 50%; border: 4px solid #f0932b; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; z-index: 9999; pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
@@ -112,16 +119,18 @@
                 <button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold;">✕</button>
             </div>
         </div>
-        <div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase;" id="level-text">LEVEL 1/20</div>
+        <div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase; margin-bottom: 10px;" id="level-text">LEVEL 1/20</div>
         
-        <p id="game-question">Loading...</p>
-
         <div class="video-wrapper">
             <video id="game-video" autoplay loop muted playsinline><source id="video-source" src="videos/menebar.mp4" type="video/mp4"></video>
         </div>
 
-        <button class="hint-btn" onclick="showHint()">💡 Perlu Klu?</button>
-        <div id="hint-text">Klu...</div>
+        <!-- TAB SYSTEM -->
+        <div class="tab-container">
+            <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
+            <button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button>
+        </div>
+        <div id="tab-content" class="tab-content-area"></div>
 
         <input type="text" id="user-input" placeholder="Teka jawapan..." autocomplete="off">
         <button class="btn-main" onclick="checkAnswer()">HANTAR 🚀</button>
@@ -129,7 +138,7 @@
         <div class="hint-section"><div class="hint-list" id="clue-list"></div></div>
     </div>
 
-    <!-- 4. QUIT MODAL -->
+    <!-- MODALS -->
     <div id="quit-page">
         <div class="container">
             <h1 style="font-size: 60px; margin: 0;">🥺</h1>
@@ -140,7 +149,6 @@
         </div>
     </div>
 
-    <!-- 5. RESET MODAL -->
     <div id="reset-modal">
         <div class="container" style="border: 6px solid #ff4757;">
             <h1 style="font-size: 50px; margin: 0;">⚠️</h1>
@@ -158,25 +166,23 @@
         let chosenAvatar = "🤖";
         let score = 0;
         let currentLevel = 0;
+        let activeTab = null;
 
-        // DATA GAME LEVEL 1 (ORIGINAL) & LEVEL 2-20 (LOREM IPSUM)
         const gameData = [];
-        
-        // Level 1 tetap dengan data menebar
+        // Level 1
         gameData.push({
             word: "menebar",
             vid: "videos/menebar.mp4",
-            q: "Aksi apakah yang dilakukan oleh pemuda ini terhadap doh tersebut?",
-            h: "Sering dilakukan oleh pakar roti canai."
+            q: "Aksi apakah yang dilakukan oleh pemuda ini terhadap doh roti canai tersebut?",
+            h: "Teringat dekat mamak? Perbuatan ini dilakukan untuk menipiskan doh."
         });
-
-        // Level 2 sampai 20 guna Lorem Ipsum
+        // Level 2-20
         for (let i = 2; i <= 20; i++) {
             gameData.push({
                 word: `jawapan${i}`,
                 vid: `videos/clip${i}.mp4`,
-                q: "Lorem ipsum dolor sit amet, consectetur adipiscing elit?",
-                h: "Lorem ipsum dolor sit amet."
+                q: "Lorem ipsum dolor sit amet, consectetur adipiscing elit? (Contoh Soalan)",
+                h: "Lorem ipsum dolor sit amet. (Klu)"
             });
         }
 
@@ -190,6 +196,47 @@
             const el = document.getElementById(id);
             if (id === 'quit-page' || id === 'reset-modal') el.style.display = 'flex';
             else el.style.display = 'block';
+        }
+
+        function toggleTab(type) {
+            const contentArea = document.getElementById('tab-content');
+            const btnQ = document.getElementById('btn-tab-q');
+            const btnH = document.getElementById('btn-tab-h');
+            const data = gameData[currentLevel];
+
+            if (activeTab === type) {
+                // Tutup kalau klik tab yang sama
+                contentArea.style.display = 'none';
+                btnQ.classList.remove('active');
+                btnH.classList.remove('active');
+                activeTab = null;
+            } else {
+                // Buka tab yang dipilih
+                contentArea.style.display = 'block';
+                activeTab = type;
+                if (type === 'q') {
+                    contentArea.innerText = data.q;
+                    btnQ.classList.add('active');
+                    btnH.classList.remove('active');
+                } else {
+                    contentArea.innerText = "Klu: " + data.h;
+                    btnH.classList.add('active');
+                    btnQ.classList.remove('active');
+                }
+            }
+        }
+
+        function loadLevel(idx) {
+            if(idx >= gameData.length) return;
+            document.getElementById('level-text').innerText = `LEVEL ${idx + 1}/20`;
+            document.getElementById('tab-content').style.display = 'none';
+            document.getElementById('btn-tab-q').classList.remove('active');
+            document.getElementById('btn-tab-h').classList.remove('active');
+            activeTab = null;
+
+            const video = document.getElementById('game-video');
+            document.getElementById('video-source').src = gameData[idx].vid;
+            video.load();
         }
 
         function selectAvatar(el, avatar) {
@@ -226,20 +273,6 @@
             initClues();
             showPage('game-page');
         }
-
-        function loadLevel(idx) {
-            if(idx >= gameData.length) return;
-            document.getElementById('level-text').innerText = `LEVEL ${idx + 1}/20`;
-            document.getElementById('game-question').innerText = gameData[idx].q;
-            document.getElementById('hint-text').innerText = "Klu: " + gameData[idx].h;
-            document.getElementById('hint-text').style.display = 'none';
-
-            const video = document.getElementById('game-video');
-            document.getElementById('video-source').src = gameData[idx].vid;
-            video.load();
-        }
-
-        function showHint() { document.getElementById('hint-text').style.display = 'block'; }
 
         function initClues() {
             const list = document.getElementById('clue-list');
