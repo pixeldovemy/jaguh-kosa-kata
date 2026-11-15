@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Word Master Pro - Premium UI</title>
+    <title>JAGUH KOSA KATA AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -11,159 +11,134 @@
         
         body { 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding: 20px;
-            overflow-x: hidden;
-        }
-
-        /* Animasi Masuk */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin: 0; display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; padding: 20px; overflow-x: hidden;
         }
 
         .container { 
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 35px 25px; 
-            border-radius: 40px; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3); 
-            max-width: 450px; 
-            width: 100%; 
-            text-align: center;
-            position: relative; 
-            border: 8px solid #ffffff;
-            animation: fadeIn 0.6s ease-out;
+            background: rgba(255, 255, 255, 0.98); padding: 35px 25px; border-radius: 40px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3); max-width: 450px; width: 100%; 
+            text-align: center; position: relative; border: 8px solid #ffffff;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        /* 1. STARTUP PAGE */
-        #startup-page { display: flex; justify-content: center; width: 100%; }
-        h1 { color: #6c5ce7; font-size: 32px; margin-bottom: 5px; letter-spacing: -1px; }
-        .tagline { color: #777; font-size: 14px; margin-bottom: 25px; }
-        
-        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 25px 0; }
-        .avatar-item { 
-            cursor: pointer; border-radius: 20px; border: 4px solid transparent; 
-            transition: 0.3s; padding: 10px; background: #f8f9fa; font-size: 32px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- STARTUP & DASHBOARD STYLES --- */
+        h1.brand { color: #6c5ce7; font-size: 36px; margin: 0; letter-spacing: -1.5px; text-transform: uppercase; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
+        .stat-card { background: #f1f2f6; padding: 15px; border-radius: 25px; border: 2px solid #fff; }
+        .stat-value { display: block; font-size: 24px; font-weight: 600; color: #2d3436; }
+        .stat-label { font-size: 12px; color: #636e72; text-transform: uppercase; }
+
+        .profile-main { margin-bottom: 20px; }
+        .avatar-circle { font-size: 60px; background: #eeebff; width: 100px; height: 100px; line-height: 100px; border-radius: 50%; margin: 0 auto 10px; border: 4px solid #6c5ce7; }
+        .player-name-big { font-size: 22px; font-weight: 600; color: #2d3436; }
+
+        /* --- AVATAR PICKER --- */
+        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+        .avatar-item { cursor: pointer; border-radius: 15px; border: 3px solid #eee; transition: 0.3s; padding: 10px; font-size: 30px; background: #fff; }
         .avatar-item.selected { border-color: #6c5ce7; background: #eeebff; transform: scale(1.1); }
-        
-        /* 2. GAME PAGE */
-        #game-page { display: none; justify-content: center; width: 100%; }
-        .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-        .user-profile { display: flex; align-items: center; gap: 12px; background: #f1f2f6; padding: 6px 16px; border-radius: 25px; border: 2px solid #fff; }
-        .score-box { background: #ffd32a; padding: 8px 18px; border-radius: 20px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 0 #e1b12c; }
-        .btn-quit { background: #ff4757; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #b33939; display: flex; align-items: center; justify-content: center; }
-        
-        .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 20px; background: #000; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
-        video { width: 100%; display: block; }
-        
-        input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 18px; font-size: 18px; text-align: center; outline: none; transition: 0.3s; background: #fdfdfd; }
-        input:focus { border-color: #6c5ce7; background: #fff; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.1); }
-        
+
+        /* --- BUTTONS --- */
         .btn-main { 
             padding: 18px; background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); 
-            color: white; border: none; border-radius: 22px; 
-            cursor: pointer; font-size: 20px; font-weight: bold; width: 100%; 
-            box-shadow: 0 8px 0 #4834d4; transition: 0.2s;
+            color: white; border: none; border-radius: 22px; cursor: pointer; font-size: 20px; 
+            font-weight: bold; width: 100%; box-shadow: 0 8px 0 #4834d4; transition: 0.2s; margin-bottom: 15px;
         }
-        .btn-main:hover { filter: brightness(1.1); }
         .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
+        .btn-alt { background: #b2bec3; box-shadow: 0 8px 0 #95a5a6; }
 
-        /* 3. QUIT PAGE (OVERLAY) */
+        /* --- GAME ELEMENTS --- */
+        .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 20px; background: #000; }
+        video { width: 100%; display: block; }
+        input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
+        
+        /* --- QUIT MODAL --- */
         #quit-page { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(45, 52, 54, 0.95); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
-            backdrop-filter: blur(5px);
+            background: rgba(45, 52, 54, 0.98); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
         }
 
-        .hint-section { margin-top: 25px; background: #f8f9fa; padding: 15px; border-radius: 25px; border: 2px dashed #dcdde1; }
-        .hint-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 70px; overflow-y: auto; padding: 5px; scrollbar-width: thin; }
-        .hint-item { background: #fff; padding: 5px 12px; border-radius: 12px; font-size: 12px; color: #7f8c8d; border: 1px solid #eee; }
-        
-        #result { margin-top: 15px; font-size: 20px; font-weight: bold; min-height: 30px; }
-        .footer-credit { margin-top: 30px; color: rgba(255,255,255,0.6); font-size: 12px; letter-spacing: 1px; }
+        .hint-section { margin-top: 20px; background: #f8f9fa; padding: 10px; border-radius: 20px; }
+        .hint-list { display: flex; flex-wrap: wrap; gap: 5px; max-height: 50px; overflow-y: auto; padding: 5px; justify-content: center; }
+        .hint-item { background: #fff; padding: 3px 8px; border-radius: 8px; font-size: 11px; color: #7f8c8d; border: 1px solid #eee; }
 
-        /* Animation Helpers */
-        .shake { animation: shake 0.5s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
         .coin-anim { position: fixed; width: 45px; height: 45px; background: #ffd32a; border-radius: 50%; border: 4px solid #f0932b; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; z-index: 9999; pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
 <body>
 
-    <!-- PAGE 1: STARTUP -->
-    <div id="startup-page">
-        <div class="container">
-            <h1>AI Master 🎮</h1>
-            <p class="tagline">Teka kata kerja AI dan kumpul coin!</p>
-            
-            <input type="text" id="player-name" placeholder="Nama anda..." maxlength="12">
-            
-            <div class="avatar-grid">
-                <div class="avatar-item selected" onclick="selectAvatar(this, '🤖')">🤖</div>
-                <div class="avatar-item" onclick="selectAvatar(this, '👩‍💻')">👩‍💻</div>
-                <div class="avatar-item" onclick="selectAvatar(this, '🥷')">🥷</div>
-                <div class="avatar-item" onclick="selectAvatar(this, '🦸‍♂️')">🦸‍♂️</div>
-            </div>
-
-            <button class="btn-main" onclick="startGame()">MULA BERMAIN 🚀</button>
+    <!-- 1. STARTUP PAGE (User Baru) -->
+    <div id="startup-page" class="container" style="display: none;">
+        <h1 class="brand">JAGUH KOSA KATA</h1>
+        <p style="color: #636e72;">Daftar profil jaguh anda</p>
+        <input type="text" id="player-name" placeholder="Nama anda..." maxlength="12">
+        <div class="avatar-grid">
+            <div class="avatar-item selected" onclick="selectAvatar(this, '🤖')">🤖</div>
+            <div class="avatar-item" onclick="selectAvatar(this, '👨‍🚀')">👨‍🚀</div>
+            <div class="avatar-item" onclick="selectAvatar(this, '🥷')">🥷</div>
+            <div class="avatar-item" onclick="selectAvatar(this, '🦸‍♀️')">🦸‍♀️</div>
         </div>
+        <button class="btn-main" onclick="saveProfile()">SIMPAN PROFIL 🚀</button>
     </div>
 
-    <!-- PAGE 2: GAMEPLAY -->
-    <div id="game-page">
-        <div class="container" id="game-box">
-            <div class="header-info">
-                <div class="user-profile">
-                    <span id="display-avatar" style="font-size: 20px;">🤖</span>
-                    <span id="display-name" style="font-weight: 600; color: #2d3436;">Player</span>
-                </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <div class="score-box" id="score-container">💰 <span id="score">0</span></div>
-                    <button class="btn-quit" onclick="showQuitPage()">✕</button>
-                </div>
+    <!-- 2. DASHBOARD PAGE (Landing Page Pro) -->
+    <div id="dashboard-page" class="container" style="display: none;">
+        <h1 class="brand">JAGUH KOSA KATA</h1>
+        <div class="profile-main">
+            <div class="avatar-circle" id="dash-avatar">🤖</div>
+            <div class="player-name-big" id="dash-name">Nama Pemain</div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-value" id="dash-level">1</span>
+                <span class="stat-label">Level Semasa</span>
             </div>
-            
-            <div id="level-text" style="font-size: 12px; margin-bottom: 12px; font-weight: bold; color: #a29bfe; text-transform: uppercase;">LEVEL 1 / 20</div>
-
-            <div class="video-wrapper">
-                <video id="game-video" autoplay loop muted playsinline>
-                    <source id="video-source" src="videos/menebar.mp4" type="video/mp4">
-                </video>
-            </div>
-
-            <input type="text" id="user-input" placeholder="Teka aksi di atas..." autocomplete="off">
-            <button class="btn-main" onclick="checkAnswer()">SEMAK JAWAPAN 🚀</button>
-            
-            <p id="result"></p>
-
-            <div class="hint-section">
-                <div style="font-size: 10px; color: #b2bec3; font-weight: bold; margin-bottom: 8px; text-align: left; padding-left: 5px;">PILIHAN JAWAPAN:</div>
-                <div class="hint-list" id="clue-list"></div>
+            <div class="stat-card">
+                <span class="stat-value" id="dash-score">0</span>
+                <span class="stat-label">Koin Terkumpul</span>
             </div>
         </div>
+        <button class="btn-main" onclick="goToGame()">SAMBUNG MAIN 🔥</button>
+        <button class="btn-main btn-alt" onclick="resetGame()">RESET & MULA BALIK</button>
     </div>
 
-    <!-- PAGE 3: QUIT PAGE -->
+    <!-- 3. GAME PAGE -->
+    <div id="game-page" class="container" style="display: none;">
+        <div class="header-game">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span id="game-avatar" style="font-size: 24px;">🤖</span>
+                <span id="game-name" style="font-weight: 600;">Pemain</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="background: #ffd32a; padding: 5px 12px; border-radius: 15px; font-weight: bold;" id="score-container">💰 <span id="score">0</span></div>
+                <button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;">✕</button>
+            </div>
+        </div>
+        <div style="font-size: 12px; color: #a29bfe; font-weight: bold; margin-bottom: 10px;" id="level-text">LEVEL 1/20</div>
+        <div class="video-wrapper">
+            <video id="game-video" autoplay loop muted playsinline><source id="video-source" src="videos/menebar.mp4" type="video/mp4"></video>
+        </div>
+        <input type="text" id="user-input" placeholder="Teka aksi..." autocomplete="off">
+        <button class="btn-main" onclick="checkAnswer()">HANTAR 🚀</button>
+        <p id="result" style="min-height: 25px; font-weight: bold;"></p>
+        <div class="hint-section"><div class="hint-list" id="clue-list"></div></div>
+    </div>
+
+    <!-- 4. QUIT MODAL -->
     <div id="quit-page">
         <div class="container">
             <h1 style="font-size: 60px; margin: 0;">🥺</h1>
-            <h2 style="color: #2d3436; margin-top: 10px;">Nak rehat ke?</h2>
-            <p style="color: #636e72; margin-bottom: 25px;">Progress anda tersimpan selamat dalam memori AI.</p>
-            <button class="btn-main" onclick="continueGame()" style="margin-bottom: 12px;">SAMBUNG MAIN 🔥</button>
-            <button class="btn-main" onclick="resetGame()" style="background: #b2bec3; box-shadow: 0 8px 0 #95a5a6;">MULA BALIK (RESET)</button>
+            <h2>Nak rehat ke?</h2>
+            <p>Progress anda tersimpan selamat.</p>
+            <button class="btn-main" onclick="continueGame()">SAMBUNG MAIN 🔥</button>
+            <button class="btn-main btn-alt" onclick="exitToDashboard()">KELUAR KE DASHBOARD</button>
         </div>
     </div>
 
-    <div class="footer-credit">POWERED BY STUDIO AI PRO</div>
-
-    <!-- Sounds -->
+    <!-- Audio -->
     <audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
     <audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
 
@@ -171,148 +146,112 @@
         let chosenAvatar = "🤖";
         let score = 0;
         let currentLevel = 0;
-        const correctSound = document.getElementById('snd-kaching');
-        const wrongSound = document.getElementById('snd-aww');
-        correctSound.volume = 0.5; wrongSound.volume = 0.4;
-
-        const gameData = [];
-        gameData.push({ word: "menebar", vid: "videos/menebar.mp4" });
-        for (let i = 2; i <= 20; i++) {
-            gameData.push({ word: `jawapan${i}`, vid: `videos/clip${i}.mp4` });
-        }
+        const gameData = [{ word: "menebar", vid: "videos/menebar.mp4" }];
+        for (let i = 2; i <= 20; i++) { gameData.push({ word: `jawapan${i}`, vid: `videos/clip${i}.mp4` }); }
 
         window.onload = function() {
-            const savedName = localStorage.getItem('ai_name');
-            const savedAvatar = localStorage.getItem('ai_avatar');
-            const savedLevel = localStorage.getItem('ai_level');
-            const savedScore = localStorage.getItem('ai_score');
-
-            if (savedName && savedLevel) {
-                currentLevel = parseInt(savedLevel);
-                score = parseInt(savedScore);
-                chosenAvatar = savedAvatar;
-                
-                document.getElementById('display-name').innerText = savedName;
-                document.getElementById('display-avatar').innerText = chosenAvatar;
-                document.getElementById('score').innerText = score;
-                loadLevel(currentLevel);
-                
-                document.getElementById('startup-page').style.display = 'none';
-                document.getElementById('game-page').style.display = 'flex';
-                initClues();
-            }
+            const name = localStorage.getItem('jaguh_name');
+            if (name) { showDashboard(); } else { showPage('startup-page'); }
         };
 
+        function showPage(id) {
+            ['startup-page', 'dashboard-page', 'game-page', 'quit-page'].forEach(p => document.getElementById(p).style.display = 'none');
+            document.getElementById(id).style.display = id === 'quit-page' ? 'flex' : 'block';
+        }
+
         function selectAvatar(el, avatar) {
-            document.querySelectorAll('.avatar-item').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.avatar-item').forEach(i => i.classList.remove('selected'));
             el.classList.add('selected');
             chosenAvatar = avatar;
         }
 
-        function startGame() {
-            const nameInput = document.getElementById('player-name').value.trim();
-            if (nameInput === "") { alert("Masukkan nama dulu!"); return; }
-            localStorage.setItem('ai_name', nameInput);
-            localStorage.setItem('ai_avatar', chosenAvatar);
-            localStorage.setItem('ai_level', 0);
-            localStorage.setItem('ai_score', 0);
-            location.reload();
+        function saveProfile() {
+            const name = document.getElementById('player-name').value.trim();
+            if (!name) return alert("Nama jangan kosong bro!");
+            localStorage.setItem('jaguh_name', name);
+            localStorage.setItem('jaguh_avatar', chosenAvatar);
+            localStorage.setItem('jaguh_level', 0);
+            localStorage.setItem('jaguh_score', 0);
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name');
+            document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar');
+            document.getElementById('dash-level').innerText = parseInt(localStorage.getItem('jaguh_level')) + 1;
+            document.getElementById('dash-score').innerText = localStorage.getItem('jaguh_score');
+            showPage('dashboard-page');
+        }
+
+        function goToGame() {
+            currentLevel = parseInt(localStorage.getItem('jaguh_level')) || 0;
+            score = parseInt(localStorage.getItem('jaguh_score')) || 0;
+            document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name');
+            document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar');
+            document.getElementById('score').innerText = score;
+            loadLevel(currentLevel);
+            initClues();
+            showPage('game-page');
+        }
+
+        function loadLevel(idx) {
+            document.getElementById('level-text').innerText = `LEVEL ${idx + 1}/20`;
+            const video = document.getElementById('game-video');
+            document.getElementById('video-source').src = gameData[idx].vid;
+            video.load();
         }
 
         function initClues() {
-            const clueList = document.getElementById('clue-list');
-            clueList.innerHTML = "";
-            gameData.forEach(item => {
-                let span = document.createElement('span');
-                span.className = 'hint-item';
-                span.innerText = item.word;
-                clueList.appendChild(span);
+            const list = document.getElementById('clue-list');
+            list.innerHTML = "";
+            gameData.forEach(d => {
+                let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = d.word; list.appendChild(s);
             });
         }
 
-        function loadLevel(levelIndex) {
-            if (levelIndex < gameData.length) {
-                document.getElementById('level-text').innerText = `LEVEL ${levelIndex + 1} / 20`;
-                document.getElementById('video-source').src = gameData[levelIndex].vid;
-                document.getElementById('game-video').load();
-            }
-        }
-
         function checkAnswer() {
-            const inputField = document.getElementById('user-input');
-            const resultText = document.getElementById('result');
-            let answer = inputField.value.toLowerCase().trim();
-
-            if (answer === gameData[currentLevel].word) {
-                correctSound.currentTime = 0; correctSound.play();
+            const input = document.getElementById('user-input');
+            const res = document.getElementById('result');
+            if (input.value.toLowerCase().trim() === gameData[currentLevel].word) {
+                document.getElementById('snd-kaching').play();
                 spawnCoin(); fireworks();
-                resultText.innerText = "KACHING! BETUL! 💰";
-                resultText.style.color = "#2ed573";
-                
-                score += 10;
-                currentLevel++;
-                localStorage.setItem('ai_score', score);
-                localStorage.setItem('ai_level', currentLevel);
-
+                res.innerText = "BETUL! 💰"; res.style.color = "#2ed573";
+                score += 10; currentLevel++;
+                localStorage.setItem('jaguh_score', score);
+                localStorage.setItem('jaguh_level', currentLevel);
                 setTimeout(() => {
-                    if (currentLevel < gameData.length) {
-                        loadLevel(currentLevel);
-                        inputField.value = ""; resultText.innerText = "";
-                        document.getElementById('score').innerText = score;
-                    } else {
-                        document.querySelector('#game-page .container').innerHTML = `
-                            <h1 style="font-size: 80px; margin: 0;">🏆</h1>
-                            <h2 style="color:#6c5ce7">JUARA DUNIA!</h2>
-                            <p style="color:#555">Tahniah, anda telah tamat Level 20!</p>
-                            <button class="btn-main" onclick="resetGame()">MAIN SEMULA</button>
-                        `;
-                    }
-                }, 1800);
+                    if (currentLevel < 20) { loadLevel(currentLevel); input.value = ""; res.innerText = ""; document.getElementById('score').innerText = score; }
+                    else { alert("ANDA JUARA!"); resetGame(); }
+                }, 1500);
             } else {
-                wrongSound.currentTime = 0; wrongSound.play();
-                resultText.innerText = "Ops.. salah tu! 🙊";
-                resultText.style.color = "#ff4757";
-                document.getElementById('game-box').classList.add('shake');
-                setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500);
+                document.getElementById('snd-aww').play();
+                res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757";
             }
         }
 
         function showQuitPage() { document.getElementById('quit-page').style.display = 'flex'; }
         function continueGame() { document.getElementById('quit-page').style.display = 'none'; }
-        function resetGame() { localStorage.clear(); location.reload(); }
+        function exitToDashboard() { showDashboard(); }
+        function resetGame() { if(confirm("Mula balik dari 0?")) { localStorage.clear(); location.reload(); } }
 
         function fireworks() {
-            var duration = 2.5 * 1000;
-            var animationEnd = Date.now() + duration;
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-                confetti({ particleCount: 30, spread: 60, origin: { x: Math.random(), y: Math.random() - 0.2 } });
-            }, 250);
+            let end = Date.now() + 2000;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
         }
 
         function spawnCoin() {
-            const coin = document.createElement('div');
-            coin.className = 'coin-anim';
-            coin.innerText = '🪙';
+            const coin = document.createElement('div'); coin.className = 'coin-anim'; coin.innerText = '🪙';
             document.body.appendChild(coin);
-            const startRect = document.getElementById('game-video').getBoundingClientRect();
-            coin.style.left = (startRect.left + startRect.width / 2 - 20) + 'px';
-            coin.style.top = (startRect.top + startRect.height / 2 - 20) + 'px';
-            const destRect = document.getElementById('score-container').getBoundingClientRect();
-            setTimeout(() => {
-                coin.style.left = destRect.left + 'px';
-                coin.style.top = destRect.top + 'px';
-                coin.style.transform = 'scale(0.3) rotate(1080deg)';
-                coin.style.opacity = '0';
-            }, 50);
-            setTimeout(() => {
-                document.getElementById('score-container').classList.add('bump');
-                setTimeout(() => document.getElementById('score-container').classList.remove('bump'), 200);
-                coin.remove();
-            }, 850);
+            const v = document.getElementById('game-video').getBoundingClientRect();
+            coin.style.left = (v.left + v.width/2 - 20) + 'px'; coin.style.top = (v.top + v.height/2 - 20) + 'px';
+            const d = document.getElementById('score-container').getBoundingClientRect();
+            setTimeout(() => { coin.style.left = d.left + 'px'; coin.style.top = d.top + 'px'; coin.style.transform = 'scale(0.2)'; coin.style.opacity = '0'; }, 50);
+            setTimeout(() => coin.remove(), 800);
         }
-        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
     </script>
 </body>
 </html>
