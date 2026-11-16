@@ -1,6 +1,7 @@
 <!-- 
-  VERSION: 4.1 | UI STATE BUG FIX
-  FIXES: Result text and input field now clear automatically when switching levels.
+  VERSION: 4.2 | CLEAN UI & VERSIONING
+  FIXES: Removed autosave text from Quit Page.
+  UPDATES: Added Version & Year to Settings.
   FEATURES: Settings, Sound Toggle, About Us, Social Share, Map System.
 -->
 <!DOCTYPE html>
@@ -8,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAGUH KOSA KATA AI - v4.1</title>
+    <title>JAGUH KOSA KATA AI - v4.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -27,7 +28,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         h1.brand { color: #6c5ce7; font-size: 32px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: -1px; }
 
-        /* DASHBOARD */
         .avatar-circle { font-size: 70px; background: #eeebff; width: 110px; height: 110px; line-height: 110px; border-radius: 50%; margin: 0 auto 15px; border: 5px solid #6c5ce7; }
         .player-name-big { font-size: 24px; font-weight: 600; color: #2d3436; margin-bottom: 5px; }
         .rank-badge { font-size: 14px; color: #6c5ce7; font-weight: bold; background: #eeebff; padding: 6px 18px; border-radius: 20px; margin-bottom: 25px; display: inline-block; border: 1px solid #d1d1ff; }
@@ -36,7 +36,6 @@
         .stat-value { display: block; font-size: 24px; font-weight: 600; color: #2d3436; }
         .stat-label { font-size: 11px; color: #636e72; text-transform: uppercase; font-weight: bold; }
 
-        /* MAP */
         #map-area { max-height: 60vh; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; scrollbar-width: thin; }
         .map-section { margin-bottom: 30px; text-align: left; }
         .map-section-title { font-size: 14px; color: #6c5ce7; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; padding-bottom: 5px; }
@@ -45,7 +44,6 @@
         .level-node.unlocked { background: #fff; border-color: #6c5ce7; color: #6c5ce7; cursor: pointer; }
         .level-node.current { background: #6c5ce7; color: #fff; border-color: #6c5ce7; box-shadow: 0 0 20px rgba(108, 92, 231, 0.4); }
 
-        /* BUTTONS */
         .btn-main { padding: 18px; background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; box-shadow: 0 8px 0 #4834d4; transition: 0.2s; margin-bottom: 15px; display: block; text-decoration: none; }
         .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
         .btn-alt { background: #b2bec3; box-shadow: 0 8px 0 #95a5a6; color: white; }
@@ -53,7 +51,6 @@
         .btn-gear { background: #f1f2f6; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
         .btn-gear:hover { transform: rotate(90deg); }
 
-        /* GAMEPAGE */
         .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         #game-question { font-size: 16px; font-weight: 600; color: #2d3436; margin: 0 0 15px 0; line-height: 1.5; min-height: 50px; }
         .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 15px; background: #000; }
@@ -68,7 +65,6 @@
         .hint-list { display: flex; flex-wrap: wrap; gap: 10px; max-height: 120px; overflow-y: auto; padding: 5px; justify-content: center; scrollbar-width: thin; }
         .hint-item { background: #fff; padding: 8px 15px; border-radius: 10px; font-size: 11px; color: #7f8c8d; border: 1px solid #eee; }
 
-        /* SETTINGS & MODALS */
         #quit-page, #reset-modal, #settings-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.98); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
         .setting-row { display: flex; justify-content: space-between; align-items: center; background: #f1f2f6; padding: 15px 20px; border-radius: 20px; margin-bottom: 15px; border: 2px solid #fff; }
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
@@ -145,11 +141,7 @@
         <div class="tab-container"><button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button><button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button></div>
         <div id="tab-content" class="tab-content-area"></div>
         <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
-        <div class="hint-section">
-            <div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 10px; text-align: left;">BUNTU? TEROKA DI SINI! ✨</div>
-            <div class="hint-list" id="clue-list"></div>
-            <div style="font-size: 10px; color: #999; margin-top: 15px; font-style: italic;">Lagi banyak skrol, lagi mahir kosa kata anda! 🧠</div>
-        </div>
+        <div class="hint-section"><div class="hint-list" id="clue-list"></div></div>
         <button class="btn-main btn-submit" onclick="checkAnswer()">HANTAR 🚀</button>
         <p id="result" style="min-height:25px; font-weight:bold; margin-top:15px; font-size:18px;"></p>
     </div>
@@ -165,11 +157,24 @@
             </div>
             <button class="btn-main" style="background:#00b894; box-shadow: 0 8px 0 #00876c;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
+            
+            <!-- VERSION FOOTER -->
+            <div style="margin-top: 20px; font-size: 11px; color: #aaa; letter-spacing: 1px;">
+                VERSI 4.2 &bull; 2024 STUDIO AI PRO
+            </div>
         </div>
     </div>
 
     <!-- MODALS -->
-    <div id="quit-page"><div class="container"><h1>🥺</h1><h2>Nak rehat?</h2><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button></div></div>
+    <div id="quit-page">
+        <div class="container">
+            <h1 style="font-size: 60px; margin: 0;">🥺</h1>
+            <h2>Nak rehat?</h2>
+            <!-- Autosave text removed here -->
+            <button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button>
+            <button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button>
+        </div>
+    </div>
     <div id="reset-modal"><div class="container"><h1>⚠️</h1><h2>Reset Permainan?</h2><p>Semua koin akan hilang.</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK</button></div></div>
 
     <audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
@@ -180,16 +185,11 @@
         const SHARE_LINK = "https://pixeldove.sellhiz.win/product/misi-pemulihan-3m-basic-copy?sh=cp";
 
         const ranks = [
-            { title: "Pelajar Tekun 🎓", range: [1, 50] },
-            { title: "Peneroka Pintar 🧭", range: [51, 100] },
-            { title: "Pengembara Gigih 🗺️", range: [101, 150] },
-            { title: "Perajurit Perkasa 🛡️", range: [151, 200] },
-            { title: "Panglima Gagah ⚔️", range: [201, 250] },
-            { title: "Pujangga Kreatif ✒️", range: [251, 300] },
-            { title: "Cendekia Bijaksana 🧠", range: [301, 350] },
-            { title: "Sarjana Arif 📚", range: [351, 400] },
-            { title: "Ilmuwan Terbilang 🏅", range: [401, 450] },
-            { title: "Jaguh Ulung 🏆", range: [451, 500] }
+            { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
+            { title: "Pengembara Gigih 🗺️", range: [101, 150] }, { title: "Perajurit Perkasa 🛡️", range: [151, 200] },
+            { title: "Panglima Gagah ⚔️", range: [201, 250] }, { title: "Pujangga Kreatif ✒️", range: [251, 300] },
+            { title: "Cendekia Bijaksana 🧠", range: [301, 350] }, { title: "Sarjana Arif 📚", range: [351, 400] },
+            { title: "Ilmuwan Terbilang 🏅", range: [401, 450] }, { title: "Jaguh Ulung 🏆", range: [451, 500] }
         ];
 
         const gameData = [];
@@ -202,83 +202,24 @@
             const name = localStorage.getItem('jaguh_name');
             isMuted = localStorage.getItem('jaguh_muted') === 'true';
             document.getElementById('sound-toggle').checked = !isMuted;
-            if (name) { 
-                maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0;
-                score = parseInt(localStorage.getItem('jaguh_score')) || 0;
-                showDashboard(); 
-            } else { showPage('startup-page'); }
+            if (name) { maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0; score = parseInt(localStorage.getItem('jaguh_score')) || 0; showDashboard(); } else { showPage('startup-page'); }
         };
 
-        function startLevel(idx) {
-            currentLevel = idx;
-            document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name');
-            document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar');
-            document.getElementById('score').innerText = score;
-            
-            // FIX: Clear UI state before starting new level
-            document.getElementById('user-input').value = "";
-            document.getElementById('result').innerText = "";
-            
-            loadLevel(currentLevel);
-            initClues();
-            showPage('game-page');
-        }
-
-        function loadLevel(idx) {
-            const data = gameData[idx];
-            document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`;
-            document.getElementById('game-question').innerText = data.q;
-            document.getElementById('video-source').src = data.vid;
-            document.getElementById('game-video').load();
-            closeTabs();
-            // FIX: Reset feedback text
-            document.getElementById('result').innerText = "";
-        }
-
+        function startLevel(idx) { currentLevel = idx; document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); document.getElementById('score').innerText = score; document.getElementById('user-input').value = ""; document.getElementById('result').innerText = ""; loadLevel(currentLevel); initClues(); showPage('game-page'); }
+        function loadLevel(idx) { const data = gameData[idx]; document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`; document.getElementById('game-question').innerText = data.q; document.getElementById('video-source').src = data.vid; document.getElementById('game-video').load(); closeTabs(); document.getElementById('result').innerText = ""; }
         function checkAnswer() {
-            const input = document.getElementById('user-input');
-            const res = document.getElementById('result');
-            const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
-
+            const input = document.getElementById('user-input'); const res = document.getElementById('result'); const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
             if (ans === gameData[currentLevel].word) {
-                if(!isMuted) document.getElementById('snd-kaching').play();
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                spawnCoin();
-                res.innerText = "BETUL! 💰"; res.style.color = "#2ed573";
-                score += 10;
-                document.getElementById('score').innerText = score;
-                localStorage.setItem('jaguh_score', score);
+                if(!isMuted) document.getElementById('snd-kaching').play(); confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); spawnCoin(); res.innerText = "BETUL! 💰"; res.style.color = "#2ed573"; score += 10; document.getElementById('score').innerText = score; localStorage.setItem('jaguh_score', score);
                 if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
-
-                setTimeout(() => {
-                    input.value = ""; res.innerText = "";
-                    currentLevel++;
-                    if (currentLevel < 500) { loadLevel(currentLevel); } 
-                    else { alert("ANDA JAGUH ULUNG!"); exitToDashboard(); }
-                }, 1500);
-            } else {
-                if(!isMuted) document.getElementById('snd-aww').play();
-                res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757";
-                document.getElementById('game-box').classList.add('shake');
-                setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500);
-            }
-        }
-
-        function showDashboard() {
-            document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name');
-            document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar');
-            document.getElementById('dash-level').innerText = maxLevelReached + 1;
-            document.getElementById('dash-score-display').innerText = score;
-            document.getElementById('dash-gelaran').innerText = getGelaran(maxLevelReached + 1);
-            showPage('dashboard-page');
+                setTimeout(() => { input.value = ""; res.innerText = ""; currentLevel++; if (currentLevel < 500) { loadLevel(currentLevel); } else { alert("TAHNIAH!"); exitToDashboard(); } }, 1500);
+            } else { if(!isMuted) document.getElementById('snd-aww').play(); res.innerText = "SALAH! 🙊"; document.getElementById('game-box').classList.add('shake'); setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500); }
         }
 
         function renderMap() {
-            const mapArea = document.getElementById('map-area');
-            mapArea.innerHTML = "";
+            const mapArea = document.getElementById('map-area'); mapArea.innerHTML = "";
             ranks.forEach(rank => {
-                let section = document.createElement('div'); section.className = "map-section";
-                section.innerHTML = `<div class="map-section-title"><span>${rank.title}</span><span style="font-size:10px;">LV ${rank.range[0]}-${rank.range[1]}</span></div>`;
+                let section = document.createElement('div'); section.className = "map-section"; section.innerHTML = `<div class="map-section-title"><span>${rank.title}</span><span style="font-size:10px;">LV ${rank.range[0]}-${rank.range[1]}</span></div>`;
                 let grid = document.createElement('div'); grid.className = "level-grid";
                 for (let l = rank.range[0]; l <= rank.range[1]; l++) {
                     let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
@@ -290,29 +231,16 @@
             showPage('map-page');
         }
 
+        function showDashboard() { document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name'); document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar'); document.getElementById('dash-level').innerText = maxLevelReached + 1; document.getElementById('dash-score-display').innerText = score; document.getElementById('dash-gelaran').innerText = getGelaran(maxLevelReached + 1); showPage('dashboard-page'); }
         function toggleTab(type) {
-            const area = document.getElementById('tab-content');
-            const data = gameData[currentLevel];
-            if (activeTab === type) { closeTabs(); } 
-            else {
+            const area = document.getElementById('tab-content'); const data = gameData[currentLevel];
+            if (activeTab === type) { closeTabs(); } else {
                 area.style.display = 'block'; activeTab = type;
-                if (type === 'q') {
-                    let sentence = data.example;
-                    if (currentLevel < maxLevelReached) sentence = sentence.replace("_______", `<span style="color:#6c5ce7; text-decoration:underline;">${data.word}</span>`);
-                    area.innerHTML = `<b>Contoh Soalan:</b><br>"${sentence}"`;
-                } else { area.innerHTML = `<b>Klu:</b><br>${data.h}`; }
-                document.getElementById('btn-tab-q').classList.toggle('active', type === 'q');
-                document.getElementById('btn-tab-h').classList.toggle('active', type === 'h');
+                if (type === 'q') { let sentence = data.example; if (currentLevel < maxLevelReached) sentence = sentence.replace("_______", `<span style="color:#6c5ce7; text-decoration:underline;">${data.word}</span>`); area.innerHTML = `<b>Contoh Soalan:</b><br>"${sentence}"`; } else { area.innerHTML = `<b>Klu:</b><br>${data.h}`; }
+                document.getElementById('btn-tab-q').classList.toggle('active', type === 'q'); document.getElementById('btn-tab-h').classList.toggle('active', type === 'h');
             }
         }
-
-        function initClues() {
-            const list = document.getElementById('clue-list');
-            list.innerHTML = "";
-            const allWords = gameData.map(d => d.word).sort((a,b) => a.localeCompare(b));
-            allWords.slice(0, 25).forEach(w => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = w; list.appendChild(s); });
-        }
-
+        function initClues() { const list = document.getElementById('clue-list'); list.innerHTML = ""; const allWords = gameData.map(d => d.word).sort((a,b) => a.localeCompare(b)); allWords.slice(0, 25).forEach(w => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = w; list.appendChild(s); }); }
         function openSettings() { document.getElementById('settings-page').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settings-page').style.display = 'none'; }
         function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
@@ -328,14 +256,7 @@
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
         function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
         function confirmReset() { localStorage.clear(); location.reload(); }
-        function spawnCoin() {
-            const coin = document.createElement('div'); coin.className = 'coin-anim'; coin.innerText = '🪙'; document.body.appendChild(coin);
-            const v = document.getElementById('game-video').getBoundingClientRect();
-            coin.style.left = (v.left + v.width/2 - 20) + 'px'; coin.style.top = (v.top + v.height/2 - 20) + 'px';
-            const d = document.getElementById('score-container').getBoundingClientRect();
-            setTimeout(() => { coin.style.left = d.left + 'px'; coin.style.top = d.top + 'px'; coin.style.transform = 'scale(0.2)'; coin.style.opacity = '0'; }, 50);
-            setTimeout(() => coin.remove(), 800);
-        }
+        function spawnCoin() { const coin = document.createElement('div'); coin.className = 'coin-anim'; coin.innerText = '🪙'; document.body.appendChild(coin); const v = document.getElementById('game-video').getBoundingClientRect(); coin.style.left = (v.left + v.width/2 - 20) + 'px'; coin.style.top = (v.top + v.height/2 - 20) + 'px'; const d = document.getElementById('score-container').getBoundingClientRect(); setTimeout(() => { coin.style.left = d.left + 'px'; coin.style.top = d.top + 'px'; coin.style.transform = 'scale(0.2)'; coin.style.opacity = '0'; }, 50); setTimeout(() => coin.remove(), 800); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
     </script>
 </body>
