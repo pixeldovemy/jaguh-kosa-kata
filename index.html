@@ -1,9 +1,7 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 4.6 (Current index.html)
+  VERSION: 4.7 (Updated with JSON Data Fetch)
   DEVELOPER: PIXEL DOVE STUDIO
-  NEW FEATURE: Print Questions & Answers (Ordered & Random)
-  FEATURES: Autosave text, Buntu/Motivation Text, Level Map, Settings, Sound Toggle, About Us, Social Share.
 -->
 <!DOCTYPE html>
 <html lang="ms">
@@ -151,14 +149,13 @@
         <p id="result" style="min-height:25px; font-weight:bold; margin-top:15px; font-size:18px;"></p>
     </div>
 
-    <!-- 5. SETTINGS PAGE (WITH NEW PRINT FEATURE) -->
+    <!-- 5. SETTINGS PAGE -->
     <div id="settings-page">
         <div class="container" style="max-height: 90vh; overflow-y: auto; padding-top: 50px;">
             <h1 class="brand">TETAPAN</h1>
             
             <div class="setting-row"><span>Bunyi Permainan</span><label class="switch"><input type="checkbox" id="sound-toggle" checked onchange="toggleSound()"><span class="slider"></span></label></div>
             
-            <!-- NEW PRINT FEATURE -->
             <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:15px; border: 2px solid #fff;">
                 <b style="color:#6c5ce7; display:block; margin-bottom:10px;">Cetak Soalan & Jawapan</b>
                 <button class="btn-main" style="padding:10px; font-size:13px; margin-bottom:8px; background:#6c5ce7;" onclick="printQuestions(false)">IKUT URUTAN (1-500) 📄</button>
@@ -171,7 +168,7 @@
             </div>
             <button class="btn-main" style="background:#00b894; box-shadow: 0 8px 0 #00876c;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 20px; font-size: 11px; color: #aaa; letter-spacing: 1px;">VERSI 4.6 &bull; 2024 PIXEL DOVE STUDIO</div>
+            <div style="margin-top: 20px; font-size: 11px; color: #aaa; letter-spacing: 1px;">VERSI 4.7 &bull; 2024 PIXEL DOVE STUDIO</div>
         </div>
     </div>
 
@@ -194,6 +191,7 @@
     <script>
         let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = null, isMuted = false;
         const SHARE_LINK = "https://pixeldove.sellhiz.win/product/misi-pemulihan-3m-basic-copy?sh=cp";
+        const gameData = [];
 
         const ranks = [
             { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
@@ -203,53 +201,52 @@
             { title: "Ilmuwan Terbilang 🏅", range: [401, 450] }, { title: "Jaguh Ulung 🏆", range: [451, 500] }
         ];
 
-        const gameData = [];
-        gameData.push({ word: "menebar", vid: "videos/menebar.mp4", q: "Aksi apakah yang dilakukan terhadap doh ini?", example: "Ahmad mahir _______ doh roti canai di warung.", h: "Guna tepung & pusing-pusing." });
-        for (let i = 2; i <= 500; i++) {
-            gameData.push({ word: `jawapan${i}`, vid: `videos/clip${i}.mp4`, q: `Teka aksi Level ${i}?`, example: `Lorem ipsum _______ level ${i}.`, h: `Klu Level ${i}` });
-        }
-
+        // --- STEP FIRST: PANGGIL DATA JSON ---
         window.onload = function() {
-            const name = localStorage.getItem('jaguh_name');
-            isMuted = localStorage.getItem('jaguh_muted') === 'true';
-            document.getElementById('sound-toggle').checked = !isMuted;
-            if (name) { maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0; score = parseInt(localStorage.getItem('jaguh_score')) || 0; showDashboard(); } else { showPage('startup-page'); }
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => {
+                    gameData.push(...data);
+                    
+                    // Teruskan logic asal lepas data siap load
+                    const name = localStorage.getItem('jaguh_name');
+                    isMuted = localStorage.getItem('jaguh_muted') === 'true';
+                    document.getElementById('sound-toggle').checked = !isMuted;
+                    
+                    if (name) { 
+                        maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0; 
+                        score = parseInt(localStorage.getItem('jaguh_score')) || 0; 
+                        showDashboard(); 
+                    } else { 
+                        showPage('startup-page'); 
+                    }
+                })
+                .catch(err => {
+                    console.error("Gagal memuatkan data.json:", err);
+                    alert("Ops! Fail data.json tidak dijumpai.");
+                });
         };
 
-        // NEW PRINT LOGIC
         function printQuestions(isRandom) {
             let dataToPrint = [...gameData];
             if (isRandom) dataToPrint.sort(() => Math.random() - 0.5);
-
             let printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Jaguh Kosa Kata AI - Latihan</title>');
-            printWindow.document.write('<style>body{font-family:sans-serif; padding:40px; line-height:1.6;} .header{text-align:center; border-bottom:2px solid #000; margin-bottom:30px;} .q-box{margin-bottom:20px; page-break-inside:avoid;} .jawapan-list{margin-top:50px; border-top:1px dashed #ccc; padding-top:20px; font-size:12px; color:#555; display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}</style>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write('<div class="header"><h1>JAGUH KOSA KATA AI</h1><p>Pixel Dove Studio &bull; Mod Latihan</p></div>');
-            printWindow.document.write('<p>Nama: ___________________________  Tarikh: ___________</p>');
-            
-            dataToPrint.forEach((item, index) => {
-                printWindow.document.write(`<div class="q-box"><b>Soalan ${index+1}:</b> ${item.q}<br><i>Contoh: ${item.example}</i></div>`);
-            });
-
-            printWindow.document.write('<div style="page-break-before:always;"><h3>Skema Jawapan (Rujukan Guru/Ibu Bapa)</h3><div class="jawapan-list">');
-            dataToPrint.forEach((item, index) => {
-                printWindow.document.write(`<div>${index+1}. ${item.word}</div>`);
-            });
-            printWindow.document.write('</div></div></body></html>');
+            printWindow.document.write('<html><head><title>Jaguh Kosa Kata AI</title><style>body{font-family:sans-serif; padding:40px;} .q-box{margin-bottom:20px; page-break-inside:avoid;}</style></head><body><h1>JAGUH KOSA KATA AI</h1>');
+            dataToPrint.forEach((item, index) => { printWindow.document.write(`<div class="q-box"><b>Soalan ${index+1}:</b> ${item.q}<br><i>Contoh: ${item.example}</i></div>`); });
             printWindow.document.close();
             printWindow.print();
         }
 
         function startLevel(idx) { currentLevel = idx; document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); document.getElementById('score').innerText = score; document.getElementById('user-input').value = ""; document.getElementById('result').innerText = ""; loadLevel(currentLevel); initClues(); showPage('game-page'); }
         function loadLevel(idx) { const data = gameData[idx]; document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`; document.getElementById('game-question').innerText = data.q; document.getElementById('video-source').src = data.vid; document.getElementById('game-video').load(); closeTabs(); document.getElementById('result').innerText = ""; }
+        
         function checkAnswer() {
             const input = document.getElementById('user-input'); const res = document.getElementById('result'); const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
             if (ans === gameData[currentLevel].word) {
                 if(!isMuted) document.getElementById('snd-kaching').play(); confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); spawnCoin(); res.innerText = "BETUL! 💰"; res.style.color = "#2ed573"; score += 10; document.getElementById('score').innerText = score; localStorage.setItem('jaguh_score', score);
                 if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
-                setTimeout(() => { input.value = ""; res.innerText = ""; currentLevel++; if (currentLevel < 500) { loadLevel(currentLevel); } else { alert("TAHNIAH!"); exitToDashboard(); } }, 1500);
-            } else { if(!isMuted) document.getElementById('snd-aww').play(); res.innerText = "SALAH! 🙊"; document.getElementById('game-box').classList.add('shake'); setTimeout(() => document.getElementById('game-box').classList.remove('shake'), 500); }
+                setTimeout(() => { input.value = ""; res.innerText = ""; currentLevel++; if (currentLevel < gameData.length) { loadLevel(currentLevel); } else { exitToDashboard(); } }, 1500);
+            } else { if(!isMuted) document.getElementById('snd-aww').play(); res.innerText = "SALAH! 🙊"; }
         }
 
         function renderMap() {
@@ -272,7 +269,7 @@
             const area = document.getElementById('tab-content'); const data = gameData[currentLevel];
             if (activeTab === type) { closeTabs(); } else {
                 area.style.display = 'block'; activeTab = type;
-                if (type === 'q') { let sentence = data.example; if (currentLevel < maxLevelReached) sentence = sentence.replace("_______", `<span style="color:#6c5ce7; text-decoration:underline;">${data.word}</span>`); area.innerHTML = `<b>Contoh Soalan:</b><br>"${sentence}"`; } else { area.innerHTML = `<b>Klu:</b><br>${data.h}`; }
+                if (type === 'q') { area.innerHTML = `<b>Contoh Soalan:</b><br>"${data.example}"`; } else { area.innerHTML = `<b>Klu:</b><br>${data.h}`; }
                 document.getElementById('btn-tab-q').classList.toggle('active', type === 'q'); document.getElementById('btn-tab-h').classList.toggle('active', type === 'h');
             }
         }
@@ -280,11 +277,11 @@
         function openSettings() { document.getElementById('settings-page').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settings-page').style.display = 'none'; }
         function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
-        function shareGame() { if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kosa AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } }
+        function shareGame() { if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kosa AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } else { alert("Link disalin: " + SHARE_LINK); } }
         function closeTabs() { document.getElementById('tab-content').style.display = 'none'; activeTab = null; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); }
         function showPage(id) { ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'].forEach(p => document.getElementById(p).style.display = 'none'); document.getElementById(id).style.display = (id === 'quit-page' || id === 'reset-modal' || id === 'settings-page') ? 'flex' : 'block'; }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
-        function saveAndStart() { const n = document.getElementById('player-name').value.replace(/[^a-zA-Z0-9 ]/g, "").trim(); if(!n) return alert("Sila letak nama!"); localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar); localStorage.setItem('jaguh_max', 0); localStorage.setItem('jaguh_score', 0); maxLevelReached = 0; score = 0; startLevel(0); }
+        function saveAndStart() { const n = document.getElementById('player-name').value.trim(); if(!n) return alert("Sila letak nama!"); localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar); localStorage.setItem('jaguh_max', 0); localStorage.setItem('jaguh_score', 0); maxLevelReached = 0; score = 0; startLevel(0); }
         function getGelaran(l) { for (let r of ranks) { if (l <= r.range[1]) return r.title; } return "Jaguh Ulung 🏆"; }
         function showQuitPage() { document.getElementById('quit-page').style.display = 'flex'; }
         function continueGame() { document.getElementById('quit-page').style.display = 'none'; }
