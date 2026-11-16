@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 4.7 (Updated with JSON Data Fetch)
+  VERSION: 4.8 (Cache Buster & Detailed Error Logs)
   DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -168,7 +168,7 @@
             </div>
             <button class="btn-main" style="background:#00b894; box-shadow: 0 8px 0 #00876c;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 20px; font-size: 11px; color: #aaa; letter-spacing: 1px;">VERSI 4.7 &bull; 2024 PIXEL DOVE STUDIO</div>
+            <div style="margin-top: 20px; font-size: 11px; color: #aaa; letter-spacing: 1px;">VERSI 4.8 &bull; 2024 PIXEL DOVE STUDIO</div>
         </div>
     </div>
 
@@ -201,14 +201,19 @@
             { title: "Ilmuwan Terbilang 🏅", range: [401, 450] }, { title: "Jaguh Ulung 🏆", range: [451, 500] }
         ];
 
-        // --- STEP FIRST: PANGGIL DATA JSON ---
+        // --- FETCH DATA WITH CACHE BUSTER ---
         window.onload = function() {
-            fetch('data.json')
-                .then(response => response.json())
+            // Force fetch a fresh file by adding a timestamp
+            fetch('./data.json?v=' + Date.now())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server returned ' + response.status);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     gameData.push(...data);
                     
-                    // Teruskan logic asal lepas data siap load
                     const name = localStorage.getItem('jaguh_name');
                     isMuted = localStorage.getItem('jaguh_muted') === 'true';
                     document.getElementById('sound-toggle').checked = !isMuted;
@@ -222,8 +227,8 @@
                     }
                 })
                 .catch(err => {
-                    console.error("Gagal memuatkan data.json:", err);
-                    alert("Ops! Fail data.json tidak dijumpai.");
+                    console.error("Fetch error:", err);
+                    alert("Ops! Ada ralat teknikal: " + err.message + "\n\nPastikan fail data.json tiada koma di baris terakhir.");
                 });
         };
 
