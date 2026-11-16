@@ -1,14 +1,14 @@
 <!-- 
-  VERSION: 4.0 | SETTINGS & SHARE UPDATE
-  FEATURES: Sound Toggle (Mute), About Us, Social Share, v3.8 Logic & UI.
-  LINK: https://pixeldove.sellhiz.win/product/misi-pemulihan-3m-basic-copy?sh=cp
+  VERSION: 4.1 | UI STATE BUG FIX
+  FIXES: Result text and input field now clear automatically when switching levels.
+  FEATURES: Settings, Sound Toggle, About Us, Social Share, Map System.
 -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAGUH KOSA KATA AI - v4.0</title>
+    <title>JAGUH KOSA KATA AI - v4.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -32,26 +32,26 @@
         .player-name-big { font-size: 24px; font-weight: 600; color: #2d3436; margin-bottom: 5px; }
         .rank-badge { font-size: 14px; color: #6c5ce7; font-weight: bold; background: #eeebff; padding: 6px 18px; border-radius: 20px; margin-bottom: 25px; display: inline-block; border: 1px solid #d1d1ff; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: #f1f2f6; padding: 20px; border-radius: 25px; border: 2px solid #fff; }
-        .stat-value { display: block; font-size: 28px; font-weight: 600; color: #2d3436; }
+        .stat-card { background: #f1f2f6; padding: 15px; border-radius: 25px; border: 2px solid #fff; }
+        .stat-value { display: block; font-size: 24px; font-weight: 600; color: #2d3436; }
         .stat-label { font-size: 11px; color: #636e72; text-transform: uppercase; font-weight: bold; }
 
-        /* BUTTONS */
-        .btn-main { padding: 18px; background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 20px; font-weight: bold; width: 100%; box-shadow: 0 8px 0 #4834d4; transition: 0.2s; margin-bottom: 15px; display: block; text-decoration: none; }
-        .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
-        .btn-alt { background: #b2bec3; box-shadow: 0 8px 0 #95a5a6; color: white; }
-        .btn-submit { padding: 14px; font-size: 16px; width: 65%; margin: 20px auto 0; }
-        .btn-gear { background: #f1f2f6; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        .btn-gear:hover { transform: rotate(90deg); background: #e2e2e2; }
-
-        /* LEVEL MAP */
+        /* MAP */
         #map-area { max-height: 60vh; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; scrollbar-width: thin; }
         .map-section { margin-bottom: 30px; text-align: left; }
         .map-section-title { font-size: 14px; color: #6c5ce7; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; padding-bottom: 5px; }
         .level-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-        .level-node { aspect-ratio: 1; background: #f1f2f6; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #ccc; cursor: not-allowed; border: 2px solid #eee; }
+        .level-node { aspect-ratio: 1; background: #f1f2f6; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #ccc; cursor: not-allowed; border: 2px solid #eee; transition: 0.2s; }
         .level-node.unlocked { background: #fff; border-color: #6c5ce7; color: #6c5ce7; cursor: pointer; }
         .level-node.current { background: #6c5ce7; color: #fff; border-color: #6c5ce7; box-shadow: 0 0 20px rgba(108, 92, 231, 0.4); }
+
+        /* BUTTONS */
+        .btn-main { padding: 18px; background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; box-shadow: 0 8px 0 #4834d4; transition: 0.2s; margin-bottom: 15px; display: block; text-decoration: none; }
+        .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
+        .btn-alt { background: #b2bec3; box-shadow: 0 8px 0 #95a5a6; color: white; }
+        .btn-submit { padding: 14px; font-size: 16px; width: 65%; margin: 20px auto 0; }
+        .btn-gear { background: #f1f2f6; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .btn-gear:hover { transform: rotate(90deg); }
 
         /* GAMEPAGE */
         .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -63,17 +63,13 @@
         .tab-btn.active { background: #6c5ce7; color: white; border-color: #6c5ce7; }
         .tab-content-area { display: none; font-size: 14px; color: #444; background: #eeebff; padding: 15px; border-radius: 18px; margin-bottom: 15px; text-align: left; border-left: 6px solid #6c5ce7; min-height: 60px; line-height: 1.6; }
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
+        
         .hint-section { margin-top: 10px; background: #f8f9fa; padding: 20px; border-radius: 30px; border: 2px dashed #dcdde1; }
         .hint-list { display: flex; flex-wrap: wrap; gap: 10px; max-height: 120px; overflow-y: auto; padding: 5px; justify-content: center; scrollbar-width: thin; }
-        .hint-item { background: #fff; padding: 8px 15px; border-radius: 12px; font-size: 12px; color: #7f8c8d; border: 1px solid #eee; }
+        .hint-item { background: #fff; padding: 8px 15px; border-radius: 10px; font-size: 11px; color: #7f8c8d; border: 1px solid #eee; }
 
-        /* MODALS & OVERLAYS */
+        /* SETTINGS & MODALS */
         #quit-page, #reset-modal, #settings-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.98); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
-        .coin-anim { position: fixed; width: 45px; height: 45px; background: #ffd32a; border-radius: 50%; border: 4px solid #f0932b; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; z-index: 9999; pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .shake { animation: shake 0.5s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-
-        /* TOGGLE SWITCH STYLE */
         .setting-row { display: flex; justify-content: space-between; align-items: center; background: #f1f2f6; padding: 15px 20px; border-radius: 20px; margin-bottom: 15px; border: 2px solid #fff; }
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -81,6 +77,10 @@
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #6c5ce7; }
         input:checked + .slider:before { transform: translateX(24px); }
+
+        .coin-anim { position: fixed; width: 45px; height: 45px; background: #ffd32a; border-radius: 50%; border: 4px solid #f0932b; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; z-index: 9999; pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .shake { animation: shake 0.5s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
     </style>
 </head>
 <body>
@@ -119,7 +119,7 @@
     <!-- 3. LEVEL MAP -->
     <div id="map-page" class="container" style="display: none;">
         <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button onclick="showDashboard()" style="background:none; border:none; color:#6c5ce7; font-weight:bold; cursor:pointer;">← PROFIL</button>
+            <button onclick="showDashboard()" style="background:none; border:none; color:#6c5ce7; font-weight:bold; cursor:pointer; font-size:16px;">← PROFIL</button>
             <h1 class="brand" style="margin:0; font-size:22px;">PETA LEVEL</h1>
             <button class="btn-gear" onclick="openSettings()">⚙️</button>
         </div>
@@ -136,16 +136,20 @@
             <div style="display: flex; align-items: center; gap: 8px;">
                 <button class="btn-gear" style="width:30px; height:30px; font-size:15px;" onclick="openSettings()">⚙️</button>
                 <div style="background: #ffd32a; padding: 6px 15px; border-radius: 15px; font-weight: bold; font-size: 14px;" id="score-container">💰 <span id="score">0</span></div>
-                <button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer;">✕</button>
+                <button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-weight: bold;">✕</button>
             </div>
         </div>
-        <div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase;" id="level-text">LEVEL 1</div>
-        <p id="game-question">Memuatkan...</p>
+        <div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;" id="level-text">LEVEL 1</div>
+        <p id="game-question">Memuatkan soalan...</p>
         <div class="video-wrapper"><video id="game-video" autoplay loop muted playsinline><source id="video-source" src="" type="video/mp4"></video></div>
         <div class="tab-container"><button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button><button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button></div>
         <div id="tab-content" class="tab-content-area"></div>
         <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
-        <div class="hint-section"><div class="hint-list" id="clue-list"></div></div>
+        <div class="hint-section">
+            <div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 10px; text-align: left;">BUNTU? TEROKA DI SINI! ✨</div>
+            <div class="hint-list" id="clue-list"></div>
+            <div style="font-size: 10px; color: #999; margin-top: 15px; font-style: italic;">Lagi banyak skrol, lagi mahir kosa kata anda! 🧠</div>
+        </div>
         <button class="btn-main btn-submit" onclick="checkAnswer()">HANTAR 🚀</button>
         <p id="result" style="min-height:25px; font-weight:bold; margin-top:15px; font-size:18px;"></p>
     </div>
@@ -154,25 +158,11 @@
     <div id="settings-page">
         <div class="container">
             <h1 class="brand">TETAPAN</h1>
-            
-            <!-- Sound Toggle -->
-            <div class="setting-row">
-                <span>Bunyi Permainan</span>
-                <label class="switch">
-                    <input type="checkbox" id="sound-toggle" checked onchange="toggleSound()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <!-- About Us -->
+            <div class="setting-row"><span>Bunyi Permainan</span><label class="switch"><input type="checkbox" id="sound-toggle" checked onchange="toggleSound()"><span class="slider"></span></label></div>
             <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:20px;">
                 <b style="color:#6c5ce7; display:block; margin-bottom:5px;">Tentang Kami</b>
-                <p style="font-size:13px; color:#666; margin:0; line-height:1.4;">
-                    Jaguh Kosa Kata AI adalah aplikasi pembelajaran Bahasa Melayu interaktif yang menggunakan teknologi AI untuk membantu anda memantapkan penguasaan perkataan dengan cara yang menyeronokkan.
-                </p>
+                <p style="font-size:13px; color:#666; margin:0; line-height:1.4;">Jaguh Kosa Kata AI adalah aplikasi pembelajaran Bahasa Melayu interaktif yang menggunakan teknologi AI untuk memantapkan penguasaan perkataan.</p>
             </div>
-
-            <!-- Share Button -->
             <button class="btn-main" style="background:#00b894; box-shadow: 0 8px 0 #00876c;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
         </div>
@@ -182,7 +172,6 @@
     <div id="quit-page"><div class="container"><h1>🥺</h1><h2>Nak rehat?</h2><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button></div></div>
     <div id="reset-modal"><div class="container"><h1>⚠️</h1><h2>Reset Permainan?</h2><p>Semua koin akan hilang.</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK</button></div></div>
 
-    <!-- Audio -->
     <audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
     <audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
 
@@ -213,7 +202,6 @@
             const name = localStorage.getItem('jaguh_name');
             isMuted = localStorage.getItem('jaguh_muted') === 'true';
             document.getElementById('sound-toggle').checked = !isMuted;
-
             if (name) { 
                 maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0;
                 score = parseInt(localStorage.getItem('jaguh_score')) || 0;
@@ -221,25 +209,30 @@
             } else { showPage('startup-page'); }
         };
 
-        function openSettings() { document.getElementById('settings-page').style.display = 'flex'; }
-        function closeSettings() { document.getElementById('settings-page').style.display = 'none'; }
-        
-        function toggleSound() {
-            isMuted = !document.getElementById('sound-toggle').checked;
-            localStorage.setItem('jaguh_muted', isMuted);
+        function startLevel(idx) {
+            currentLevel = idx;
+            document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name');
+            document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar');
+            document.getElementById('score').innerText = score;
+            
+            // FIX: Clear UI state before starting new level
+            document.getElementById('user-input').value = "";
+            document.getElementById('result').innerText = "";
+            
+            loadLevel(currentLevel);
+            initClues();
+            showPage('game-page');
         }
 
-        function shareGame() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Jaguh Kosa Kata AI',
-                    text: 'Jom main game teka kosa kata AI ni! Kumpul koin dan naik pangkat!',
-                    url: SHARE_LINK
-                });
-            } else {
-                navigator.clipboard.writeText(SHARE_LINK);
-                alert("Link disalin ke clipboard! Share dengan kawan-kawan ya.");
-            }
+        function loadLevel(idx) {
+            const data = gameData[idx];
+            document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`;
+            document.getElementById('game-question').innerText = data.q;
+            document.getElementById('video-source').src = data.vid;
+            document.getElementById('game-video').load();
+            closeTabs();
+            // FIX: Reset feedback text
+            document.getElementById('result').innerText = "";
         }
 
         function checkAnswer() {
@@ -255,17 +248,13 @@
                 score += 10;
                 document.getElementById('score').innerText = score;
                 localStorage.setItem('jaguh_score', score);
-
-                if (currentLevel === maxLevelReached) {
-                    maxLevelReached++;
-                    localStorage.setItem('jaguh_max', maxLevelReached);
-                }
+                if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
 
                 setTimeout(() => {
                     input.value = ""; res.innerText = "";
                     currentLevel++;
                     if (currentLevel < 500) { loadLevel(currentLevel); } 
-                    else { alert("TAHNIAH! ANDA JAGUH ULUNG!"); exitToDashboard(); }
+                    else { alert("ANDA JAGUH ULUNG!"); exitToDashboard(); }
                 }, 1500);
             } else {
                 if(!isMuted) document.getElementById('snd-aww').play();
@@ -275,13 +264,13 @@
             }
         }
 
-        function loadLevel(idx) {
-            const data = gameData[idx];
-            document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`;
-            document.getElementById('game-question').innerText = data.q;
-            document.getElementById('video-source').src = data.vid;
-            document.getElementById('game-video').load();
-            closeTabs();
+        function showDashboard() {
+            document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name');
+            document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar');
+            document.getElementById('dash-level').innerText = maxLevelReached + 1;
+            document.getElementById('dash-score-display').innerText = score;
+            document.getElementById('dash-gelaran').innerText = getGelaran(maxLevelReached + 1);
+            showPage('dashboard-page');
         }
 
         function renderMap() {
@@ -292,40 +281,13 @@
                 section.innerHTML = `<div class="map-section-title"><span>${rank.title}</span><span style="font-size:10px;">LV ${rank.range[0]}-${rank.range[1]}</span></div>`;
                 let grid = document.createElement('div'); grid.className = "level-grid";
                 for (let l = rank.range[0]; l <= rank.range[1]; l++) {
-                    let node = document.createElement('div');
-                    node.className = "level-node"; node.innerText = l;
-                    if (l <= maxLevelReached + 1) {
-                        node.classList.add('unlocked');
-                        if (l === maxLevelReached + 1) node.classList.add('current');
-                        node.onclick = () => startLevel(l - 1);
-                    }
+                    let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
+                    if (l <= maxLevelReached + 1) { node.classList.add('unlocked'); if (l === maxLevelReached + 1) node.classList.add('current'); node.onclick = () => startLevel(l - 1); }
                     grid.appendChild(node);
                 }
-                section.appendChild(grid);
-                mapArea.appendChild(section);
+                section.appendChild(grid); mapArea.appendChild(section);
             });
             showPage('map-page');
-        }
-
-        function startLevel(idx) {
-            currentLevel = idx;
-            document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name');
-            document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar');
-            document.getElementById('score').innerText = score;
-            loadLevel(currentLevel);
-            initClues();
-            showPage('game-page');
-        }
-
-        function showDashboard() {
-            const name = localStorage.getItem('jaguh_name');
-            const level = maxLevelReached + 1;
-            document.getElementById('dash-name').innerText = name;
-            document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar');
-            document.getElementById('dash-level').innerText = level;
-            document.getElementById('dash-score-display').innerText = score;
-            document.getElementById('dash-gelaran').innerText = getGelaran(level);
-            showPage('dashboard-page');
         }
 
         function toggleTab(type) {
@@ -348,20 +310,17 @@
             const list = document.getElementById('clue-list');
             list.innerHTML = "";
             const allWords = gameData.map(d => d.word).sort((a,b) => a.localeCompare(b));
-            allWords.slice(0, 25).forEach(w => { 
-                let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = w; list.appendChild(s);
-            });
+            allWords.slice(0, 25).forEach(w => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = w; list.appendChild(s); });
         }
+
+        function openSettings() { document.getElementById('settings-page').style.display = 'flex'; }
+        function closeSettings() { document.getElementById('settings-page').style.display = 'none'; }
+        function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
+        function shareGame() { if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } }
         function closeTabs() { document.getElementById('tab-content').style.display = 'none'; activeTab = null; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); }
         function showPage(id) { ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'].forEach(p => document.getElementById(p).style.display = 'none'); document.getElementById(id).style.display = (id === 'quit-page' || id === 'reset-modal' || id === 'settings-page') ? 'flex' : 'block'; }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
-        function saveAndStart() { 
-            const n = document.getElementById('player-name').value.replace(/[^a-zA-Z0-9 ]/g, "").trim();
-            if(!n) return alert("Sila letak nama!");
-            localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar);
-            localStorage.setItem('jaguh_max', 0); localStorage.setItem('jaguh_score', 0);
-            maxLevelReached = 0; score = 0; startLevel(0);
-        }
+        function saveAndStart() { const n = document.getElementById('player-name').value.replace(/[^a-zA-Z0-9 ]/g, "").trim(); if(!n) return alert("Sila letak nama!"); localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar); localStorage.setItem('jaguh_max', 0); localStorage.setItem('jaguh_score', 0); maxLevelReached = 0; score = 0; startLevel(0); }
         function getGelaran(l) { for (let r of ranks) { if (l <= r.range[1]) return r.title; } return "Jaguh Ulung 🏆"; }
         function showQuitPage() { document.getElementById('quit-page').style.display = 'flex'; }
         function continueGame() { document.getElementById('quit-page').style.display = 'none'; }
