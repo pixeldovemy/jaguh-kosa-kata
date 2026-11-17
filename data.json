@@ -1,5 +1,20 @@
 [
- { "word": "bermain", "root": "main", "vid": "videos/bermain.mp4", "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!", "example": "Adik ______ bola dengan kawan-kawannya di halaman rumah.", "h1": "Melakukan sesuatu untuk bersuka-suka.", "h2": "Kanak-kanak suka buat ini di taman." },
-{ "word": "berbaring", "root": "baring", "vid": "videos/berbaring.mp4", "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!", "example": "Ayah ______ di atas sofa kerana terlalu letih.", "h1": "Meletakkan badan memanjang di atas sesuatu untuk berehat.", "h2": "Badan baring di atas katil atau sofa." },
+ { 
+   "word": "bermain", 
+   "root": "main", 
+   "vid": "videos/bermain.mp4", 
+   "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!", 
+   "example": "Adik ______ bola dengan kawan-kawannya di halaman rumah.", 
+   "h1": "Melakukan sesuatu untuk bersuka-suka.", 
+   "h2": "Kanak-kanak suka buat ini di taman." 
+ },
+ { 
+   "word": "berbaring", 
+   "root": "baring", 
+   "vid": "videos/berbaring.mp4", 
+   "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!", 
+   "example": "Ayah ______ di atas sofa kerana terlalu letih.", 
+   "h1": "Meletakkan badan memanjang di atas sesuatu untuk berehat.", 
+   "h2": "Badan baring di atas katil atau sofa." 
+ }
 ]
-
