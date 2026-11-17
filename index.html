@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 4.8 (Cache Buster & Detailed Error Logs)
+  VERSION: 4.9 (Dual Hint & Root Word Scoring)
   DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -25,8 +25,14 @@
             animation: fadeIn 0.5s ease-out;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        h1.brand { color: #6c5ce7; font-size: 32px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: -1px; }
+        
+        /* New Slide Animation for Hints */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
 
+        h1.brand { color: #6c5ce7; font-size: 32px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: -1px; }
         .avatar-circle { font-size: 70px; background: #eeebff; width: 110px; height: 110px; line-height: 110px; border-radius: 50%; margin: 0 auto 15px; border: 5px solid #6c5ce7; }
         .player-name-big { font-size: 24px; font-weight: 600; color: #2d3436; margin-bottom: 5px; }
         .rank-badge { font-size: 14px; color: #6c5ce7; font-weight: bold; background: #eeebff; padding: 6px 18px; border-radius: 20px; margin-bottom: 25px; display: inline-block; border: 1px solid #d1d1ff; }
@@ -48,18 +54,20 @@
         .btn-alt { background: #b2bec3; box-shadow: 0 8px 0 #95a5a6; color: white; }
         .btn-submit { padding: 14px; font-size: 16px; width: 65%; margin: 20px auto 0; }
         .btn-gear { background: #f1f2f6; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        .btn-gear:hover { transform: rotate(90deg); }
 
-        .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        #game-question { font-size: 16px; font-weight: 600; color: #2d3436; margin: 0 0 15px 0; line-height: 1.5; min-height: 50px; }
         .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 15px; background: #000; }
         video { width: 100%; display: block; }
         .tab-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 12px; }
         .tab-btn { background: #f1f2f6; border: 1px solid #ddd; padding: 8px 16px; border-radius: 12px; cursor: pointer; font-size: 13px; color: #666; }
         .tab-btn.active { background: #6c5ce7; color: white; border-color: #6c5ce7; }
-        .tab-content-area { display: none; font-size: 14px; color: #444; background: #eeebff; padding: 15px; border-radius: 18px; margin-bottom: 15px; text-align: left; border-left: 6px solid #6c5ce7; min-height: 60px; line-height: 1.6; }
-        input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
         
+        .tab-content-area { 
+            display: none; font-size: 14px; color: #444; background: #eeebff; padding: 15px; border-radius: 18px; margin-bottom: 15px; 
+            text-align: left; border-left: 6px solid #6c5ce7; min-height: 60px; line-height: 1.6;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
         .hint-section { margin-top: 10px; background: #f8f9fa; padding: 20px; border-radius: 30px; border: 2px dashed #dcdde1; }
         .hint-list { display: flex; flex-wrap: wrap; gap: 10px; max-height: 140px; overflow-y: auto; padding: 5px; justify-content: center; scrollbar-width: thin; }
         .hint-item { background: #fff; padding: 8px 15px; border-radius: 10px; font-size: 12px; color: #7f8c8d; border: 1px solid #eee; }
@@ -67,21 +75,19 @@
         #quit-page, #reset-modal, #settings-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.98); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
         .setting-row { display: flex; justify-content: space-between; align-items: center; background: #f1f2f6; padding: 15px 20px; border-radius: 20px; margin-bottom: 15px; border: 2px solid #fff; }
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch input { opacity: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #6c5ce7; }
         input:checked + .slider:before { transform: translateX(24px); }
 
         .coin-anim { position: fixed; width: 45px; height: 45px; background: #ffd32a; border-radius: 50%; border: 4px solid #f0932b; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; z-index: 9999; pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .shake { animation: shake 0.5s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
     </style>
 </head>
 <body>
 
     <!-- 1. STARTUP -->
-    <div id="startup-page" class="container" style="display: none;">
+    <div id="startup-page" class="container">
         <h1 class="brand">JAGUH KOSA KATA</h1>
         <p style="color: #636e72; font-size: 14px;">Daftar profil jaguh anda</p>
         <input type="text" id="player-name" placeholder="Nama Hero..." maxlength="12">
@@ -123,13 +129,12 @@
 
     <!-- 4. GAME PAGE -->
     <div id="game-page" class="container" style="display: none;">
-        <div class="header-game">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span id="game-avatar" style="font-size: 24px;">🤖</span>
                 <span id="game-name" style="font-weight:600; font-size:16px;">Pemain</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-                <button class="btn-gear" style="width:30px; height:30px; font-size:15px;" onclick="openSettings()">⚙️</button>
                 <div style="background: #ffd32a; padding: 6px 15px; border-radius: 15px; font-weight: bold; font-size: 14px;" id="score-container">💰 <span id="score">0</span></div>
                 <button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-weight: bold;">✕</button>
             </div>
@@ -141,125 +146,115 @@
         <div id="tab-content" class="tab-content-area"></div>
         <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
         <div class="hint-section">
-            <div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 10px; text-align: left;">BUNTU MENCARI JAWAPAN? TEROKA DI SINI! ✨</div>
+            <div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 10px; text-align: left;">BUNTU MENCARI JAWAPAN? ✨</div>
             <div class="hint-list" id="clue-list"></div>
-            <div style="font-size: 10px; color: #999; margin-top: 15px; font-style: italic;">Psst.. Lagi banyak anda skrol, lagi lekat kosa kata baru dalam minda. Jom belajar sambil bermain! 🧠</div>
         </div>
         <button class="btn-main btn-submit" onclick="checkAnswer()">HANTAR 🚀</button>
         <p id="result" style="min-height:25px; font-weight:bold; margin-top:15px; font-size:18px;"></p>
     </div>
 
-    <!-- 5. SETTINGS PAGE -->
+    <!-- 5. SETTINGS -->
     <div id="settings-page">
-        <div class="container" style="max-height: 90vh; overflow-y: auto; padding-top: 50px;">
-            <h1 class="brand">TETAPAN</h1>
-            
-            <div class="setting-row"><span>Bunyi Permainan</span><label class="switch"><input type="checkbox" id="sound-toggle" checked onchange="toggleSound()"><span class="slider"></span></label></div>
-            
-            <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:15px; border: 2px solid #fff;">
-                <b style="color:#6c5ce7; display:block; margin-bottom:10px;">Cetak Soalan & Jawapan</b>
-                <button class="btn-main" style="padding:10px; font-size:13px; margin-bottom:8px; background:#6c5ce7;" onclick="printQuestions(false)">IKUT URUTAN (1-500) 📄</button>
-                <button class="btn-main" style="padding:10px; font-size:13px; background:#a29bfe;" onclick="printQuestions(true)">URUTAN RAWAK (SHUFFLE) 🎲</button>
-            </div>
-
-            <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:20px;">
-                <b style="color:#6c5ce7; display:block; margin-bottom:5px;">Tentang Kami</b>
-                <p style="font-size:13px; color:#666; margin:0; line-height:1.4;">Jaguh Kosa Kata adalah aplikasi pembelajaran Bahasa Melayu interaktif dari Pixel Dove Studio.</p>
-            </div>
-            <button class="btn-main" style="background:#00b894; box-shadow: 0 8px 0 #00876c;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
-            <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 20px; font-size: 11px; color: #aaa; letter-spacing: 1px;">VERSI 4.8 &bull; 2026 PIXEL DOVE STUDIO</div>
-        </div>
-    </div>
-
-    <!-- 4. QUIT MODAL -->
-    <div id="quit-page">
         <div class="container">
-            <h1>🥺</h1>
-            <h2>Nak rehat?</h2>
-            <p style="color: #636e72; margin-bottom: 20px;">Progress anda disimpan secara automatik.</p>
-            <button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button>
-            <button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button>
+            <h1 class="brand">TETAPAN</h1>
+            <div class="setting-row"><span>Bunyi Permainan</span><label class="switch"><input type="checkbox" id="sound-toggle" checked onchange="toggleSound()"><span class="slider"></span></label></div>
+            <button class="btn-main" style="background:#00b894;" onclick="shareGame()">KONGSI GAME 📢</button>
+            <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
         </div>
     </div>
 
-    <div id="reset-modal"><div class="container"><h1>⚠️</h1><h2>Reset Permainan?</h2><p>Semua koin akan hilang.</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK</button></div></div>
+    <div id="quit-page"><div class="container"><h1>🥺</h1><h2>Nak rehat?</h2><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button></div></div>
+    <div id="reset-modal"><div class="container"><h1>⚠️</h1><h2>Reset Permainan?</h2><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK</button></div></div>
 
     <audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
     <audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
 
     <script>
-        let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = null, isMuted = false;
-        const SHARE_LINK = "https://pixeldove.sellhiz.win/product/misi-pemulihan-3m-basic-copy?sh=cp";
+        let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = null, isMuted = false, hintStep = 1;
         const gameData = [];
 
         const ranks = [
             { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
             { title: "Pengembara Gigih 🗺️", range: [101, 150] }, { title: "Perajurit Perkasa 🛡️", range: [151, 200] },
-            { title: "Panglima Gagah ⚔️", range: [201, 250] }, { title: "Pujangga Kreatif ✒️", range: [251, 300] },
-            { title: "Cendekia Bijaksana 🧠", range: [301, 350] }, { title: "Sarjana Arif 📚", range: [351, 400] },
-            { title: "Ilmuwan Terbilang 🏅", range: [401, 450] }, { title: "Jaguh Ulung 🏆", range: [451, 500] }
+            { title: "Jaguh Ulung 🏆", range: [201, 500] }
         ];
 
-        // --- FETCH DATA WITH CACHE BUSTER ---
         window.onload = function() {
-            // Force fetch a fresh file by adding a timestamp
             fetch('./data.json?v=' + Date.now())
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Server returned ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(res => res.json())
                 .then(data => {
                     gameData.push(...data);
-                    
                     const name = localStorage.getItem('jaguh_name');
                     isMuted = localStorage.getItem('jaguh_muted') === 'true';
                     document.getElementById('sound-toggle').checked = !isMuted;
-                    
                     if (name) { 
                         maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0; 
                         score = parseInt(localStorage.getItem('jaguh_score')) || 0; 
                         showDashboard(); 
-                    } else { 
-                        showPage('startup-page'); 
                     }
-                })
-                .catch(err => {
-                    console.error("Fetch error:", err);
-                    alert("Ops! Ada ralat teknikal: " + err.message + "\n\nPastikan fail data.json tiada koma di baris terakhir.");
                 });
         };
 
-        function printQuestions(isRandom) {
-            let dataToPrint = [...gameData];
-            if (isRandom) dataToPrint.sort(() => Math.random() - 0.5);
-            let printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Jaguh Kosa Kata AI</title><style>body{font-family:sans-serif; padding:40px;} .q-box{margin-bottom:20px; page-break-inside:avoid;}</style></head><body><h1>JAGUH KOSA KATA AI</h1>');
-            dataToPrint.forEach((item, index) => { printWindow.document.write(`<div class="q-box"><b>Soalan ${index+1}:</b> ${item.q}<br><i>Contoh: ${item.example}</i></div>`); });
-            printWindow.document.close();
-            printWindow.print();
+        function checkAnswer() {
+            const input = document.getElementById('user-input'); const res = document.getElementById('result');
+            const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
+            const currentData = gameData[currentLevel];
+
+            if (ans === currentData.word) {
+                processCorrect(10, "BETUL TEPAT! 💰+10");
+            } else if (currentData.root && ans === currentData.root.toLowerCase().trim()) {
+                processCorrect(8, "BETUL (Kata Dasar)! 🪙+8");
+            } else {
+                if(!isMuted) document.getElementById('snd-aww').play();
+                res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757";
+            }
         }
 
-        function startLevel(idx) { currentLevel = idx; document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); document.getElementById('score').innerText = score; document.getElementById('user-input').value = ""; document.getElementById('result').innerText = ""; loadLevel(currentLevel); initClues(); showPage('game-page'); }
-        function loadLevel(idx) { const data = gameData[idx]; document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`; document.getElementById('game-question').innerText = data.q; document.getElementById('video-source').src = data.vid; document.getElementById('game-video').load(); closeTabs(); document.getElementById('result').innerText = ""; }
-        
-        function checkAnswer() {
-            const input = document.getElementById('user-input'); const res = document.getElementById('result'); const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
-            if (ans === gameData[currentLevel].word) {
-                if(!isMuted) document.getElementById('snd-kaching').play(); confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); spawnCoin(); res.innerText = "BETUL! 💰"; res.style.color = "#2ed573"; score += 10; document.getElementById('score').innerText = score; localStorage.setItem('jaguh_score', score);
-                if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
-                setTimeout(() => { input.value = ""; res.innerText = ""; currentLevel++; if (currentLevel < gameData.length) { loadLevel(currentLevel); } else { exitToDashboard(); } }, 1500);
-            } else { if(!isMuted) document.getElementById('snd-aww').play(); res.innerText = "SALAH! 🙊"; }
+        function processCorrect(points, message) {
+            const res = document.getElementById('result'); const input = document.getElementById('user-input');
+            if(!isMuted) document.getElementById('snd-kaching').play();
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); spawnCoin();
+            res.innerText = message; res.style.color = "#2ed573"; score += points;
+            document.getElementById('score').innerText = score; localStorage.setItem('jaguh_score', score);
+            if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
+            setTimeout(() => { input.value = ""; res.innerText = ""; currentLevel++; if (currentLevel < gameData.length) { loadLevel(currentLevel); } else { showDashboard(); } }, 1500);
         }
+
+        function loadLevel(idx) {
+            const data = gameData[idx]; document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`;
+            document.getElementById('game-question').innerText = data.q; document.getElementById('video-source').src = data.vid;
+            document.getElementById('game-video').load(); closeTabs();
+        }
+
+        function toggleTab(type) {
+            const area = document.getElementById('tab-content'); const data = gameData[currentLevel];
+            if (activeTab === type) { closeTabs(); } else {
+                area.style.display = 'block'; activeTab = type;
+                if (type === 'q') { area.innerHTML = `<b>Contoh Soalan:</b><br>"${data.example}"`; } 
+                else { hintStep = 1; renderHint(data); }
+                document.getElementById('btn-tab-q').classList.toggle('active', type === 'q'); document.getElementById('btn-tab-h').classList.toggle('active', type === 'h');
+            }
+        }
+
+        function renderHint(data) {
+            const area = document.getElementById('tab-content');
+            const klu1 = data.h1 || data.h; const klu2 = data.h2 || "Tiada klu kedua.";
+            if (hintStep === 1) {
+                area.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><b>Klu 1/2:</b><button onclick="changeHint(2)" style="background:#6c5ce7; color:white; border:none; padding:4px 10px; border-radius:10px; font-size:10px; cursor:pointer;">Seterusnya →</button></div><p style="margin:0;">${klu1}</p>`;
+            } else {
+                area.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><b>Klu 2/2:</b><button onclick="changeHint(1)" style="background:#6c5ce7; color:white; border:none; padding:4px 10px; border-radius:10px; font-size:10px; cursor:pointer;">← Kembali</button></div><p style="margin:0;">${klu2}</p>`;
+            }
+        }
+
+        function changeHint(step) { hintStep = step; renderHint(gameData[currentLevel]); }
 
         function renderMap() {
             const mapArea = document.getElementById('map-area'); mapArea.innerHTML = "";
             ranks.forEach(rank => {
-                let section = document.createElement('div'); section.className = "map-section"; section.innerHTML = `<div class="map-section-title"><span>${rank.title}</span><span style="font-size:10px;">LV ${rank.range[0]}-${rank.range[1]}</span></div>`;
+                let section = document.createElement('div'); section.className = "map-section";
+                section.innerHTML = `<div class="map-section-title"><span>${rank.title}</span></div>`;
                 let grid = document.createElement('div'); grid.className = "level-grid";
-                for (let l = rank.range[0]; l <= rank.range[1]; l++) {
+                for (let l = rank.range[0]; l <= Math.min(rank.range[1], gameData.length); l++) {
                     let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
                     if (l <= maxLevelReached + 1) { node.classList.add('unlocked'); if (l === maxLevelReached + 1) node.classList.add('current'); node.onclick = () => startLevel(l - 1); }
                     grid.appendChild(node);
@@ -269,32 +264,24 @@
             showPage('map-page');
         }
 
+        function startLevel(idx) { currentLevel = idx; document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); loadLevel(currentLevel); initClues(); showPage('game-page'); }
         function showDashboard() { document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name'); document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar'); document.getElementById('dash-level').innerText = maxLevelReached + 1; document.getElementById('dash-score-display').innerText = score; document.getElementById('dash-gelaran').innerText = getGelaran(maxLevelReached + 1); showPage('dashboard-page'); }
-        function toggleTab(type) {
-            const area = document.getElementById('tab-content'); const data = gameData[currentLevel];
-            if (activeTab === type) { closeTabs(); } else {
-                area.style.display = 'block'; activeTab = type;
-                if (type === 'q') { area.innerHTML = `<b>Contoh Soalan:</b><br>"${data.example}"`; } else { area.innerHTML = `<b>Klu:</b><br>${data.h}`; }
-                document.getElementById('btn-tab-q').classList.toggle('active', type === 'q'); document.getElementById('btn-tab-h').classList.toggle('active', type === 'h');
-            }
-        }
-        function initClues() { const list = document.getElementById('clue-list'); list.innerHTML = ""; const allWords = gameData.map(d => d.word).sort((a,b) => a.localeCompare(b)); allWords.slice(0, 25).forEach(w => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = w; list.appendChild(s); }); }
+        function getGelaran(l) { for (let r of ranks) { if (l <= r.range[1]) return r.title; } return "Jaguh Ulung 🏆"; }
+        function showPage(id) { ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'].forEach(p => document.getElementById(p).style.display = 'none'); document.getElementById(id).style.display = (id === 'quit-page' || id === 'reset-modal' || id === 'settings-page') ? 'flex' : 'block'; }
+        function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
+        function saveAndStart() { const n = document.getElementById('player-name').value.trim(); if(!n) return alert("Sila letak nama!"); localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar); startLevel(0); }
+        function closeTabs() { document.getElementById('tab-content').style.display = 'none'; activeTab = null; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); }
         function openSettings() { document.getElementById('settings-page').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settings-page').style.display = 'none'; }
         function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
-        function shareGame() { if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kosa AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } else { alert("Link disalin: " + SHARE_LINK); } }
-        function closeTabs() { document.getElementById('tab-content').style.display = 'none'; activeTab = null; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); }
-        function showPage(id) { ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'].forEach(p => document.getElementById(p).style.display = 'none'); document.getElementById(id).style.display = (id === 'quit-page' || id === 'reset-modal' || id === 'settings-page') ? 'flex' : 'block'; }
-        function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
-        function saveAndStart() { const n = document.getElementById('player-name').value.trim(); if(!n) return alert("Sila letak nama!"); localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar); localStorage.setItem('jaguh_max', 0); localStorage.setItem('jaguh_score', 0); maxLevelReached = 0; score = 0; startLevel(0); }
-        function getGelaran(l) { for (let r of ranks) { if (l <= r.range[1]) return r.title; } return "Jaguh Ulung 🏆"; }
-        function showQuitPage() { document.getElementById('quit-page').style.display = 'flex'; }
-        function continueGame() { document.getElementById('quit-page').style.display = 'none'; }
-        function exitToDashboard() { showDashboard(); }
+        function initClues() { const list = document.getElementById('clue-list'); list.innerHTML = ""; const words = gameData.map(d => d.word).sort(() => Math.random() - 0.5).slice(0, 20); words.forEach(w => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = w; list.appendChild(s); }); }
+        function spawnCoin() { const coin = document.createElement('div'); coin.className = 'coin-anim'; coin.innerText = '🪙'; document.body.appendChild(coin); const v = document.getElementById('game-video').getBoundingClientRect(); coin.style.left = (v.left + v.width/2) + 'px'; coin.style.top = (v.top + v.height/2) + 'px'; const d = document.getElementById('score-container').getBoundingClientRect(); setTimeout(() => { coin.style.left = d.left + 'px'; coin.style.top = d.top + 'px'; coin.style.opacity = '0'; }, 50); setTimeout(() => coin.remove(), 800); }
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
         function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
         function confirmReset() { localStorage.clear(); location.reload(); }
-        function spawnCoin() { const coin = document.createElement('div'); coin.className = 'coin-anim'; coin.innerText = '🪙'; document.body.appendChild(coin); const v = document.getElementById('game-video').getBoundingClientRect(); coin.style.left = (v.left + v.width/2 - 20) + 'px'; coin.style.top = (v.top + v.height/2 - 20) + 'px'; const d = document.getElementById('score-container').getBoundingClientRect(); setTimeout(() => { coin.style.left = d.left + 'px'; coin.style.top = d.top + 'px'; coin.style.transform = 'scale(0.2)'; coin.style.opacity = '0'; }, 50); setTimeout(() => coin.remove(), 800); }
+        function continueGame() { document.getElementById('quit-page').style.display = 'none'; }
+        function showQuitPage() { document.getElementById('quit-page').style.display = 'flex'; }
+        function shareGame() { alert("Jom main Jaguh Kosa Kata AI!"); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
     </script>
 </body>
