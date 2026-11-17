@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 4.9 (FIXED: Startup Button & Dual Scoring)
+  VERSION: 4.9.5 (Auto-Complete Example & Dual Scoring)
   DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -195,17 +195,13 @@
                         showDashboard(); 
                     }
                 })
-                .catch(err => {
-                    console.error(err);
-                    alert("Ralat: Fail data.json tidak dijumpai atau format salah.");
-                });
+                .catch(err => alert("Ralat: Fail data.json bermasalah. Semak format JSON!"));
         };
 
         function saveAndStart() {
             const n = document.getElementById('player-name').value.trim();
             if (!n) return alert("Sila letak nama!");
-            if (gameData.length === 0) return alert("Tunggu kejap, data sedang dimuatkan...");
-
+            if (gameData.length === 0) return alert("Data sedang dimuatkan, cuba lagi sekejap!");
             localStorage.setItem('jaguh_name', n);
             localStorage.setItem('jaguh_avatar', chosenAvatar);
             localStorage.setItem('jaguh_max', 0);
@@ -214,23 +210,11 @@
             startLevel(0);
         }
 
-        function checkAnswer() {
-            const input = document.getElementById('user-input'); const res = document.getElementById('result');
-            const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
-            const currentData = gameData[currentLevel];
-            if (ans === currentData.word) { processCorrect(10, "BETUL TEPAT! 💰+10"); } 
-            else if (currentData.root && ans === currentData.root.toLowerCase().trim()) { processCorrect(8, "BETUL (Kata Dasar)! 🪙+8"); } 
-            else { if(!isMuted) document.getElementById('snd-aww').play(); res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757"; }
-        }
-
-        function processCorrect(points, message) {
-            const res = document.getElementById('result'); const input = document.getElementById('user-input');
-            if(!isMuted) document.getElementById('snd-kaching').play();
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); spawnCoin();
-            res.innerText = message; res.style.color = "#2ed573"; score += points;
-            document.getElementById('score').innerText = score; localStorage.setItem('jaguh_score', score);
-            if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
-            setTimeout(() => { input.value = ""; res.innerText = ""; currentLevel++; if (currentLevel < gameData.length) { loadLevel(currentLevel); } else { showDashboard(); } }, 1500);
+        function startLevel(idx) { 
+            currentLevel = idx; 
+            document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); 
+            document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); 
+            loadLevel(currentLevel); initClues(); showPage('game-page'); 
         }
 
         function loadLevel(idx) {
@@ -238,10 +222,50 @@
             document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`;
             document.getElementById('game-question').innerText = data.q; 
             document.getElementById('video-source').src = data.vid;
-            document.getElementById('game-video').load(); closeTabs();
+            document.getElementById('game-video').load(); 
+            closeTabs();
             document.getElementById('result').innerText = "";
             document.getElementById('user-input').value = "";
             document.getElementById('score').innerText = score;
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('user-input'); const res = document.getElementById('result');
+            const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
+            const currentData = gameData[currentLevel];
+
+            if (ans === currentData.word) {
+                processCorrect(10, "BETUL TEPAT! 💰+10");
+            } else if (currentData.root && ans === currentData.root.toLowerCase().trim()) {
+                processCorrect(8, "BETUL (Kata Dasar)! 🪙+8");
+            } else {
+                if(!isMuted) document.getElementById('snd-aww').play();
+                res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757";
+            }
+        }
+
+        function processCorrect(points, message) {
+            const res = document.getElementById('result'); const input = document.getElementById('user-input');
+            const area = document.getElementById('tab-content'); const data = gameData[currentLevel];
+            
+            if(!isMuted) document.getElementById('snd-kaching').play();
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); spawnCoin();
+            
+            // FEATURE: Auto-fill Ayat Contoh
+            const ayatLengkap = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${data.word.toUpperCase()}</b>`);
+            area.style.display = 'block';
+            area.innerHTML = `<b>Ayat Lengkap:</b><br>"${ayatLengkap}"`;
+            document.getElementById('btn-tab-q').classList.add('active');
+            document.getElementById('btn-tab-h').classList.remove('active');
+
+            res.innerText = message; res.style.color = "#2ed573"; score += points;
+            document.getElementById('score').innerText = score; localStorage.setItem('jaguh_score', score);
+            if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
+            
+            setTimeout(() => { 
+                input.value = ""; res.innerText = ""; currentLevel++; 
+                if (currentLevel < gameData.length) { loadLevel(currentLevel); } else { showDashboard(); } 
+            }, 2500);
         }
 
         function toggleTab(type) {
@@ -282,7 +306,6 @@
             showPage('map-page');
         }
 
-        function startLevel(idx) { currentLevel = idx; document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); loadLevel(currentLevel); initClues(); showPage('game-page'); }
         function showDashboard() { document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name'); document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar'); document.getElementById('dash-level').innerText = maxLevelReached + 1; document.getElementById('dash-score-display').innerText = score; document.getElementById('dash-gelaran').innerText = getGelaran(maxLevelReached + 1); showPage('dashboard-page'); }
         function getGelaran(l) { for (let r of ranks) { if (l <= r.range[1]) return r.title; } return "Jaguh Ulung 🏆"; }
         function showPage(id) { ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'].forEach(p => document.getElementById(p).style.display = 'none'); document.getElementById(id).style.display = (id === 'quit-page' || id === 'reset-modal' || id === 'settings-page') ? 'flex' : 'block'; }
