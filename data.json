@@ -4,7 +4,7 @@
    "root": "main", 
    "vid": "videos/bermain.mp4", 
    "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!", 
-   "example": "Adik ______ bola dengan kawan-kawannya di halaman rumah.", 
+   "example": "Setiap petang, adik ______ bola dengan kawan-kawannya di halaman rumah.", 
    "h1": "Melakukan sesuatu untuk bersuka-suka.", 
    "h2": "Kanak-kanak suka buat ini di taman." 
  },
