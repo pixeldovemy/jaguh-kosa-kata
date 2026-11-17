@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 4.9 (Dual Hint & Root Word Scoring)
+  VERSION: 4.9 (FIXED: Startup Button & Dual Scoring)
   DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -26,7 +26,6 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* New Slide Animation for Hints */
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(20px); }
             to { opacity: 1; transform: translateX(0); }
@@ -181,7 +180,10 @@
 
         window.onload = function() {
             fetch('./data.json?v=' + Date.now())
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error("Gagal load data.json");
+                    return res.json();
+                })
                 .then(data => {
                     gameData.push(...data);
                     const name = localStorage.getItem('jaguh_name');
@@ -192,22 +194,33 @@
                         score = parseInt(localStorage.getItem('jaguh_score')) || 0; 
                         showDashboard(); 
                     }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Ralat: Fail data.json tidak dijumpai atau format salah.");
                 });
         };
+
+        function saveAndStart() {
+            const n = document.getElementById('player-name').value.trim();
+            if (!n) return alert("Sila letak nama!");
+            if (gameData.length === 0) return alert("Tunggu kejap, data sedang dimuatkan...");
+
+            localStorage.setItem('jaguh_name', n);
+            localStorage.setItem('jaguh_avatar', chosenAvatar);
+            localStorage.setItem('jaguh_max', 0);
+            localStorage.setItem('jaguh_score', 0);
+            maxLevelReached = 0; score = 0;
+            startLevel(0);
+        }
 
         function checkAnswer() {
             const input = document.getElementById('user-input'); const res = document.getElementById('result');
             const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
             const currentData = gameData[currentLevel];
-
-            if (ans === currentData.word) {
-                processCorrect(10, "BETUL TEPAT! 💰+10");
-            } else if (currentData.root && ans === currentData.root.toLowerCase().trim()) {
-                processCorrect(8, "BETUL (Kata Dasar)! 🪙+8");
-            } else {
-                if(!isMuted) document.getElementById('snd-aww').play();
-                res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757";
-            }
+            if (ans === currentData.word) { processCorrect(10, "BETUL TEPAT! 💰+10"); } 
+            else if (currentData.root && ans === currentData.root.toLowerCase().trim()) { processCorrect(8, "BETUL (Kata Dasar)! 🪙+8"); } 
+            else { if(!isMuted) document.getElementById('snd-aww').play(); res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757"; }
         }
 
         function processCorrect(points, message) {
@@ -221,9 +234,14 @@
         }
 
         function loadLevel(idx) {
-            const data = gameData[idx]; document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`;
-            document.getElementById('game-question').innerText = data.q; document.getElementById('video-source').src = data.vid;
+            const data = gameData[idx]; if (!data) return;
+            document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`;
+            document.getElementById('game-question').innerText = data.q; 
+            document.getElementById('video-source').src = data.vid;
             document.getElementById('game-video').load(); closeTabs();
+            document.getElementById('result').innerText = "";
+            document.getElementById('user-input').value = "";
+            document.getElementById('score').innerText = score;
         }
 
         function toggleTab(type) {
@@ -269,7 +287,6 @@
         function getGelaran(l) { for (let r of ranks) { if (l <= r.range[1]) return r.title; } return "Jaguh Ulung 🏆"; }
         function showPage(id) { ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'].forEach(p => document.getElementById(p).style.display = 'none'); document.getElementById(id).style.display = (id === 'quit-page' || id === 'reset-modal' || id === 'settings-page') ? 'flex' : 'block'; }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
-        function saveAndStart() { const n = document.getElementById('player-name').value.trim(); if(!n) return alert("Sila letak nama!"); localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar); startLevel(0); }
         function closeTabs() { document.getElementById('tab-content').style.display = 'none'; activeTab = null; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); }
         function openSettings() { document.getElementById('settings-page').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settings-page').style.display = 'none'; }
