@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 4.9.5 (Auto-Complete Example & Dual Scoring)
+  VERSION: 4.9.6 (Lowercase Auto-Fill & Map Persistence)
   DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -195,13 +195,13 @@
                         showDashboard(); 
                     }
                 })
-                .catch(err => alert("Ralat: Fail data.json bermasalah. Semak format JSON!"));
+                .catch(err => alert("Ralat: Fail data.json bermasalah."));
         };
 
         function saveAndStart() {
             const n = document.getElementById('player-name').value.trim();
             if (!n) return alert("Sila letak nama!");
-            if (gameData.length === 0) return alert("Data sedang dimuatkan, cuba lagi sekejap!");
+            if (gameData.length === 0) return alert("Data sedang dimuatkan...");
             localStorage.setItem('jaguh_name', n);
             localStorage.setItem('jaguh_avatar', chosenAvatar);
             localStorage.setItem('jaguh_max', 0);
@@ -219,11 +219,25 @@
 
         function loadLevel(idx) {
             const data = gameData[idx]; if (!data) return;
+            const area = document.getElementById('tab-content');
+            
             document.getElementById('level-text').innerText = `LEVEL ${idx + 1}`;
             document.getElementById('game-question').innerText = data.q; 
             document.getElementById('video-source').src = data.vid;
             document.getElementById('game-video').load(); 
-            closeTabs();
+            
+            // Logic Fix: Semak kalau level dah dijawab sebelum ni
+            if (idx < maxLevelReached) {
+                const ayatLengkap = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${data.word.toLowerCase()}</b>`);
+                area.style.display = 'block';
+                area.innerHTML = `<b>Ayat Lengkap:</b><br>"${ayatLengkap}"`;
+                activeTab = 'q';
+                document.getElementById('btn-tab-q').classList.add('active');
+                document.getElementById('btn-tab-h').classList.remove('active');
+            } else {
+                closeTabs();
+            }
+            
             document.getElementById('result').innerText = "";
             document.getElementById('user-input').value = "";
             document.getElementById('score').innerText = score;
@@ -233,15 +247,9 @@
             const input = document.getElementById('user-input'); const res = document.getElementById('result');
             const ans = input.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").trim();
             const currentData = gameData[currentLevel];
-
-            if (ans === currentData.word) {
-                processCorrect(10, "BETUL TEPAT! 💰+10");
-            } else if (currentData.root && ans === currentData.root.toLowerCase().trim()) {
-                processCorrect(8, "BETUL (Kata Dasar)! 🪙+8");
-            } else {
-                if(!isMuted) document.getElementById('snd-aww').play();
-                res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757";
-            }
+            if (ans === currentData.word) { processCorrect(10, "BETUL TEPAT! 💰+10"); } 
+            else if (currentData.root && ans === currentData.root.toLowerCase().trim()) { processCorrect(8, "BETUL (Kata Dasar)! 🪙+8"); } 
+            else { if(!isMuted) document.getElementById('snd-aww').play(); res.innerText = "SALAH! 🙊"; res.style.color = "#ff4757"; }
         }
 
         function processCorrect(points, message) {
@@ -251,8 +259,8 @@
             if(!isMuted) document.getElementById('snd-kaching').play();
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); spawnCoin();
             
-            // FEATURE: Auto-fill Ayat Contoh
-            const ayatLengkap = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${data.word.toUpperCase()}</b>`);
+            // Feature Fix: Lowercase auto-fill
+            const ayatLengkap = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${data.word.toLowerCase()}</b>`);
             area.style.display = 'block';
             area.innerHTML = `<b>Ayat Lengkap:</b><br>"${ayatLengkap}"`;
             document.getElementById('btn-tab-q').classList.add('active');
@@ -272,7 +280,12 @@
             const area = document.getElementById('tab-content'); const data = gameData[currentLevel];
             if (activeTab === type) { closeTabs(); } else {
                 area.style.display = 'block'; activeTab = type;
-                if (type === 'q') { area.innerHTML = `<b>Contoh Soalan:</b><br>"${data.example}"`; } 
+                if (type === 'q') { 
+                    const isAnswered = currentLevel < maxLevelReached;
+                    const displayWord = isAnswered ? data.word.toLowerCase() : "______";
+                    const content = isAnswered ? data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${displayWord}</b>`) : data.example;
+                    area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${content}"`; 
+                } 
                 else { hintStep = 1; renderHint(data); }
                 document.getElementById('btn-tab-q').classList.toggle('active', type === 'q'); document.getElementById('btn-tab-h').classList.toggle('active', type === 'h');
             }
