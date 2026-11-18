@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 5.0.8 (Critical Bug Fix & Loader)
+  VERSION: 5.0.9 (Bug Fix: Reset Button Functionality)
   DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -161,7 +161,7 @@
     <!-- MODALS (Settings, Quit, Reset) -->
     <div id="settings-page"><div class="container"><h1 class="brand">TETAPAN</h1><button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button></div></div>
     <div id="quit-page"><div class="container"><h1>🥺</h1><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button></div></div>
-    <div id="reset-modal"><div class="container"><h1>⚠️</h1><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK</button></div></div>
+    <div id="reset-modal"><div class="container"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan?</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757; box-shadow: 0 8px 0 #c0392b;">YA, RESET SEMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
 
     <script>
         let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = null, isMuted = false, hintStep = 1;
@@ -203,11 +203,6 @@
             if (!n) return alert("Sila letak nama!");
             if (gameData.length === 0) return alert("Data sedang dimuatkan, sila cuba sebentar lagi.");
             
-            if (localStorage.getItem('jaguh_name') !== n) {
-                localStorage.setItem('jaguh_max', 0);
-                localStorage.setItem('jaguh_score', 0);
-                syncStats();
-            }
             localStorage.setItem('jaguh_name', n);
             localStorage.setItem('jaguh_avatar', chosenAvatar);
             startLevel(maxLevelReached);
@@ -278,13 +273,13 @@
             const p = ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
             p.forEach(i => { const el = document.getElementById(i); if(el) el.style.display = 'none'; });
             const target = document.getElementById(id);
-            if(target) target.style.display = (id.includes('page') && !id.includes('quit')) ? 'block' : 'flex';
+            if(target) target.style.display = (id.includes('page') || id.includes('modal')) ? 'flex' : 'block';
         }
 
         function showDashboard() { 
             syncStats();
-            document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name');
-            document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar');
+            document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name') || "Pemain";
+            document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar') || "🤖";
             document.getElementById('dash-level').innerText = maxLevelReached + 1;
             document.getElementById('dash-score-display').innerText = score;
             const levelIdx = Math.min(Math.floor(maxLevelReached / 50), ranks.length - 1);
@@ -318,11 +313,20 @@
         function toggleTab(t) { activeTab = t; const data = gameData[currentLevel]; const area = document.getElementById('tab-content'); if (t === 'q') loadLevel(currentLevel); else { area.innerHTML = `<b>Klu:</b><br>${data.h1}`; area.style.display = 'block'; } }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
         function initClues() { const list = document.getElementById('clue-list'); list.innerHTML = ""; gameData.slice(0, 20).forEach(d => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = d.word; list.appendChild(s); }); }
+        
+        // Settings & Modals Functions
         function openSettings() { showPage('settings-page'); }
         function closeSettings() { showDashboard(); }
         function continueGame() { showPage('game-page'); }
         function showQuitPage() { showPage('quit-page'); }
-        function confirmReset() { localStorage.clear(); location.reload(); }
+        
+        // Reset Logic
+        function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
+        function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
+        function confirmReset() { 
+            localStorage.clear(); 
+            window.location.reload(); 
+        }
     </script>
 </body>
 </html>
