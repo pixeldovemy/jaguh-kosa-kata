@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 5.0.1 (Clean UI Update)
+  VERSION: 5.0.2 (Auto-Tab Display Update)
   DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -249,14 +249,21 @@
             document.getElementById('game-question').innerText = data.q; 
             document.getElementById('video-source').src = data.vid;
             document.getElementById('game-video').load(); 
-            
-            if (idx < maxLevelReached) {
-                const ayatLengkap = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${data.word.toLowerCase()}</b>`);
-                area.style.display = 'block'; area.innerHTML = `<b>Ayat Lengkap:</b><br>"${ayatLengkap}"`;
-                activeTab = 'q'; document.getElementById('btn-tab-q').classList.add('active');
+
+            // FIX: Auto-display "Contoh Soalan" tab whenever level loads
+            const isAnswered = idx < maxLevelReached;
+            const displayWord = isAnswered ? data.word.toLowerCase() : "______";
+            const content = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${displayWord}</b>`);
+
+            area.style.display = 'block';
+            area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${content}"`;
+            activeTab = 'q';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-tab-q').classList.add('active');
+
+            if (isAnswered) {
                 document.getElementById('submit-btn').style.display = 'none'; 
             } else { 
-                closeTabs(); 
                 document.getElementById('submit-btn').style.display = 'block';
             }
             
@@ -322,10 +329,12 @@
                 area.style.display = 'block'; activeTab = type;
                 if (type === 'q') { 
                     const isAnswered = currentLevel < maxLevelReached;
-                    const content = isAnswered ? data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${data.word.toLowerCase()}</b>`) : data.example;
+                    const displayWord = isAnswered ? data.word.toLowerCase() : "______";
+                    const content = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${displayWord}</b>`);
                     area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${content}"`; 
                 } else { hintStep = 1; renderHint(data); }
-                document.getElementById('btn-tab-q').classList.toggle('active', type === 'q'); document.getElementById('btn-tab-h').classList.toggle('active', type === 'h');
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('btn-tab-' + type).classList.add('active');
             }
         }
 
