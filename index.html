@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 4.9.7 (Anti-Flicker & Instant Load)
+  VERSION: 4.9.8 (Overlay Fix & Navigation Patch)
   DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -19,7 +19,6 @@
             min-height: 100vh; padding: 20px; overflow-x: hidden;
         }
 
-        /* FIX: Sembunyikan semua page utama secara default */
         #startup-page, #dashboard-page, #map-page, #game-page { display: none; }
 
         .container { 
@@ -174,12 +173,10 @@
             { title: "Jaguh Ulung 🏆", range: [201, 500] }
         ];
 
-        // FIX: Run immediately to prevent flicker
         const name = localStorage.getItem('jaguh_name');
         if (name) {
             maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0; 
             score = parseInt(localStorage.getItem('jaguh_score')) || 0;
-            // Tunjuk dashboard tanpa tunggu fetch
             document.addEventListener("DOMContentLoaded", showDashboard);
         } else {
             document.addEventListener("DOMContentLoaded", () => showPage('startup-page'));
@@ -260,15 +257,19 @@
             }, 2500);
         }
 
+        // FIX: Ensure all modals/overlays are hidden when switching pages
         function showPage(id) { 
-            const pages = ['startup-page', 'dashboard-page', 'map-page', 'game-page'];
-            pages.forEach(p => document.getElementById(p).style.display = 'none');
+            const allElements = ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
+            allElements.forEach(p => {
+                const el = document.getElementById(p);
+                if(el) el.style.display = 'none';
+            });
+
             const target = document.getElementById(id);
-            if (id === 'startup-page' || id === 'dashboard-page' || id === 'map-page' || id === 'game-page') {
-                target.style.display = 'block';
-            } else {
-                target.style.display = 'flex';
-            }
+            if (!target) return;
+
+            const flexPages = ['quit-page', 'reset-modal', 'settings-page'];
+            target.style.display = flexPages.includes(id) ? 'flex' : 'block';
         }
 
         function showDashboard() { 
@@ -300,6 +301,7 @@
         }
 
         function changeHint(step) { hintStep = step; renderHint(gameData[currentLevel]); }
+        
         function renderMap() {
             const mapArea = document.getElementById('map-area'); mapArea.innerHTML = "";
             ranks.forEach(rank => {
@@ -308,7 +310,11 @@
                 let grid = document.createElement('div'); grid.className = "level-grid";
                 for (let l = rank.range[0]; l <= Math.min(rank.range[1], gameData.length); l++) {
                     let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
-                    if (l <= maxLevelReached + 1) { node.classList.add('unlocked'); if (l === maxLevelReached + 1) node.classList.add('current'); node.onclick = () => startLevel(l - 1); }
+                    if (l <= maxLevelReached + 1) { 
+                        node.classList.add('unlocked'); 
+                        if (l === maxLevelReached + 1) node.classList.add('current'); 
+                        node.onclick = () => startLevel(l - 1); 
+                    }
                     grid.appendChild(node);
                 }
                 section.appendChild(grid); mapArea.appendChild(section);
@@ -319,16 +325,16 @@
         function getGelaran(l) { for (let r of ranks) { if (l <= r.range[1]) return r.title; } return "Jaguh Ulung 🏆"; }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
         function closeTabs() { document.getElementById('tab-content').style.display = 'none'; activeTab = null; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); }
-        function openSettings() { document.getElementById('settings-page').style.display = 'flex'; }
-        function closeSettings() { document.getElementById('settings-page').style.display = 'none'; }
+        function openSettings() { showPage('settings-page'); }
+        function closeSettings() { showDashboard(); }
         function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
         function initClues() { const list = document.getElementById('clue-list'); list.innerHTML = ""; const words = gameData.map(d => d.word).sort(() => Math.random() - 0.5).slice(0, 20); words.forEach(w => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = w; list.appendChild(s); }); }
         function spawnCoin() { const coin = document.createElement('div'); coin.className = 'coin-anim'; coin.innerText = '🪙'; document.body.appendChild(coin); const v = document.getElementById('game-video').getBoundingClientRect(); coin.style.left = (v.left + v.width/2) + 'px'; coin.style.top = (v.top + v.height/2) + 'px'; const d = document.getElementById('score-container').getBoundingClientRect(); setTimeout(() => { coin.style.left = d.left + 'px'; coin.style.top = d.top + 'px'; coin.style.opacity = '0'; }, 50); setTimeout(() => coin.remove(), 800); }
-        function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
-        function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
+        function openResetModal() { showPage('reset-modal'); }
+        function closeResetModal() { showDashboard(); }
         function confirmReset() { localStorage.clear(); location.reload(); }
-        function continueGame() { document.getElementById('quit-page').style.display = 'none'; }
-        function showQuitPage() { document.getElementById('quit-page').style.display = 'flex'; }
+        function continueGame() { showPage('game-page'); }
+        function showQuitPage() { showPage('quit-page'); }
         function shareGame() { alert("Jom main Jaguh Kosa Kata AI!"); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
     </script>
