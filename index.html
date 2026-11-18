@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 5.0.0 (Leveling & Navigation Update)
+  VERSION: 5.0.1 (Clean UI Update)
   DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -85,7 +85,6 @@
 
         .coin-anim { position: fixed; width: 45px; height: 45px; background: #ffd32a; border-radius: 50%; border: 4px solid #f0932b; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; z-index: 99999; pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
-        /* New Nav Styles */
         .nav-arrow { background:none; border:none; cursor:pointer; font-size:24px; transition: 0.2s; padding: 0 10px; }
         .nav-arrow:disabled { filter: grayscale(1); cursor: not-allowed; opacity: 0.3; }
     </style>
@@ -146,7 +145,6 @@
             </div>
         </div>
 
-        <!-- NEW: Level and Question Display -->
         <div id="game-level-title" style="font-size: 14px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px;">LEVEL 1: Pelajar Tekun 🎓</div>
         <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px;">
             <button class="nav-arrow" id="prev-soalan" onclick="prevSoalan()">⬅️</button>
@@ -179,7 +177,6 @@
         let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = null, isMuted = false, hintStep = 1;
         const gameData = [];
 
-        // NEW: Updated Ranks and Levels (50 questions per level)
         const ranks = [
             { title: "Pelajar Tekun 🎓", range: [1, 50] },
             { title: "Peneroka Pintar 🧭", range: [51, 100] },
@@ -234,14 +231,11 @@
         function loadLevel(idx) {
             const data = gameData[idx]; if (!data) return;
             const area = document.getElementById('tab-content');
-            
-            // NEW: Level & Question logic
             const levelNum = Math.floor(idx / 50) + 1;
             const currentRank = ranks[levelNum - 1].title;
             document.getElementById('game-level-title').innerText = `LEVEL ${levelNum}: ${currentRank}`;
             document.getElementById('level-text').innerText = `SOALAN ${idx + 1}`;
             
-            // Nav Arrows Logic
             document.getElementById('prev-soalan').disabled = (idx === 0);
             const nextBtn = document.getElementById('next-soalan');
             if (idx < maxLevelReached) {
@@ -260,7 +254,7 @@
                 const ayatLengkap = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${data.word.toLowerCase()}</b>`);
                 area.style.display = 'block'; area.innerHTML = `<b>Ayat Lengkap:</b><br>"${ayatLengkap}"`;
                 activeTab = 'q'; document.getElementById('btn-tab-q').classList.add('active');
-                document.getElementById('submit-btn').style.display = 'none'; // Sorok hantar kalau dah jawab
+                document.getElementById('submit-btn').style.display = 'none'; 
             } else { 
                 closeTabs(); 
                 document.getElementById('submit-btn').style.display = 'block';
@@ -347,8 +341,7 @@
             const mapArea = document.getElementById('map-area'); mapArea.innerHTML = "";
             ranks.forEach((rank, index) => {
                 let section = document.createElement('div'); section.className = "map-section";
-                // NEW: Updated Map Section Title
-                section.innerHTML = `<div class="map-section-title"><span>Level ${index + 1}: (${rank.range[0]}–${rank.range[1]}) - Gelaran: ${rank.title}</span></div>`;
+                section.innerHTML = `<div class="map-section-title"><span>Level ${index + 1}: (${rank.range[0]}–${rank.range[1]}) - ${rank.title}</span></div>`;
                 let grid = document.createElement('div'); grid.className = "level-grid";
                 for (let l = rank.range[0]; l <= Math.min(rank.range[1], gameData.length); l++) {
                     let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
