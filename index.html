@@ -1,6 +1,6 @@
 <!-- 
   PROJECT: JAGUH KOSA KATA AI
-  VERSION: 5.0.2 (Auto-Tab Display Update)
+  VERSION: 5.0.7 (Stable Build - Logic Fix)
   DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -153,8 +153,16 @@
         </div>
 
         <p id="game-question">Memuatkan soalan...</p>
-        <div class="video-wrapper"><video id="game-video" autoplay loop muted playsinline><source id="video-source" src="" type="video/mp4"></video></div>
-        <div class="tab-container"><button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button><button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button></div>
+        <div class="video-wrapper">
+            <video id="game-video" autoplay loop playsinline>
+                <source id="video-source" src="" type="video/mp4">
+            </video>
+        </div>
+        <div class="tab-container">
+            <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
+            <button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button>
+            <button id="btn-video-toggle" class="tab-btn" onclick="toggleVideo()">⏸️</button>
+        </div>
         <div id="tab-content" class="tab-content-area"></div>
         <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
         <div class="hint-section">
@@ -190,8 +198,9 @@
             { title: "Jaguh Ulung 🏆", range: [451, 500] }
         ];
 
-        const name = localStorage.getItem('jaguh_name');
-        if (name) {
+        // Global Sync on Load
+        const savedName = localStorage.getItem('jaguh_name');
+        if (savedName) {
             maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0; 
             score = parseInt(localStorage.getItem('jaguh_score')) || 0;
             document.addEventListener("DOMContentLoaded", showDashboard);
@@ -213,12 +222,22 @@
         function saveAndStart() {
             const n = document.getElementById('player-name').value.trim();
             if (!n) return alert("Sila letak nama!");
+            
+            // Fix: Persistence Check
+            const existingName = localStorage.getItem('jaguh_name');
+            if (existingName !== n) {
+                localStorage.setItem('jaguh_max', 0);
+                localStorage.setItem('jaguh_score', 0);
+                maxLevelReached = 0; score = 0;
+            } else {
+                maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0;
+                score = parseInt(localStorage.getItem('jaguh_score')) || 0;
+            }
+            
             localStorage.setItem('jaguh_name', n);
             localStorage.setItem('jaguh_avatar', chosenAvatar);
-            localStorage.setItem('jaguh_max', 0);
-            localStorage.setItem('jaguh_score', 0);
-            maxLevelReached = 0; score = 0;
-            if (gameData.length > 0) startLevel(0); else alert("Data masih dimuatkan.");
+            if (gameData.length > 0) startLevel(maxLevelReached); 
+            else alert("Data sedang dimuatkan...");
         }
 
         function startLevel(idx) { 
@@ -231,6 +250,8 @@
         function loadLevel(idx) {
             const data = gameData[idx]; if (!data) return;
             const area = document.getElementById('tab-content');
+            const videoEl = document.getElementById('game-video');
+            
             const levelNum = Math.floor(idx / 50) + 1;
             const currentRank = ranks[levelNum - 1].title;
             document.getElementById('game-level-title').innerText = `LEVEL ${levelNum}: ${currentRank}`;
@@ -238,19 +259,15 @@
             
             document.getElementById('prev-soalan').disabled = (idx === 0);
             const nextBtn = document.getElementById('next-soalan');
-            if (idx < maxLevelReached) {
-                nextBtn.disabled = false;
-                nextBtn.style.filter = "none";
-            } else {
-                nextBtn.disabled = true;
-                nextBtn.style.filter = "grayscale(1)";
-            }
+            nextBtn.disabled = (idx >= maxLevelReached);
+            nextBtn.style.filter = (idx >= maxLevelReached) ? "grayscale(1)" : "none";
 
             document.getElementById('game-question').innerText = data.q; 
             document.getElementById('video-source').src = data.vid;
-            document.getElementById('game-video').load(); 
+            videoEl.muted = isMuted;
+            videoEl.load(); 
+            document.getElementById('btn-video-toggle').innerText = "⏸️";
 
-            // FIX: Auto-display "Contoh Soalan" tab whenever level loads
             const isAnswered = idx < maxLevelReached;
             const displayWord = isAnswered ? data.word.toLowerCase() : "______";
             const content = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${displayWord}</b>`);
@@ -261,15 +278,17 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-tab-q').classList.add('active');
 
-            if (isAnswered) {
-                document.getElementById('submit-btn').style.display = 'none'; 
-            } else { 
-                document.getElementById('submit-btn').style.display = 'block';
-            }
-            
+            document.getElementById('submit-btn').style.display = isAnswered ? 'none' : 'block';
             document.getElementById('result').innerText = "";
             document.getElementById('user-input').value = "";
             document.getElementById('score').innerText = score;
+        }
+
+        function toggleVideo() {
+            const video = document.getElementById('game-video');
+            const btn = document.getElementById('btn-video-toggle');
+            if (video.paused) { video.play(); btn.innerText = "⏸️"; } 
+            else { video.pause(); btn.innerText = "▶️"; }
         }
 
         function prevSoalan() { if (currentLevel > 0) { currentLevel--; loadLevel(currentLevel); } }
@@ -325,17 +344,16 @@
 
         function toggleTab(type) {
             const area = document.getElementById('tab-content'); const data = gameData[currentLevel];
-            if (activeTab === type) { closeTabs(); } else {
-                area.style.display = 'block'; activeTab = type;
-                if (type === 'q') { 
-                    const isAnswered = currentLevel < maxLevelReached;
-                    const displayWord = isAnswered ? data.word.toLowerCase() : "______";
-                    const content = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${displayWord}</b>`);
-                    area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${content}"`; 
-                } else { hintStep = 1; renderHint(data); }
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.getElementById('btn-tab-' + type).classList.add('active');
-            }
+            if (!data) return;
+            area.style.display = 'block'; activeTab = type;
+            if (type === 'q') { 
+                const isAnswered = currentLevel < maxLevelReached;
+                const displayWord = isAnswered ? data.word.toLowerCase() : "______";
+                const content = data.example.replace(/_+/g, `<b style="color:#6c5ce7; text-decoration:underline;">${displayWord}</b>`);
+                area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${content}"`; 
+            } else { hintStep = 1; renderHint(data); }
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-tab-' + type).classList.add('active');
         }
 
         function renderHint(data) {
@@ -348,11 +366,12 @@
         
         function renderMap() {
             const mapArea = document.getElementById('map-area'); mapArea.innerHTML = "";
+            const maxQ = gameData.length > 0 ? gameData.length : 500;
             ranks.forEach((rank, index) => {
                 let section = document.createElement('div'); section.className = "map-section";
                 section.innerHTML = `<div class="map-section-title"><span>Level ${index + 1}: (${rank.range[0]}–${rank.range[1]}) - ${rank.title}</span></div>`;
                 let grid = document.createElement('div'); grid.className = "level-grid";
-                for (let l = rank.range[0]; l <= Math.min(rank.range[1], gameData.length); l++) {
+                for (let l = rank.range[0]; l <= Math.min(rank.range[1], maxQ); l++) {
                     let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
                     if (l <= maxLevelReached + 1) { 
                         node.classList.add('unlocked'); 
@@ -375,7 +394,7 @@
         function closeTabs() { document.getElementById('tab-content').style.display = 'none'; activeTab = null; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); }
         function openSettings() { showPage('settings-page'); }
         function closeSettings() { showDashboard(); }
-        function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
+        function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); document.getElementById('game-video').muted = isMuted; }
         function initClues() { const list = document.getElementById('clue-list'); list.innerHTML = ""; const words = gameData.map(d => d.word).sort(() => Math.random() - 0.5).slice(0, 20); words.forEach(w => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = w; list.appendChild(s); }); }
         function spawnCoin() { const coin = document.createElement('div'); coin.className = 'coin-anim'; coin.innerText = '🪙'; document.body.appendChild(coin); const v = document.getElementById('game-video').getBoundingClientRect(); coin.style.left = (v.left + v.width/2) + 'px'; coin.style.top = (v.top + v.height/2) + 'px'; const d = document.getElementById('score-container').getBoundingClientRect(); setTimeout(() => { coin.style.left = d.left + 'px'; coin.style.top = d.top + 'px'; coin.style.opacity = '0'; }, 50); setTimeout(() => coin.remove(), 800); }
         function openResetModal() { showPage('reset-modal'); }
