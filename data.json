@@ -5,8 +5,8 @@
     "vid": "videos/bermain.mp4",
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Adik ______ bola dengan kawan-kawannya di halaman rumah.",
-    "h1": "Aktiviti yang menggembirakan kanak-kanak, selalunya di taman.",
-    "h2": "Melakukan sesuatu yang seronok, seorang diri atau bersama orang lain."
+    "h1": "Melakukan sesuatu yang seronok, seorang diri atau bersama orang lain",
+    "h2": "Aktiviti yang menggembirakan kanak-kanak, selalunya di taman"
   },
   {
     "word": "berbaring",
@@ -14,17 +14,17 @@
     "vid": "videos/berbaring.mp4",
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Ayah ______ di atas sofa kerana terlalu letih.",
-    "h1": "Meletakkan badan memanjang di atas sesuatu untuk berehat.",
-    "h2": "Posisi badan mendatar sebelum tidur atau ketika santai."
+    "h1": "Badan baring di atas katil atau sofa.",
+    "h2": "Meletakkan badan memanjang di atas sesuatu untuk berehat."
   },
   {
     "word": "menyiram",
     "root": "siram",
     "vid": "videos/menyiram.mp4",
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
-    "example": "Mak ______ pokok bunga kesayangannya pada waktu petang.",
-    "h1": "Perbuatan memberikan air kepada tanaman.",
-    "h2": "Biasanya dilakukan menggunakan penyiram atau hos air."
+    "example": "Mak ______ pokok bunga kesayangannya pada waktu petang",
+    "h1": "Diberi air dengan cara dicurahkan.",
+    "h2": "Pokok diberi air"
   },
   {
     "word": "melekat",
@@ -32,8 +32,8 @@
     "vid": "videos/melekat.mp4",
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Gula-gula getah merah jambu ______ pada kasut adik semasa dia berjalan di koridor.",
-    "h1": "Terlekap atau tertempel pada sesuatu.",
-    "h2": "Sesuatu yang sukar ditanggalkan seperti gam atau sap."
+    "h1": "Gula-gula getah tidak mahu tanggal dari kasut.",
+    "h2": "Terlekap atau tertempel pada sesuatu."
   },
   {
     "word": "berehat",
@@ -50,8 +50,8 @@
     "vid": "videos/berebut.mp4",
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Dua ekor kucing itu ______ makanan di dalam sebuah mangkuk sambil saling menolak kepala.",
-    "h1": "Masing-masing mahukan benda yang sama dan cuba ambil dulu."
-    "h2": "Saling berusaha dengan bersungguh-sungguh untuk mendapatkan sesuatu yang sama terlebih dahulu daripada pihak lain.",
+    "h1": "Saling berusaha dengan bersungguh-sungguh untuk mendapatkan sesuatu yang sama terlebih dahulu daripada pihak lain.",
+    "h2": "Masing-masing mahukan benda yang sama dan cuba ambil dulu."
   },
   {
     "word": "bergoyang",
