@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.6.0 (Side Fade & Hint Arrow Update)
+VERSION: 5.7.0 (Peek Effect & Static Arrow Update)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -74,17 +74,17 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             animation: slideIn 0.3s ease-out;
         }
 
-        /* Effect 1: Slide Box with Side Fade & Arrow */
+        /* PEEK EFFECT & STATIC ARROW */
         .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; position: relative; }
         .clue-slider-wrap:active { cursor: grabbing; }
         
-        /* Side Gradient Fade */
+        /* Subtle Side Fade */
         .clue-slider-wrap::after {
             content: '';
             position: absolute;
             top: 0; right: 0; bottom: 0;
-            width: 40px;
-            background: linear-gradient(to left, rgba(238, 235, 255, 0.95), transparent);
+            width: 30px;
+            background: linear-gradient(to left, rgba(238, 235, 255, 0.8), transparent);
             pointer-events: none;
             transition: opacity 0.3s ease;
             z-index: 2;
@@ -92,21 +92,18 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         .clue-slider-wrap.hide-fade::after { opacity: 0; }
 
         .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
-        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 25px; pointer-events: none; position: relative; }
+        
+        /* Slide width 90% for peek effect */
+        .clue-slide { width: 90%; flex-shrink: 0; padding-right: 15px; pointer-events: none; position: relative; }
 
-        /* Animated Arrow */
+        /* Static Arrow */
         .slide-hint-arrow {
             position: absolute;
-            top: 0; right: 15px;
+            top: 0; right: 10px;
             font-size: 18px;
             color: #6c5ce7;
-            animation: bounceRight 1s infinite;
+            opacity: 0.7;
             z-index: 3;
-        }
-
-        @keyframes bounceRight {
-            0%, 100% { transform: translateX(0); opacity: 0.5; }
-            50% { transform: translateX(8px); opacity: 1; }
         }
 
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
@@ -321,11 +318,11 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             const arrow = document.getElementById('hint-arrow');
             
             if(inner) {
-                inner.style.transform = `translateX(-${idx * 50}%)`;
+                // Translation offset based on 90% slide width
+                inner.style.transform = `translateX(-${idx * 90}%)`;
                 currentClueIdx = idx;
             }
             
-            // Toggle Fade & Arrow visibility
             if (idx === 1) {
                 if(wrap) wrap.classList.add('hide-fade');
                 if(arrow) arrow.style.display = 'none';
