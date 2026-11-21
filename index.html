@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.9.2 (UI Update: Pill Indicators)
+VERSION: 5.9.3 (UI Update: Maximized Clue Space)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -78,30 +78,35 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; }
         .clue-slider-wrap:active { cursor: grabbing; }
         .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
-        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 50px; pointer-events: none; }
         
-        /* Updated Pill Style (Top Right) */
+        .clue-slide { 
+            width: 50%; 
+            flex-shrink: 0; 
+            padding-right: 10px; /* Diperkecil supaya teks guna ruang penuh */
+            padding-top: 25px;   /* Ditambah supaya teks bermula di bawah paras Pill */
+            pointer-events: none; 
+        }
+        
         .clue-dots { 
             position: absolute; 
-            top: 15px; 
+            top: 12px; 
             right: 15px; 
             display: flex; 
             gap: 6px; 
             z-index: 10;
         }
         .dot { 
-            width: 25px; /* Pill width */
-            height: 6px; /* Pill height */
+            width: 25px; 
+            height: 6px; 
             border-radius: 10px; 
             background: #d1d1ff; 
             cursor: pointer; 
             transition: all 0.3s ease; 
             border: 1px solid #fff; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         .dot.active { 
             background: #6c5ce7; 
-            width: 35px; /* Stretch effect when active */
+            width: 35px; 
         }
 
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
@@ -397,9 +402,8 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         function continueGame() { showPage('game-page'); }
         function showQuitPage() { showPage('quit-page'); }
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
-        function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
+        function closeResetModal() { document.getElementById('reset-modal').style.none = 'none'; }
         function confirmReset() { localStorage.clear(); window.location.reload(); }
     </script>
 </body>
 </html>
-```
