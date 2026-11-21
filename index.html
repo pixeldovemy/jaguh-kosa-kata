@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.8.0 (Proper Peek Effect & Static Arrow)
+VERSION: 5.9.0 (Proper Peek Effect & Static Arrow)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -74,32 +74,21 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             animation: slideIn 0.3s ease-out;
         }
 
-        /* CLUE SLIDER - PEEK EFFECT */
+        /* PEEK EFFECT & STATIC ARROW */
         .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; position: relative; }
         .clue-slider-wrap:active { cursor: grabbing; }
         
-        /* Subtle Side Fade */
-        .clue-slider-wrap::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0; bottom: 0;
-            width: 40px;
-            background: linear-gradient(to left, rgba(238, 235, 255, 0.9), transparent);
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 2;
-        }
-        .clue-slider-wrap.hide-fade::after { opacity: 0; }
+        /* Gradient Fade dibuang (Clean UI) */
 
         .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
         
-        /* Lebar 85% supaya baki 15% tunjuk sipi klu seterusnya (Peek Effect) */
-        .clue-slide { width: 85%; flex-shrink: 0; padding-right: 15px; pointer-events: none; position: relative; }
+        /* Lebar 85% untuk Peek Effect (menampakkan sipi kotak sebelah) */
+        .clue-slide { width: 85%; flex-shrink: 0; padding-right: 20px; pointer-events: none; position: relative; }
 
-        /* Static Arrow */
+        /* Static Hint Arrow */
         .slide-hint-arrow {
             position: absolute;
-            top: 0; right: 5px;
+            top: 0; right: 10px;
             font-size: 18px;
             color: #6c5ce7;
             opacity: 0.8;
@@ -314,22 +303,15 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 
         function switchClue(idx) {
             const inner = document.getElementById('clue-inner');
-            const wrap = document.getElementById('clue-touch-zone');
             const arrow = document.getElementById('hint-arrow');
             
             if(inner) {
-                // Pergerakan 85% supaya align dengan lebar slide peek
-                inner.style.transform = `translateX(-${idx * 85}%)`;
+                // Berganjak 70% supaya nampak 15% Klu 1 di sebelah kiri (Peek Effect)
+                inner.style.transform = `translateX(-${idx * 70}%)`;
                 currentClueIdx = idx;
             }
             
-            if (idx === 1) {
-                if(wrap) wrap.classList.add('hide-fade');
-                if(arrow) arrow.style.display = 'none';
-            } else {
-                if(wrap) wrap.classList.remove('hide-fade');
-                if(arrow) arrow.style.display = 'block';
-            }
+            if (arrow) arrow.style.display = (idx === 1) ? 'none' : 'block';
         }
 
         function checkAnswer() {
