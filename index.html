@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.5.0 (Clean Swipe Clue Box - No Dots)
+VERSION: 5.6.0 (Side Fade & Hint Arrow Update)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -74,11 +74,40 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             animation: slideIn 0.3s ease-out;
         }
 
-        /* Clean Slide Box Styles */
-        .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; }
+        /* Effect 1: Slide Box with Side Fade & Arrow */
+        .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; position: relative; }
         .clue-slider-wrap:active { cursor: grabbing; }
+        
+        /* Side Gradient Fade */
+        .clue-slider-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0;
+            width: 40px;
+            background: linear-gradient(to left, rgba(238, 235, 255, 0.95), transparent);
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+        .clue-slider-wrap.hide-fade::after { opacity: 0; }
+
         .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
-        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 15px; pointer-events: none; }
+        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 25px; pointer-events: none; position: relative; }
+
+        /* Animated Arrow */
+        .slide-hint-arrow {
+            position: absolute;
+            top: 0; right: 15px;
+            font-size: 18px;
+            color: #6c5ce7;
+            animation: bounceRight 1s infinite;
+            z-index: 3;
+        }
+
+        @keyframes bounceRight {
+            0%, 100% { transform: translateX(0); opacity: 0.5; }
+            50% { transform: translateX(8px); opacity: 1; }
+        }
 
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
         .hint-section { margin-top: 10px; background: #f8f9fa; padding: 20px; border-radius: 30px; border: 2px dashed #dcdde1; width: 100%; }
@@ -266,7 +295,10 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
                          onmousedown="gestureStart(event)" onmouseup="gestureEnd(event)"
                          ontouchstart="gestureStart(event)" ontouchend="gestureEnd(event)">
                         <div class="clue-slider-inner" id="clue-inner">
-                            <div class="clue-slide"><b>KLU 1/2:</b><br>${data.h1 || 'Sila rujuk video.'}</div>
+                            <div class="clue-slide">
+                                <div class="slide-hint-arrow" id="hint-arrow">➡️</div>
+                                <b>KLU 1/2:</b><br>${data.h1 || 'Sila rujuk video.'}
+                            </div>
                             <div class="clue-slide"><b>KLU 2/2:</b><br>${data.h2 || 'Hampir tepat! Cuba lagi.'}</div>
                         </div>
                     </div>
@@ -285,9 +317,21 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 
         function switchClue(idx) {
             const inner = document.getElementById('clue-inner');
+            const wrap = document.getElementById('clue-touch-zone');
+            const arrow = document.getElementById('hint-arrow');
+            
             if(inner) {
                 inner.style.transform = `translateX(-${idx * 50}%)`;
                 currentClueIdx = idx;
+            }
+            
+            // Toggle Fade & Arrow visibility
+            if (idx === 1) {
+                if(wrap) wrap.classList.add('hide-fade');
+                if(arrow) arrow.style.display = 'none';
+            } else {
+                if(wrap) wrap.classList.remove('hide-fade');
+                if(arrow) arrow.style.display = 'block';
             }
         }
 
