@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.3.0 (Slide Box Hint System & Large Dots)
+VERSION: 5.4.0 (Swipe & Drag Clue Box Support)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -74,10 +74,11 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             animation: slideIn 0.3s ease-out;
         }
 
-        /* FIX: Slide Box & Larger Dots */
-        .clue-slider-wrap { width: 100%; overflow: hidden; }
+        /* Slide Box & Swipeable Dots */
+        .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; }
+        .clue-slider-wrap:active { cursor: grabbing; }
         .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
-        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 15px; }
+        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 15px; pointer-events: none; }
         .clue-dots { display: flex; justify-content: center; gap: 15px; margin-top: 12px; width: 100%; padding-bottom: 5px; }
         .dot { width: 15px; height: 15px; border-radius: 50%; background: #d1d1ff; cursor: pointer; transition: 0.3s; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .dot.active { background: #6c5ce7; transform: scale(1.2); }
@@ -178,6 +179,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
     <script>
         let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = 'q', isMuted = false;
         let gameData = [];
+        let startX = 0, currentClueIdx = 0;
 
         const ranks = [
             { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
@@ -261,9 +263,11 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
                 area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${data.example.replace(/_+/g, `<b style='color:#6c5ce7;'>${isAnswered ? data.word.toLowerCase() : '______'}</b>`)}"`;
             } else {
                 btnH.classList.add('active');
-                // FIXED: Slide Box with Klu 1/2 and Klu 2/2 labels
+                currentClueIdx = 0; // Reset index klu setiap kali buka tab
                 area.innerHTML = `
-                    <div class="clue-slider-wrap">
+                    <div class="clue-slider-wrap" id="clue-touch-zone" 
+                         onmousedown="gestureStart(event)" onmouseup="gestureEnd(event)"
+                         ontouchstart="gestureStart(event)" ontouchend="gestureEnd(event)">
                         <div class="clue-slider-inner" id="clue-inner">
                             <div class="clue-slide"><b>KLU 1/2:</b><br>${data.h1 || 'Sila rujuk video.'}</div>
                             <div class="clue-slide"><b>KLU 2/2:</b><br>${data.h2 || 'Hampir tepat! Cuba lagi.'}</div>
@@ -278,11 +282,22 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             area.style.display = 'block';
         }
 
-        // NEW: Function to switch clues with large dots
+        // Gesture Logic
+        function gestureStart(e) { startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; }
+        function gestureEnd(e) {
+            let endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
+            let diff = startX - endX;
+            if (diff > 50) switchClue(1); // Swipe left
+            else if (diff < -50) switchClue(0); // Swipe right
+        }
+
         function switchClue(idx) {
             const inner = document.getElementById('clue-inner');
             const dots = document.querySelectorAll('.dot');
-            if(inner) inner.style.transform = `translateX(-${idx * 50}%)`;
+            if(inner) {
+                inner.style.transform = `translateX(-${idx * 50}%)`;
+                currentClueIdx = idx;
+            }
             dots.forEach((d, i) => {
                 if(i === idx) d.classList.add('active');
                 else d.classList.remove('active');
