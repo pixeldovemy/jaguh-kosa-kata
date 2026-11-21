@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.7.0 (Peek Effect & Static Arrow Update)
+VERSION: 5.8.0 (Proper Peek Effect & Static Arrow)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -74,7 +74,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             animation: slideIn 0.3s ease-out;
         }
 
-        /* PEEK EFFECT & STATIC ARROW */
+        /* CLUE SLIDER - PEEK EFFECT */
         .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; position: relative; }
         .clue-slider-wrap:active { cursor: grabbing; }
         
@@ -83,8 +83,8 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             content: '';
             position: absolute;
             top: 0; right: 0; bottom: 0;
-            width: 30px;
-            background: linear-gradient(to left, rgba(238, 235, 255, 0.8), transparent);
+            width: 40px;
+            background: linear-gradient(to left, rgba(238, 235, 255, 0.9), transparent);
             pointer-events: none;
             transition: opacity 0.3s ease;
             z-index: 2;
@@ -93,17 +93,17 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 
         .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
         
-        /* Slide width 90% for peek effect */
-        .clue-slide { width: 90%; flex-shrink: 0; padding-right: 15px; pointer-events: none; position: relative; }
+        /* Lebar 85% supaya baki 15% tunjuk sipi klu seterusnya (Peek Effect) */
+        .clue-slide { width: 85%; flex-shrink: 0; padding-right: 15px; pointer-events: none; position: relative; }
 
         /* Static Arrow */
         .slide-hint-arrow {
             position: absolute;
-            top: 0; right: 10px;
+            top: 0; right: 5px;
             font-size: 18px;
             color: #6c5ce7;
-            opacity: 0.7;
-            z-index: 3;
+            opacity: 0.8;
+            z-index: 5;
         }
 
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
@@ -318,8 +318,8 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             const arrow = document.getElementById('hint-arrow');
             
             if(inner) {
-                // Translation offset based on 90% slide width
-                inner.style.transform = `translateX(-${idx * 90}%)`;
+                // Pergerakan 85% supaya align dengan lebar slide peek
+                inner.style.transform = `translateX(-${idx * 85}%)`;
                 currentClueIdx = idx;
             }
             
