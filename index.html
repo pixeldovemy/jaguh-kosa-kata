@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.9.6 (Video Replay Limit Fix)
+VERSION: 5.9.7 (Integrated Settings + Print + Sound)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -114,7 +114,16 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         .hint-list { display: flex; flex-wrap: wrap; gap: 10px; max-height: 140px; overflow-y: auto; padding: 5px; justify-content: center; scrollbar-width: thin; }
         .hint-item { background: #fff; padding: 8px 15px; border-radius: 10px; font-size: 12px; color: #7f8c8d; border: 1px solid #eee; }
 
+        /* SETTINGS SPECIFIC CSS */
         #quit-page, #reset-modal, #settings-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.98); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; background: #f1f2f6; padding: 15px 20px; border-radius: 20px; margin-bottom: 15px; border: 2px solid #fff; width: 100%; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #6c5ce7; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
         .nav-arrow { background:none; border:none; cursor:pointer; font-size:24px; transition: 0.2s; padding: 0 10px; }
         .nav-arrow:disabled { filter: grayscale(1); cursor: not-allowed; opacity: 0.3; }
     </style>
@@ -181,7 +190,6 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             <button class="nav-arrow" id="next-soalan" onclick="nextSoalan()">➡️</button>
         </div>
         <p id="game-question" style="margin: 10px 0;">Memuatkan soalan...</p>
-        <!-- FIX: Dibuang 'loop' attribute -->
         <div class="video-wrapper"><video id="game-video" autoplay playsinline><source id="video-source" src="" type="video/mp4"></video></div>
         <div class="tab-container">
             <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
@@ -198,16 +206,46 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         <p id="result" style="min-height:25px; font-weight:bold; margin-top:15px; font-size:18px;"></p>
     </div>
 
-    <!-- MODALS -->
-    <div id="settings-page"><div class="container" style="display:flex;"><h1 class="brand">TETAPAN</h1><button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button></div></div>
+    <!-- 5. SETTINGS PAGE (INTEGRATED FROM V4.6) -->
+    <div id="settings-page">
+        <div class="container" style="display:flex; max-height: 90vh; overflow-y: auto; padding-top: 30px;">
+            <h1 class="brand">TETAPAN</h1>
+            
+            <div class="setting-row">
+                <span style="font-size:14px; font-weight:600;">Bunyi Permainan</span>
+                <label class="switch"><input type="checkbox" id="sound-toggle" checked onchange="toggleSound()"><span class="slider"></span></label>
+            </div>
+            
+            <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:15px; border: 2px solid #fff; width:100%;">
+                <b style="color:#6c5ce7; display:block; margin-bottom:10px; font-size:14px;">Cetak Soalan & Jawapan</b>
+                <button class="btn-main" style="padding:10px; font-size:12px; margin-bottom:8px; background:#6c5ce7; box-shadow:0 4px 0 #4834d4;" onclick="printQuestions(false)">IKUT URUTAN (1-500) 📄</button>
+                <button class="btn-main" style="padding:10px; font-size:12px; background:#a29bfe; box-shadow:0 4px 0 #764ba2;" onclick="printQuestions(true)">URUTAN RAWAK (SHUFFLE) 🎲</button>
+            </div>
+
+            <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:20px; width:100%;">
+                <b style="color:#6c5ce7; display:block; margin-bottom:5px; font-size:14px;">Tentang Kami</b>
+                <p style="font-size:12px; color:#666; margin:0; line-height:1.4;">Jaguh Kosa Kata AI adalah aplikasi pembelajaran Bahasa Melayu interaktif dari Pixel Dove Studio.</p>
+            </div>
+
+            <button class="btn-main" style="background:#00b894; box-shadow: 0 6px 0 #00876c; font-size:14px;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
+            <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
+            <div style="margin-top: 10px; font-size: 10px; color: #aaa; letter-spacing: 1px;">VERSI 5.9.7 &bull; PIXEL DOVE STUDIO</div>
+        </div>
+    </div>
+
+    <!-- OTHER MODALS -->
     <div id="quit-page"><div class="container" style="display:flex;"><h1>🥺</h1><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button></div></div>
-    <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan?</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757; box-shadow: 0 8px 0 #c0392b;">YA, RESET SMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
+    <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan?</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757; box-shadow: 0 8px 0 #c0392b;">YA, RESET SEMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
+
+    <!-- AUDIO ELEMENTS -->
+    <audio id="snd-kaching" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"></audio>
+    <audio id="snd-aww" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
 
     <script>
         let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = 'q', isMuted = false;
         let gameData = [];
-        let startX = 0, currentClueIdx = 0;
-        let playCount = 0; // FIX: Variable baru untuk kira pusingan video
+        let startX = 0, currentClueIdx = 0, playCount = 0;
+        const SHARE_LINK = "https://pixeldove.sellhiz.win/product/misi-pemulihan-3m-basic-copy?sh=cp";
 
         const ranks = [
             { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
@@ -218,17 +256,16 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         ];
 
         window.onload = function() {
-            // FIX: Tambah listener ended sekali sahaja di awal loading
             const video = document.getElementById('game-video');
             video.onended = function() {
                 playCount++;
-                if (playCount < 3) {
-                    video.play();
-                    document.getElementById('btn-video-toggle').innerText = "⏸️";
-                } else {
-                    document.getElementById('btn-video-toggle').innerText = "▶️";
-                }
+                if (playCount < 3) { video.play(); document.getElementById('btn-video-toggle').innerText = "⏸️"; } 
+                else { document.getElementById('btn-video-toggle').innerText = "▶️"; }
             };
+
+            // Audio Preference
+            isMuted = localStorage.getItem('jaguh_muted') === 'true';
+            document.getElementById('sound-toggle').checked = !isMuted;
 
             fetch('./data.json?v=' + Date.now())
                 .then(res => res.json())
@@ -238,10 +275,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
                     if (localStorage.getItem('jaguh_name')) showDashboard(); 
                     else showPage('startup-page');
                 })
-                .catch(err => {
-                    console.error("Data error:", err);
-                    showPage('startup-page');
-                });
+                .catch(err => { console.error("Data error:", err); showPage('startup-page'); });
         };
 
         function syncStats() {
@@ -249,31 +283,40 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             score = parseInt(localStorage.getItem('jaguh_score')) || 0;
         }
 
+        function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
+
+        function shareGame() { 
+            if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } 
+            else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } 
+        }
+
+        function printQuestions(isRandom) {
+            let dataToPrint = [...gameData];
+            if (isRandom) dataToPrint.sort(() => Math.random() - 0.5);
+            let printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Latihan Jaguh Kosa Kata AI</title><style>body{font-family:sans-serif; padding:40px;} .q-box{margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;} .ans{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; font-size:11px; margin-top:50px;}</style></head><body><h1>JAGUH KOSA KATA AI - MOD LATIHAN</h1>');
+            dataToPrint.forEach((item, index) => { printWindow.document.write(`<div class="q-box"><b>Soalan ${index+1}:</b> ${item.q || 'Teka aksi ini'}<br><i>Contoh: ${item.example || '______'}</i></div>`); });
+            printWindow.document.write('<div style="page-break-before:always;"><h2>Skema Jawapan</h2><div class="ans">');
+            dataToPrint.forEach((item, index) => { printWindow.document.write(`<div>${index+1}. ${item.word}</div>`); });
+            printWindow.document.write('</div></div></body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
         function saveAndStart() {
             const n = document.getElementById('player-name').value.trim();
             if (!n) return alert("Sila letak nama!");
-            localStorage.setItem('jaguh_name', n);
-            localStorage.setItem('jaguh_avatar', chosenAvatar);
+            localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar);
             startLevel(maxLevelReached);
         }
 
-        function startLevel(idx) { 
-            currentLevel = idx; 
-            loadLevel(currentLevel); 
-            initClues(); 
-            showPage('game-page'); 
-        }
+        function startLevel(idx) { currentLevel = idx; loadLevel(currentLevel); initClues(); showPage('game-page'); }
 
         function loadLevel(idx) {
-            const data = gameData[idx];
-            if (!data) return;
+            const data = gameData[idx]; if (!data) return;
             const video = document.getElementById('game-video');
             const levelNum = Math.floor(idx / 50) + 1;
-            
-            // FIX: Reset playCount setiap kali level/soalan baru diload
-            playCount = 0;
-            document.getElementById('btn-video-toggle').innerText = "⏸️";
-
+            playCount = 0; document.getElementById('btn-video-toggle').innerText = "⏸️";
             document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); 
             document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); 
             document.getElementById('game-level-title').innerText = `LEVEL ${levelNum}: ${ranks[levelNum-1].title}`;
@@ -281,47 +324,51 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             document.getElementById('game-question').innerText = data.q || "Tonton video dan teka aksi ini!";
             document.getElementById('video-source').src = data.vid;
             video.load();
-
             toggleTab('q'); 
-            
             document.getElementById('submit-btn').style.display = idx < maxLevelReached ? 'none' : 'block';
             document.getElementById('prev-soalan').disabled = (idx === 0);
             document.getElementById('next-soalan').disabled = (idx >= maxLevelReached);
-            document.getElementById('user-input').value = "";
-            document.getElementById('result').innerText = "";
+            document.getElementById('user-input').value = ""; document.getElementById('result').innerText = "";
             document.getElementById('score').innerText = score;
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('user-input').value.toLowerCase().trim();
+            const data = gameData[currentLevel];
+            if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
+                if(!isMuted) document.getElementById('snd-kaching').play();
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                score += 10; localStorage.setItem('jaguh_score', score);
+                if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
+                document.getElementById('result').innerText = "BETUL! 💰+10";
+                document.getElementById('result').style.color = "#2ed573";
+                setTimeout(() => { currentLevel++; if (currentLevel < gameData.length) loadLevel(currentLevel); else showDashboard(); }, 2000);
+            } else {
+                if(!isMuted) document.getElementById('snd-aww').play();
+                document.getElementById('result').innerText = "SALAH! 🙊";
+                document.getElementById('result').style.color = "#ff4757";
+            }
         }
 
         function toggleTab(t) {
             const data = gameData[currentLevel];
             const area = document.getElementById('tab-content');
-            const btnQ = document.getElementById('btn-tab-q');
-            const btnH = document.getElementById('btn-tab-h');
+            const btnQ = document.getElementById('btn-tab-q'); const btnH = document.getElementById('btn-tab-h');
             const isAnswered = currentLevel < maxLevelReached;
-
-            btnQ.classList.remove('active');
-            btnH.classList.remove('active');
-
+            btnQ.classList.remove('active'); btnH.classList.remove('active');
             if (t === 'q') {
                 btnQ.classList.add('active');
                 area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${data.example.replace(/_+/g, `<b style='color:#6c5ce7;'>${isAnswered ? data.word.toLowerCase() : '______'}</b>`)}"`;
             } else {
                 btnH.classList.add('active');
-                currentClueIdx = 0; 
                 area.innerHTML = `
-                    <div class="clue-dots">
-                        <div id="dot0" class="dot active" onclick="switchClue(0)"></div>
-                        <div id="dot1" class="dot" onclick="switchClue(1)"></div>
-                    </div>
-                    <div class="clue-slider-wrap" id="clue-touch-zone" 
-                         onmousedown="gestureStart(event)" onmouseup="gestureEnd(event)"
-                         ontouchstart="gestureStart(event)" ontouchend="gestureEnd(event)">
+                    <div class="clue-dots"><div id="dot0" class="dot active" onclick="switchClue(0)"></div><div id="dot1" class="dot" onclick="switchClue(1)"></div></div>
+                    <div class="clue-slider-wrap" id="clue-touch-zone" onmousedown="gestureStart(event)" onmouseup="gestureEnd(event)" ontouchstart="gestureStart(event)" ontouchend="gestureEnd(event)">
                         <div class="clue-slider-inner" id="clue-inner">
                             <div class="clue-slide"><b>KLU 1/2:</b><br>${data.h1 || 'Sila rujuk video.'}</div>
                             <div class="clue-slide"><b>KLU 2/2:</b><br>${data.h2 || 'Hampir tepat! Cuba lagi.'}</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
             area.style.display = 'block';
         }
@@ -330,51 +377,19 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         function gestureEnd(e) {
             let endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
             let diff = startX - endX;
-            if (diff > 50) switchClue(1); 
-            else if (diff < -50) switchClue(0); 
+            if (diff > 50) switchClue(1); else if (diff < -50) switchClue(0); 
         }
 
         function switchClue(idx) {
-            const inner = document.getElementById('clue-inner');
-            const dots = document.querySelectorAll('.dot');
-            if(inner) {
-                inner.style.transform = `translateX(-${idx * 50}%)`;
-                currentClueIdx = idx;
-            }
-            dots.forEach((d, i) => {
-                if(i === idx) d.classList.add('active');
-                else d.classList.remove('active');
-            });
-        }
-
-        function checkAnswer() {
-            const input = document.getElementById('user-input').value.toLowerCase().trim();
-            const data = gameData[currentLevel];
-            if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                score += 10;
-                localStorage.setItem('jaguh_score', score);
-                if (currentLevel === maxLevelReached) {
-                    maxLevelReached++;
-                    localStorage.setItem('jaguh_max', maxLevelReached);
-                }
-                document.getElementById('result').innerText = "BETUL! 💰+10";
-                document.getElementById('result').style.color = "#2ed573";
-                setTimeout(() => { currentLevel++; if (currentLevel < gameData.length) loadLevel(currentLevel); else showDashboard(); }, 2000);
-            } else {
-                document.getElementById('result').innerText = "SALAH! 🙊";
-                document.getElementById('result').style.color = "#ff4757";
-            }
+            const inner = document.getElementById('clue-inner'); const dots = document.querySelectorAll('.dot');
+            if(inner) { inner.style.transform = `translateX(-${idx * 50}%)`; currentClueIdx = idx; }
+            dots.forEach((d, i) => { if(i === idx) d.classList.add('active'); else d.classList.remove('active'); });
         }
 
         function showPage(id) { 
             const pages = ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
-            pages.forEach(p => { 
-                const el = document.getElementById(p);
-                if(el) el.style.display = 'none'; 
-            });
-            const target = document.getElementById(id);
-            if(target) target.style.display = 'flex';
+            pages.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = 'none'; });
+            const target = document.getElementById(id); if(target) target.style.display = 'flex';
         }
 
         function showDashboard() { 
@@ -396,11 +411,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
                 let grid = document.createElement('div'); grid.className = "level-grid";
                 for (let l = r.range[0]; l <= Math.min(r.range[1], gameData.length); l++) {
                     let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
-                    if (l <= maxLevelReached + 1) {
-                        node.classList.add('unlocked');
-                        if (l === maxLevelReached + 1) node.classList.add('current');
-                        node.onclick = () => startLevel(l - 1);
-                    }
+                    if (l <= maxLevelReached + 1) { node.classList.add('unlocked'); if (l === maxLevelReached + 1) node.classList.add('current'); node.onclick = () => startLevel(l - 1); }
                     grid.appendChild(node);
                 }
                 div.appendChild(grid); area.appendChild(div);
@@ -409,30 +420,22 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         }
 
         function toggleVideo() { 
-            const v = document.getElementById('game-video'); 
-            const b = document.getElementById('btn-video-toggle'); 
-            if (v.paused) { 
-                // Jika video dah habis (3 kali), tekan play akan reset counter ke 0 balik
-                if(playCount >= 3) playCount = 0; 
-                v.play(); 
-                b.innerText = "⏸️"; 
-            } else { 
-                v.pause(); 
-                b.innerText = "▶️"; 
-            } 
+            const v = document.getElementById('game-video'); const b = document.getElementById('btn-video-toggle'); 
+            if (v.paused) { if(playCount >= 3) playCount = 0; v.play(); b.innerText = "⏸️"; } 
+            else { v.pause(); b.innerText = "▶️"; } 
         }
         function prevSoalan() { if (currentLevel > 0) { currentLevel--; loadLevel(currentLevel); } }
         function nextSoalan() { if (currentLevel < maxLevelReached) { currentLevel++; loadLevel(currentLevel); } }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
         function initClues() { const list = document.getElementById('clue-list'); list.innerHTML = ""; gameData.slice(0, 20).forEach(d => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = d.word; list.appendChild(s); }); }
-        
         function openSettings() { showPage('settings-page'); }
-        function closeSettings() { showDashboard(); }
+        function closeSettings() { if(localStorage.getItem('jaguh_name')) showDashboard(); else showPage('startup-page'); }
         function continueGame() { showPage('game-page'); }
         function showQuitPage() { showPage('quit-page'); }
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
         function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
         function confirmReset() { localStorage.clear(); window.location.reload(); }
+        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
     </script>
 </body>
 </html>
