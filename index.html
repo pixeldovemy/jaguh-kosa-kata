@@ -1,3 +1,8 @@
+<!--
+PROJECT: JAGUH KOSA KATA AI
+VERSION: 5.3.0 (Dual Clue Slide Box & Dot Indicator)
+DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
+-->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -65,8 +70,17 @@
         .tab-content-area { 
             display: none; font-size: 14px; color: #444; background: #eeebff; padding: 15px; border-radius: 18px; margin-bottom: 15px; 
             text-align: left; border-left: 6px solid #6c5ce7; min-height: 60px; line-height: 1.6; width: 100%;
+            position: relative; overflow: hidden;
             animation: slideIn 0.3s ease-out;
         }
+
+        /* CLUE SLIDER STYLES */
+        .clue-slider-wrap { width: 100%; overflow: hidden; }
+        .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
+        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 10px; }
+        .clue-dots { display: flex; justify-content: center; gap: 8px; margin-top: 10px; width: 100%; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #d1d1ff; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: #6c5ce7; width: 20px; border-radius: 10px; }
 
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
         .hint-section { margin-top: 10px; background: #f8f9fa; padding: 20px; border-radius: 30px; border: 2px dashed #dcdde1; width: 100%; }
@@ -240,7 +254,6 @@
             const btnH = document.getElementById('btn-tab-h');
             const isAnswered = currentLevel < maxLevelReached;
 
-            // Reset semua class active
             btnQ.classList.remove('active');
             btnH.classList.remove('active');
 
@@ -249,9 +262,33 @@
                 area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${data.example.replace(/_+/g, `<b style='color:#6c5ce7;'>${isAnswered ? data.word.toLowerCase() : '______'}</b>`)}"`;
             } else {
                 btnH.classList.add('active');
-                area.innerHTML = `<b>Klu:</b><br>${data.h1}`;
+                // Structure Slide Box
+                area.innerHTML = `
+                    <div class="clue-slider-wrap">
+                        <div class="clue-slider-inner" id="clue-inner">
+                            <div class="clue-slide"><b>Klu 1:</b><br>${data.h1 || 'Tiada klu tersedia.'}</div>
+                            <div class="clue-slide"><b>Klu 2:</b><br>${data.h2 || 'Fikir sedalam-dalamnya!'}</div>
+                        </div>
+                    </div>
+                    <div class="clue-dots">
+                        <div class="dot active" onclick="switchClue(0)"></div>
+                        <div class="dot" onclick="switchClue(1)"></div>
+                    </div>
+                `;
             }
             area.style.display = 'block';
+        }
+
+        function switchClue(idx) {
+            const inner = document.getElementById('clue-inner');
+            const dots = document.querySelectorAll('.dot');
+            if(!inner) return;
+            
+            inner.style.transform = `translateX(-${idx * 50}%)`;
+            dots.forEach((d, i) => {
+                if(i === idx) d.classList.add('active');
+                else d.classList.remove('active');
+            });
         }
 
         function checkAnswer() {
