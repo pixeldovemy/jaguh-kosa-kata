@@ -1,3 +1,8 @@
+<!--
+PROJECT: JAGUH KOSA KATA AI
+VERSION: 5.9.5 (UI Fix: Full Width Text & Aligned Pills)
+DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
+-->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -64,8 +69,45 @@
         
         .tab-content-area { 
             display: none; font-size: 14px; color: #444; background: #eeebff; padding: 15px; border-radius: 18px; margin-bottom: 15px; 
-            text-align: left; border-left: 6px solid #6c5ce7; min-height: 60px; line-height: 1.6; width: 100%;
+            text-align: left; border-left: 6px solid #6c5ce7; min-height: 80px; line-height: 1.6; width: 100%;
+            overflow: hidden; position: relative;
             animation: slideIn 0.3s ease-out;
+        }
+
+        /* Slide Box & Pill Indicators */
+        .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; }
+        .clue-slider-wrap:active { cursor: grabbing; }
+        .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
+        
+        .clue-slide { 
+            width: 50%; 
+            flex-shrink: 0; 
+            padding-right: 15px; /* Ruang dikecilkan supaya teks guna lebar penuh */
+            padding-top: 5px;    /* Teks naik selari dengan Pill */
+            pointer-events: none; 
+            word-wrap: break-word;
+        }
+        
+        .clue-dots { 
+            position: absolute; 
+            top: 10px; 
+            right: 15px; 
+            display: flex; 
+            gap: 6px; 
+            z-index: 10;
+        }
+        .dot { 
+            width: 25px; 
+            height: 6px; 
+            border-radius: 10px; 
+            background: #d1d1ff; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            border: 1px solid #fff; 
+        }
+        .dot.active { 
+            background: #6c5ce7; 
+            width: 35px; 
         }
 
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
@@ -164,6 +206,7 @@
     <script>
         let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = 'q', isMuted = false;
         let gameData = [];
+        let startX = 0, currentClueIdx = 0;
 
         const ranks = [
             { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
@@ -222,7 +265,6 @@
             document.getElementById('video-source').src = data.vid;
             video.load();
 
-            // Selesaikan default tab setiap kali level bertukar
             toggleTab('q'); 
             
             document.getElementById('submit-btn').style.display = idx < maxLevelReached ? 'none' : 'block';
@@ -240,7 +282,6 @@
             const btnH = document.getElementById('btn-tab-h');
             const isAnswered = currentLevel < maxLevelReached;
 
-            // Reset semua class active
             btnQ.classList.remove('active');
             btnH.classList.remove('active');
 
@@ -249,9 +290,45 @@
                 area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${data.example.replace(/_+/g, `<b style='color:#6c5ce7;'>${isAnswered ? data.word.toLowerCase() : '______'}</b>`)}"`;
             } else {
                 btnH.classList.add('active');
-                area.innerHTML = `<b>Klu:</b><br>${data.h1}`;
+                currentClueIdx = 0; 
+                area.innerHTML = `
+                    <div class="clue-dots">
+                        <div id="dot0" class="dot active" onclick="switchClue(0)"></div>
+                        <div id="dot1" class="dot" onclick="switchClue(1)"></div>
+                    </div>
+                    <div class="clue-slider-wrap" id="clue-touch-zone" 
+                         onmousedown="gestureStart(event)" onmouseup="gestureEnd(event)"
+                         ontouchstart="gestureStart(event)" ontouchend="gestureEnd(event)">
+                        <div class="clue-slider-inner" id="clue-inner">
+                            <div class="clue-slide"><b>KLU 1/2:</b><br>${data.h1 || 'Sila rujuk video.'}</div>
+                            <div class="clue-slide"><b>KLU 2/2:</b><br>${data.h2 || 'Hampir tepat! Cuba lagi.'}</div>
+                        </div>
+                    </div>
+                `;
             }
             area.style.display = 'block';
+        }
+
+        // Gesture Logic
+        function gestureStart(e) { startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; }
+        function gestureEnd(e) {
+            let endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
+            let diff = startX - endX;
+            if (diff > 50) switchClue(1); // Swipe left
+            else if (diff < -50) switchClue(0); // Swipe right
+        }
+
+        function switchClue(idx) {
+            const inner = document.getElementById('clue-inner');
+            const dots = document.querySelectorAll('.dot');
+            if(inner) {
+                inner.style.transform = `translateX(-${idx * 50}%)`;
+                currentClueIdx = idx;
+            }
+            dots.forEach((d, i) => {
+                if(i === idx) d.classList.add('active');
+                else d.classList.remove('active');
+            });
         }
 
         function checkAnswer() {
@@ -326,7 +403,7 @@
         function continueGame() { showPage('game-page'); }
         function showQuitPage() { showPage('quit-page'); }
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
-        function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
+        function closeResetModal() { document.getElementById('reset-modal').style.none = 'none'; }
         function confirmReset() { localStorage.clear(); window.location.reload(); }
     </script>
 </body>
