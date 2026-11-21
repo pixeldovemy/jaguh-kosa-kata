@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.9.5 (UI Fix: Full Width Text & Aligned Pills)
+VERSION: 5.9.6 (Video Replay Limit Fix)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -74,7 +74,6 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             animation: slideIn 0.3s ease-out;
         }
 
-        /* Slide Box & Pill Indicators */
         .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; }
         .clue-slider-wrap:active { cursor: grabbing; }
         .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
@@ -82,8 +81,8 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         .clue-slide { 
             width: 50%; 
             flex-shrink: 0; 
-            padding-right: 15px; /* Ruang dikecilkan supaya teks guna lebar penuh */
-            padding-top: 5px;    /* Teks naik selari dengan Pill */
+            padding-right: 15px; 
+            padding-top: 5px;    
             pointer-events: none; 
             word-wrap: break-word;
         }
@@ -182,7 +181,8 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             <button class="nav-arrow" id="next-soalan" onclick="nextSoalan()">➡️</button>
         </div>
         <p id="game-question" style="margin: 10px 0;">Memuatkan soalan...</p>
-        <div class="video-wrapper"><video id="game-video" autoplay loop playsinline><source id="video-source" src="" type="video/mp4"></video></div>
+        <!-- FIX: Dibuang 'loop' attribute -->
+        <div class="video-wrapper"><video id="game-video" autoplay playsinline><source id="video-source" src="" type="video/mp4"></video></div>
         <div class="tab-container">
             <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
             <button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button>
@@ -201,12 +201,13 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
     <!-- MODALS -->
     <div id="settings-page"><div class="container" style="display:flex;"><h1 class="brand">TETAPAN</h1><button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button></div></div>
     <div id="quit-page"><div class="container" style="display:flex;"><h1>🥺</h1><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button></div></div>
-    <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan?</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757; box-shadow: 0 8px 0 #c0392b;">YA, RESET SEMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
+    <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan?</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757; box-shadow: 0 8px 0 #c0392b;">YA, RESET SMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
 
     <script>
         let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = 'q', isMuted = false;
         let gameData = [];
         let startX = 0, currentClueIdx = 0;
+        let playCount = 0; // FIX: Variable baru untuk kira pusingan video
 
         const ranks = [
             { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
@@ -217,6 +218,18 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         ];
 
         window.onload = function() {
+            // FIX: Tambah listener ended sekali sahaja di awal loading
+            const video = document.getElementById('game-video');
+            video.onended = function() {
+                playCount++;
+                if (playCount < 3) {
+                    video.play();
+                    document.getElementById('btn-video-toggle').innerText = "⏸️";
+                } else {
+                    document.getElementById('btn-video-toggle').innerText = "▶️";
+                }
+            };
+
             fetch('./data.json?v=' + Date.now())
                 .then(res => res.json())
                 .then(data => {
@@ -257,6 +270,10 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             const video = document.getElementById('game-video');
             const levelNum = Math.floor(idx / 50) + 1;
             
+            // FIX: Reset playCount setiap kali level/soalan baru diload
+            playCount = 0;
+            document.getElementById('btn-video-toggle').innerText = "⏸️";
+
             document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); 
             document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); 
             document.getElementById('game-level-title').innerText = `LEVEL ${levelNum}: ${ranks[levelNum-1].title}`;
@@ -309,13 +326,12 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             area.style.display = 'block';
         }
 
-        // Gesture Logic
         function gestureStart(e) { startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; }
         function gestureEnd(e) {
             let endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
             let diff = startX - endX;
-            if (diff > 50) switchClue(1); // Swipe left
-            else if (diff < -50) switchClue(0); // Swipe right
+            if (diff > 50) switchClue(1); 
+            else if (diff < -50) switchClue(0); 
         }
 
         function switchClue(idx) {
@@ -392,7 +408,19 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             showPage('map-page');
         }
 
-        function toggleVideo() { const v = document.getElementById('game-video'); const b = document.getElementById('btn-video-toggle'); if (v.paused) { v.play(); b.innerText = "⏸️"; } else { v.pause(); b.innerText = "▶️"; } }
+        function toggleVideo() { 
+            const v = document.getElementById('game-video'); 
+            const b = document.getElementById('btn-video-toggle'); 
+            if (v.paused) { 
+                // Jika video dah habis (3 kali), tekan play akan reset counter ke 0 balik
+                if(playCount >= 3) playCount = 0; 
+                v.play(); 
+                b.innerText = "⏸️"; 
+            } else { 
+                v.pause(); 
+                b.innerText = "▶️"; 
+            } 
+        }
         function prevSoalan() { if (currentLevel > 0) { currentLevel--; loadLevel(currentLevel); } }
         function nextSoalan() { if (currentLevel < maxLevelReached) { currentLevel++; loadLevel(currentLevel); } }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
@@ -403,7 +431,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         function continueGame() { showPage('game-page'); }
         function showQuitPage() { showPage('quit-page'); }
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
-        function closeResetModal() { document.getElementById('reset-modal').style.none = 'none'; }
+        function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
         function confirmReset() { localStorage.clear(); window.location.reload(); }
     </script>
 </body>
