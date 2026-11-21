@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.9.1 (Positioning Fix: Top-Right Dots)/ Divert code from v5.4
+VERSION: 5.9.2 (UI Update: Pill Indicators)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -70,27 +70,39 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         .tab-content-area { 
             display: none; font-size: 14px; color: #444; background: #eeebff; padding: 15px; border-radius: 18px; margin-bottom: 15px; 
             text-align: left; border-left: 6px solid #6c5ce7; min-height: 80px; line-height: 1.6; width: 100%;
-            overflow: hidden; position: relative; /* Ditambah untuk positioning dot */
+            overflow: hidden; position: relative;
             animation: slideIn 0.3s ease-out;
         }
 
-        /* Slide Box & Swipeable Dots */
+        /* Slide Box & Pill Indicators */
         .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; }
         .clue-slider-wrap:active { cursor: grabbing; }
         .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
-        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 40px; pointer-events: none; } /* Padding kanan ditambah supaya tak kena dot */
+        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 50px; pointer-events: none; }
         
-        /* Updated Dots to Top Right */
+        /* Updated Pill Style (Top Right) */
         .clue-dots { 
             position: absolute; 
             top: 15px; 
             right: 15px; 
             display: flex; 
-            gap: 8px; 
+            gap: 6px; 
             z-index: 10;
         }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: #d1d1ff; cursor: pointer; transition: 0.3s; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .dot.active { background: #6c5ce7; transform: scale(1.2); }
+        .dot { 
+            width: 25px; /* Pill width */
+            height: 6px; /* Pill height */
+            border-radius: 10px; 
+            background: #d1d1ff; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            border: 1px solid #fff; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .dot.active { 
+            background: #6c5ce7; 
+            width: 35px; /* Stretch effect when active */
+        }
 
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
         .hint-section { margin-top: 10px; background: #f8f9fa; padding: 20px; border-radius: 30px; border: 2px dashed #dcdde1; width: 100%; }
@@ -390,3 +402,4 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
     </script>
 </body>
 </html>
+```
