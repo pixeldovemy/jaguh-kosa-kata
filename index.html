@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.9.4 (UI: Aligned Header & Maximized Space)
+VERSION: 5.9.5 (UI Fix: Full Width Text & Aligned Pills)
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -82,7 +82,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         .clue-slide { 
             width: 50%; 
             flex-shrink: 0; 
-            padding-right: 85px; /* Rezab ruang untuk Pill di baris pertama */
+            padding-right: 15px; /* Ruang dikecilkan supaya teks guna lebar penuh */
             padding-top: 5px;    /* Teks naik selari dengan Pill */
             pointer-events: none; 
             word-wrap: break-word;
@@ -90,7 +90,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         
         .clue-dots { 
             position: absolute; 
-            top: 10px; /* Kedudukan sebaris dengan teks tajuk */
+            top: 10px; 
             right: 15px; 
             display: flex; 
             gap: 6px; 
@@ -403,7 +403,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         function continueGame() { showPage('game-page'); }
         function showQuitPage() { showPage('quit-page'); }
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
-        function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
+        function closeResetModal() { document.getElementById('reset-modal').style.none = 'none'; }
         function confirmReset() { localStorage.clear(); window.location.reload(); }
     </script>
 </body>
