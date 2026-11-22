@@ -312,6 +312,12 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 
         function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
 
+// TAMBAHAN: Update status video terus bila suis ditekan
+    const video = document.getElementById('game-video');
+    if (video) {
+        video.muted = isMuted;
+    }
+}
         function shareGame() { 
             if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } 
             else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } 
