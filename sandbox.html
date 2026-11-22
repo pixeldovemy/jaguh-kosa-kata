@@ -348,6 +348,8 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         function loadLevel(idx) {
             const data = gameData[idx]; if (!data) return;
             const video = document.getElementById('game-video');
+         // TAMBAHAN: Pastikan video baru ikut setting mute semasa
+            video.muted = isMuted; 
             const levelNum = Math.floor(idx / 50) + 1;
             playCount = 0; document.getElementById('btn-video-toggle').innerText = "⏸️";
             document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); 
