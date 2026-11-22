@@ -293,6 +293,11 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             // Audio Preference
             isMuted = localStorage.getItem('jaguh_muted') === 'true';
             document.getElementById('sound-toggle').checked = !isMuted;
+            
+            // TAMBAHAN: Set mute pada video masa mula-mula load
+                if (video) {
+                    video.muted = isMuted;
+                }
 
             fetch('./data.json?v=' + Date.now())
                 .then(res => res.json())
