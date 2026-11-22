@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.0.0
+VERSION: 6.1.0
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -254,7 +254,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 
             <button class="btn-main" style="background:#00b894; box-shadow: 0 6px 0 #00876c; font-size:14px;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 10px; font-size: 10px; color: #aaa; letter-spacing: 1px;">VERSI 5.9.7 &bull; PIXEL DOVE STUDIO</div>
+            <div style="margin-top: 10px; font-size: 10px; color: #aaa; letter-spacing: 1px;">VERSI 6.0.1 &bull; PIXEL DOVE STUDIO</div>
         </div>
     </div>
 
@@ -293,6 +293,11 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             // Audio Preference
             isMuted = localStorage.getItem('jaguh_muted') === 'true';
             document.getElementById('sound-toggle').checked = !isMuted;
+            
+            // TAMBAHAN: Set mute pada video masa mula-mula load
+                if (video) {
+                    video.muted = isMuted;
+                }
 
             fetch('./data.json?v=' + Date.now())
                 .then(res => res.json())
@@ -312,6 +317,11 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 
         function toggleSound() { isMuted = !document.getElementById('sound-toggle').checked; localStorage.setItem('jaguh_muted', isMuted); }
 
+// TAMBAHAN: Update status video terus bila suis ditekan
+    const video = document.getElementById('game-video');
+    if (video) {
+        video.muted = isMuted;
+    }
         function shareGame() { 
             if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } 
             else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } 
@@ -342,6 +352,8 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         function loadLevel(idx) {
             const data = gameData[idx]; if (!data) return;
             const video = document.getElementById('game-video');
+         // TAMBAHAN: Pastikan video baru ikut setting mute semasa
+            video.muted = isMuted; 
             const levelNum = Math.floor(idx / 50) + 1;
             playCount = 0; document.getElementById('btn-video-toggle').innerText = "⏸️";
             document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); 
