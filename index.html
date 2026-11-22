@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 5.9.8 (Integrated Settings + Print + Sound)
+VERSION: 5.9.9 
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -391,6 +391,16 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         function showPage(id) { 
             const pages = ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
             pages.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = 'none'; });
+    const v = document.getElementById('game-video');
+    const b = document.getElementById('btn-video-toggle');
+    if (id !== 'game-page' && v) {
+document.getElementById('snd-kaching').pause();
+document.getElementById('snd-kaching').currentTime = 0; // Reset balik ke saat ke-0
+document.getElementById('snd-aww').pause();
+document.getElementById('snd-aww').currentTime = 0;
+        v.pause(); // Pause video kalau bukan kat page game
+        if(b) b.innerText = "▶️"; // Tukar icon butang jadi Play
+}
             const target = document.getElementById(id); if(target) target.style.display = 'flex';
         }
 
@@ -438,6 +448,17 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
         function confirmReset() { localStorage.clear(); window.location.reload(); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
+
+// Logic untuk detect bila user keluar dari tab atau minimize browser
+document.addEventListener("visibilitychange", function() {
+    const v = document.getElementById('game-video');
+    const b = document.getElementById('btn-video-toggle');
+    
+    if (document.hidden) {
+        if(v) v.pause(); // Mute/Pause video bila tab disorok
+        if(b) b.innerText = "▶️";
+    }
+});
     </script>
 </body>
 </html>
