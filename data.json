@@ -6,7 +6,7 @@
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Adik ______ bola dengan kawan-kawannya di halaman rumah.",
     "h1": "Melakukan sesuatu yang seronok, seorang diri atau bersama orang lain",
-    "h2": "Berlaku di taman permainan atau padang"
+    "h2": "Hampir sama maksud : berseronok, beriadah, bersuka ria"
   },
   {
     "word": "berbaring",
@@ -14,17 +14,17 @@
     "vid": "videos/berbaring.mp4",
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Ayah ______ di atas sofa kerana terlalu letih.",
-    "h1": "Badan baring di atas katil atau sofa.",
-    "h2": "Meletakkan badan memanjang di atas sesuatu untuk berehat."
+    "h1": "Meletakkan seluruh badan di atas katil atau lantai",
+    "h2": "Hampir sama maksud : merebahkan diri, berehat,"
   },
   {
     "word": "menyiram",
     "root": "siram",
     "vid": "videos/menyiram.mp4",
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
-    "example": "Mak ______ pokok bunga kesayangannya pada waktu petang",
+    "example": "Mak ______ pokok bunga kesayangannya pada waktu petang.",
     "h1": "Diberi air dengan cara dicurahkan.",
-    "h2": "Pokok diberi air"
+    "h2": "Hampir sama maksud : membasahi, mengairi, menjirus"
   },
   {
     "word": "melekat",
@@ -33,7 +33,7 @@
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Gula-gula getah merah jambu ______ pada kasut adik semasa dia berjalan di koridor.",
     "h1": "Gula-gula getah tidak mahu tanggal dari kasut.",
-    "h2": "Terlekap atau tertempel pada sesuatu."
+    "h2": "Hampir sama maksud : tertempel, tertampal, bercantum"
   },
   {
     "word": "berehat",
@@ -42,16 +42,16 @@
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Para pekerja ______ di bawah pokok yang redup bersama bekal makanan mereka.",
     "h1": "Berhenti sekejap kerana penat.",
-    "h2": "Melepaskan lelah"
+    "h2": "Hampir sama maksud : bersantai, beristirahat, melepaskan lelah"
   },
   {
     "word": "berebut",
     "root": "rebut",
     "vid": "videos/berebut.mp4",
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
-    "example": "Kucing-kucing itu ______ ikan di dalam pinggan sambil saling mendesis",
-    "h1": "Saling berusaha dengan bersungguh-sungguh untuk mendapatkan sesuatu yang sama terlebih dahulu daripada pihak lain.",
-    "h2": "Masing-masing mahukan benda yang sama dan cuba ambil dulu."
+    "example": "Kucing-kucing itu ______ ikan di dalam pinggan sambil saling mendesis.",
+    "h1": "Masing-masing mahukan benda yang sama dan cuba ambil dulu.",
+    "h2": "Hampir sama maksud : bercakar, berkelahi, bertarung"
   },
   {
     "word": "bergoyang",
@@ -60,7 +60,7 @@
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Beberapa batang pokok kelapa di tepi pantai ______ ditiup angin petang.",
     "h1": "Bergerak ke sana ke mari atau ke kiri dan ke kanan secara berulang-ulang, tidak tetap pada kedudukannya.",
-    "h2": "Bila angin bertiup, daun pokok bergerak ke kiri dan ke kanan, ke kiri dan ke kanan."
+    "h2": "Hampir sama maksud : bergerak-gerak, meliuk-liuk, melambai-lambai"
   },
   {
     "word": "berbuai",
@@ -69,6 +69,24 @@
     "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
     "example": "Dua beradik itu seronok ______ di taman sehingga waktu senja.",
     "h1": "Duduk di atas tempat duduk yang tergantung sambil bergerak ke depan dan ke belakang.",
-    "h2": "Duduk di atas tempat duduk yang tergantung pada tali atau rantai."
+    "h2": "Hampir sama maksud : berayun, bergoyang"
+  },
+  {
+    "word": "berbual",
+    "root": "bual",
+    "vid": "videos/berbual.mp4",
+    "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
+    "example": "Adik ______ dengan ibu di ruang tamu selepas pulang dari sekolah.",
+    "h1": "Dua orang atau lebih bercakap-cakap antara satu sama lain",
+    "h2": "Hampir sama maksud : bersembang, berborak, bercakap-cakap"
+  },
+  {
+    "word": "bercakar",
+    "root": "cakar",
+    "vid": "videos/bercakar.mp4",
+    "q": "Tonton video dan taipkan kata kerja bagi aksi yang dilihat. Kata dasar pun tidak mengapa!",
+    "example": "Ayam jantan merah ______ dengan ayam jantan putih di hadapan reban kayu.",
+    "h1": "Dua ekor haiwan menyerang antara satu sama lain dengan kuku.",
+    "h2": "Hampir sama maksud bercakar: bergaduh, berkelahi, bertarung"
   }
 ]
