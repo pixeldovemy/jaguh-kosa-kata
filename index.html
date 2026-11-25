@@ -234,7 +234,20 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
     </div>
 
     <!-- OTHER MODALS -->
-    <div id="quit-page"><div class="container" style="display:flex;"><h1>MAHU REHAT? 🥺 Jangan risau! Progress anda disimpan secara automatik pada peranti ini </h1><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">Ya. Kembali ke PETA LEVEL</button></div></div>
+<div id="quit-page">
+<div class="container" style="display:flex;">
+<!-- Tajuk utama (saiz sederhana) -->
+<h1 style="font-size: 24px; margin-bottom: 10px;">MAHU REHAT? 🥺</h1>
+
+<!-- Penerangan (saiz kecil & warna lembut sikit) -->
+<p style="font-size: 14px; color: #636e72; margin-bottom: 25px; line-height: 1.5; padding: 0 10px;">
+Jangan risau! Progress anda disimpan secara automatik pada peranti ini.
+</p>
+
+<button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button>
+<button class="btn-main btn-alt" onclick="renderMap()">Ya. Kembali ke PETA LEVEL</button>
+</div>
+</div>
     <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan? Semua koin akan hilang.</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET SEMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
 
     <audio id="snd-kaching" src="audio/win.wav"></audio>
