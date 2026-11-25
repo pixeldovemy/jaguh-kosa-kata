@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.2.4
+VERSION: 6.2.5
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -193,12 +193,20 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         </div>
         <div id="tab-content" class="tab-content-area"></div>
         <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
-        <div class="hint-section">
-            <div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px; text-align: left;">BUNTU? CARI JAWAPAN DI SINI ✨</div>
-            <div style="font-size: 10px; color: #a29bfe; margin-bottom: 10px; text-align: left; font-style: italic;">Semakin anda skrol, semakin kuat ingatan kosa kata! 🧠</div>
-            <div class="hint-list" id="clue-list"></div>
-        </div>
-        <button class="btn-main btn-submit" id="submit-btn" onclick="checkAnswer()">HANTAR 🚀</button>
+
+<!-- BUTANG HANTAR JAWAPAN -->
+<button class="btn-main btn-submit" id="submit-btn" onclick="checkAnswer()" style="margin-top: 5px; margin-bottom: 20px;">HANTAR 🚀</button>
+        
+<div class="hint-section">
+    <!-- Teks header dah center -->
+    <div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px; text-align: center;">BUNTU? CARI JAWAPAN DI SINI ✨</div>
+    
+    <!-- Teks kecil pun dah center -->
+    <div style="font-size: 10px; color: #a29bfe; margin-bottom: 10px; text-align: center; font-style: italic;">Semakin anda skrol, semakin kuat ingatan kosa kata! 🧠</div>
+    
+    <div class="hint-list" id="clue-list"></div>
+</div>
+
         <p id="result" style="min-height:25px; font-weight:bold; margin-top:10px; font-size:18px;"></p>
     </div>
 
@@ -221,7 +229,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
     </div>
             <button class="btn-main" style="background:#00b894;" onclick="shareGame()">KONGSI GAME DENGAN RAKAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 10px; font-size: 10px; color: #aaa;">VERSI 6.2.4 &bull; PIXEL DOVE STUDIO</div>
+            <div style="margin-top: 10px; font-size: 10px; color: #aaa;">VERSI <span id="v-auto">6.0.0</span> &bull; PIXEL DOVE STUDIO</div>
         </div>
     </div>
 
@@ -247,6 +255,19 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         ];
 
         window.onload = function() {
+// Scan comment untuk dapatkan Version
+const nodes = document.childNodes;
+for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].nodeType === 8) { // 8 adalah Comment Node
+        const match = nodes[i].nodeValue.match(/VERSION:\s*([\d\.]+)/);
+        if (match) {
+            document.getElementById('v-auto').innerText = match[1];
+            break;
+        }
+    }
+}
+  // --- END AUTO VERSION SCANNER ---
+            
             const video = document.getElementById('game-video');
             video.onended = function() {
                 playCount++;
