@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.2.3
+VERSION: 6.2.4
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -213,17 +213,21 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:15px; border: 2px solid #fff; width:100%;">
                 <b style="color:#6c5ce7; display:block; margin-bottom:10px; font-size:14px;">Cetak Soalan & Jawapan</b>
                 <button class="btn-main" style="padding:10px; font-size:12px; margin-bottom:8px; background:#6c5ce7;" onclick="printQuestions(false)">IKUT URUTAN 📄</button>
-                <button class="btn-main" style="padding:10px; font-size:12px; background:#a29bfe;" onclick="printQuestions(true)">RAWAK 🎲</button>
+                <button class="btn-main" style="padding:10px; font-size:12px; background:#a29bfe;" onclick="printQuestions(true)">SOALAN RAWAK 🎲</button>
             </div>
-            <button class="btn-main" style="background:#00b894;" onclick="shareGame()">KONGSI GAME 📢</button>
+            <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:20px; width:100%;">
+    <b style="color:#6c5ce7; display:block; margin-bottom:5px; font-size:14px;">Tentang Kami</b>
+    <p style="font-size:12px; color:#666; margin:0; line-height:1.4;">Jaguh Kosa Kata adalah aplikasi pembelajaran Bahasa Melayu interaktif dari Pixel Dove Studio.</p>
+    </div>
+            <button class="btn-main" style="background:#00b894;" onclick="shareGame()">KONGSI GAME DENGAN RAKAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 10px; font-size: 10px; color: #aaa;">VERSI 6.2.3 &bull; PIXEL DOVE STUDIO</div>
+            <div style="margin-top: 10px; font-size: 10px; color: #aaa;">VERSI 6.2.4 &bull; PIXEL DOVE STUDIO</div>
         </div>
     </div>
 
     <!-- OTHER MODALS -->
     <div id="quit-page"><div class="container" style="display:flex;"><h1>🥺</h1><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button></div></div>
-    <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan?</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET SEMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
+    <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan? Semua koin akan hilang.</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET SEMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
 
     <audio id="snd-kaching" src="audio/win.wav"></audio>
     <audio id="snd-aww" src="audio/wrong.wav"></audio>
