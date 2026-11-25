@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.2.1
+VERSION: 6.2.2
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -135,9 +135,49 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         }
 
         input { padding: 18px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
-        .hint-section { margin-top: 10px; background: #f8f9fa; padding: 20px; border-radius: 30px; border: 2px dashed #dcdde1; width: 100%; }
-        .hint-list { display: flex; flex-wrap: wrap; gap: 10px; max-height: 140px; overflow-y: auto; padding: 5px; justify-content: center; scrollbar-width: thin; }
-        .hint-item { background: #fff; padding: 8px 15px; border-radius: 10px; font-size: 12px; color: #7f8c8d; border: 1px solid #eee; }
+        
+    /* Kotak luar hint - Sekarang lebih bersih & premium */
+    .hint-section { 
+        margin-top: 15px; 
+        background: #ffffff; 
+        padding: 20px; 
+        border-radius: 30px; 
+        border: 2px solid #eeebff; 
+        width: 100%;
+        box-shadow: 0 10px 20px rgba(108, 92, 231, 0.05);
+    }
+    
+    /* List hint - 3 kolum & ruang skrol lebih tinggi */
+    .hint-list { 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 10px; 
+        max-height: 250px; /* Kita tinggikan lagi sikit */
+        overflow-y: auto; 
+        padding: 10px 5px; 
+        scrollbar-width: thin;
+    }
+    
+    /* Item hint - Nampak macam butang tapi tak auto-isi */
+    .hint-item { 
+        background: #f8f9fa; 
+        padding: 12px 5px; 
+        border-radius: 15px; 
+        font-size: 11px; 
+        color: #636e72; 
+        border: 1px solid #eee;
+        text-align: center;
+        font-weight: 600;
+        transition: 0.3s;
+        cursor: default; /* Tak nampak macam pointer supaya tak rasa nak tekan */
+}
+
+    /* Efek bila tersentuh - Sekadar highlight saja */
+    .hint-item:hover {
+        background: #eeebff;
+        color: #6c5ce7;
+        border-color: #6c5ce7;
+}
 
         /* SETTINGS SPECIFIC CSS */
         #quit-page, #reset-modal, #settings-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.98); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
@@ -257,7 +297,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 
             <button class="btn-main" style="background:#00b894; box-shadow: 0 6px 0 #00876c; font-size:14px;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 10px; font-size: 10px; color: #aaa; letter-spacing: 1px;">VERSI 6.2.1 &bull; PIXEL DOVE STUDIO</div>
+            <div style="margin-top: 10px; font-size: 10px; color: #aaa; letter-spacing: 1px;">VERSI 6.2.2 &bull; PIXEL DOVE STUDIO</div>
         </div>
     </div>
 
