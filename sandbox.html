@@ -496,9 +496,10 @@ for (let i = 0; i < nodes.length; i++) {
             if (l === maxLevelReached + 1)                                     node.classList.add('current');
             node.onclick = () => startLevel(l - 1);
             }
-                    grid.appendChild(node);
-                }
-                div.appendChild(grid); area.appendChild(div);
+            grid.appendChild(node);
+            }
+            div.appendChild(grid); 
+            area.appendChild(div);
             });
             showPage('map-page');
         }
