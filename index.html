@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.4.0
+VERSION: 6.5.0
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -192,6 +192,13 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             <button id="btn-video-toggle" class="tab-btn" style="flex:0.4;" onclick="toggleVideo()">⏸️</button>
         </div>
         <div id="tab-content" class="tab-content-area"></div>
+        <div id="scramble-container" style="display:none; margin-bottom: 10px;">
+<div style="font-size: 10px; color: #6c5ce7; font-weight: bold; margin-bottom: 5px;">HURUF BANTUAN:</div>
+<div id="scramble-letters" style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;"></div>
+</div>
+<button id="btn-buy-hint" onclick="buyHint()" style="background: #f1c40f; color: #000; border: none; border-radius: 15px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; margin-bottom: 15px; width: 80%; box-shadow: 0 4px 0 #d35400;">
+💡 BELI KLU (💰4)
+</button>
         <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
 
 <!-- BUTANG HANTAR JAWAPAN -->
@@ -390,6 +397,10 @@ for (let i = 0; i < nodes.length; i++) {
 
             document.getElementById('result').innerText = "";
             document.getElementById('score').innerText = score;
+            // RESET POWER-UP UNTUK SOALAN BARU
+
+document.getElementById('scramble-container').style.display = 'none';
+document.getElementById('btn-buy-hint').style.display = isAnswered ? 'none' : 'block';
         }
 
         function checkAnswer() {
@@ -552,7 +563,29 @@ console.log("Selesaikan soalan ni dulu, bro!");
             const v = document.getElementById('game-video');
             if (document.hidden && v) { v.pause(); document.getElementById('btn-video-toggle').innerText = "▶️"; }
         });
-       
+        
+       function buyHint() {
+if (score < 4) {
+alert("Koin tak cukup! Kena kumpul koin lagi. 💰");
+return;
+}
+score -= 4;
+localStorage.setItem('jaguh_score', score);
+document.getElementById('score').innerText = score;
+const data = gameData[currentLevel];
+const word = data.word.toUpperCase();
+const scrambledArray = word.split('').sort(() => Math.random() - 0.5);
+const displayArea = document.getElementById('scramble-letters');
+displayArea.innerHTML = "";
+scrambledArray.forEach(char => {
+const box = document.createElement('span');
+box.innerText = char;
+box.style.cssText = "background: #fff; border: 2px solid #6c5ce7; color: #6c5ce7; padding: 5px 12px; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 3px 0 #eeebff;";
+displayArea.appendChild(box);
+});
+document.getElementById('scramble-container').style.display = 'block';
+document.getElementById('btn-buy-hint').style.display = 'none';
+}
     </script>
 </body>
 </html>
