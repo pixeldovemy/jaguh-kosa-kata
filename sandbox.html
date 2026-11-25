@@ -229,7 +229,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
     </div>
             <button class="btn-main" style="background:#00b894;" onclick="shareGame()">KONGSI GAME DENGAN RAKAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 10px; font-size: 10px; color: #aaa;">VERSI 6.2.5 &bull; PIXEL DOVE STUDIO</div>
+            <div style="margin-top: 10px; font-size: 10px; color: #aaa;">VERSI <span id="v-auto">6.0.0</span> &bull; PIXEL DOVE STUDIO</div>
         </div>
     </div>
 
@@ -255,6 +255,19 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         ];
 
         window.onload = function() {
+// Scan comment untuk dapatkan Version
+const nodes = document.childNodes;
+for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].nodeType === 8) { // 8 adalah Comment Node
+        const match = nodes[i].nodeValue.match(/VERSION:\s*([\d\.]+)/);
+        if (match) {
+            document.getElementById('v-auto').innerText = match[1];
+            break;
+        }
+    }
+}
+  // --- END AUTO VERSION SCANNER ---
+            
             const video = document.getElementById('game-video');
             video.onended = function() {
                 playCount++;
