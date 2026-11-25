@@ -503,9 +503,47 @@ for (let i = 0; i < nodes.length; i++) {
             });
             showPage('map-page');
         }
+function toggleVideo() { 
+            const v = document.getElementById('game-video'); const b = document.getElementById('btn-video-toggle'); 
+            if (v.paused) { if(playCount >= 3) playCount = 0; v.play(); b.innerText = "⏸️"; } 
+            else { v.pause(); b.innerText = "▶️"; } 
+        }
+        function prevSoalan() { if (currentLevel > 0) { currentLevel--; loadLevel(currentLevel); } }
+       function nextSoalan() {
+// 1. Check dulu dia ni admin ke bukan
+const isAdmin = localStorage.getItem('jaguh_name') === SECRET_KEY;
 
-        function toggleVideo() { 
-            const v = document.getElementById('game-video'); const b = document.getElementById('btn-video-toggl openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
+// 2. Kalau dia dah lepas level tu (currentLevel < maxLevelReached)
+// ATAU dia adalah admin (|| isAdmin), baru boleh jalan
+if (currentLevel < maxLevelReached || isAdmin) {
+
+// 3. Check juga supaya tak terlepas lebih dari jumlah soalan yang ada
+if (currentLevel < gameData.length - 1) {
+currentLevel++;
+loadLevel(currentLevel);
+}
+} else {
+// Kalau user biasa cuba skip level yang belum unlock,
+// kita boleh bagi amaran (optional)
+console.log("Selesaikan soalan ni dulu, bro!");
+}
+}
+        function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
+      
+        function initClues() {
+            const list = document.getElementById('clue-list');
+            list.innerHTML = "";
+            const sortedWords = gameData.slice(0, 100).map(d => d.word).sort((a, b) => a.localeCompare(b));
+            sortedWords.forEach(word => {
+                let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = word;
+                list.appendChild(s);
+            });
+        }
+        function openSettings() { showPage('settings-page'); }
+        function closeSettings() { if(localStorage.getItem('jaguh_name')) showDashboard(); else showPage('startup-page'); }
+        function continueGame() { showPage('game-page'); }
+        function showQuitPage() { showPage('quit-page'); }
+        function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
         function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
         function confirmReset() { localStorage.clear(); window.location.reload(); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
@@ -514,6 +552,7 @@ for (let i = 0; i < nodes.length; i++) {
             const v = document.getElementById('game-video');
             if (document.hidden && v) { v.pause(); document.getElementById('btn-video-toggle').innerText = "▶️"; }
         });
+       
     </script>
 </body>
 </html>
