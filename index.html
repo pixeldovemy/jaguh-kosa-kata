@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.1.0
+VERSION: 6.2.0
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -254,7 +254,7 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 
             <button class="btn-main" style="background:#00b894; box-shadow: 0 6px 0 #00876c; font-size:14px;" onclick="shareGame()">KONGSI DENGAN KAWAN 📢</button>
             <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 10px; font-size: 10px; color: #aaa; letter-spacing: 1px;">VERSI 6.0.1 &bull; PIXEL DOVE STUDIO</div>
+            <div style="margin-top: 10px; font-size: 10px; color: #aaa; letter-spacing: 1px;">VERSI 6.2.0 &bull; PIXEL DOVE STUDIO</div>
         </div>
     </div>
 
@@ -476,7 +476,23 @@ document.getElementById('snd-aww').currentTime = 0;
         function prevSoalan() { if (currentLevel > 0) { currentLevel--; loadLevel(currentLevel); } }
         function nextSoalan() { if (currentLevel < maxLevelReached) { currentLevel++; loadLevel(currentLevel); } }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
-        function initClues() { const list = document.getElementById('clue-list'); list.innerHTML = ""; gameData.slice(0, 20).forEach(d => { let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = d.word; list.appendChild(s); }); }
+      
+        function initClues() {
+    const list = document.getElementById('clue-list');
+    list.innerHTML = "";
+    
+    // Ambil 100 perkataan & susun ikut abjad
+    const sortedWords = gameData.slice(0, 100)
+        .map(d => d.word)
+        .sort((a, b) => a.localeCompare(b));
+
+    sortedWords.forEach(word => {
+        let s = document.createElement('span');
+        s.className = 'hint-item';
+        s.innerText = word;
+        list.appendChild(s);
+    });
+}
         function openSettings() { showPage('settings-page'); }
         function closeSettings() { if(localStorage.getItem('jaguh_name')) showDashboard(); else showPage('startup-page'); }
         function continueGame() { showPage('game-page'); }
