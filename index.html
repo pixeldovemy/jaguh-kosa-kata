@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.4.0
+VERSION: 6.7.0
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -166,49 +166,67 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         <div id="map-area"></div>
     </div>
 
-    <!-- 4. GAME PAGE -->
-    <div id="game-page" class="container">
-        <div style="width:100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span id="game-avatar" style="font-size: 24px;">🤖</span>
-                <span id="game-name" style="font-weight:600; font-size:16px;">Pemain</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <div style="background: #ffd32a; padding: 6px 15px; border-radius: 15px; font-weight: bold; font-size: 14px;" id="score-container">💰 <span id="score">0</span></div>
-                <button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-weight: bold;">✕</button>
-            </div>
-        </div>
-        <div id="game-level-title" style="font-size: 14px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px;">Sila Tunggu...</div>
-        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px;">
-            <button class="nav-arrow" id="prev-soalan" onclick="prevSoalan()">⬅️</button>
-            <div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase;" id="level-text">SOALAN 1</div>
-            <button class="nav-arrow" id="next-soalan" onclick="nextSoalan()">➡️</button>
-        </div>
-        <p id="game-question" style="margin: 10px 0; font-size: 14px; line-height: 1.4;">Memuatkan soalan...</p>
-        <div class="video-wrapper"><video id="game-video" autoplay playsinline><source id="video-source" src="" type="video/mp4"></video></div>
-        <div class="tab-container">
-            <button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
-            <button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button>
-            <button id="btn-video-toggle" class="tab-btn" style="flex:0.4;" onclick="toggleVideo()">⏸️</button>
-        </div>
-        <div id="tab-content" class="tab-content-area"></div>
-        <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
-
-<!-- BUTANG HANTAR JAWAPAN -->
-<button class="btn-main btn-submit" id="submit-btn" onclick="checkAnswer()" style="margin-top: 5px; margin-bottom: 20px;">HANTAR 🚀</button>
-        
-<div class="hint-section">
-    <!-- Teks header dah center -->
-    <div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px; text-align: center;">BUNTU? CARI JAWAPAN DI SINI ✨</div>
-    
-    <!-- Teks kecil pun dah center -->
-    <div style="font-size: 10px; color: #a29bfe; margin-bottom: 10px; text-align: center; font-style: italic;">Semakin anda skrol, semakin kuat ingatan kosa kata! 🧠</div>
-    
-    <div class="hint-list" id="clue-list"></div>
+   <!-- 4. GAME PAGE (VERSI TERKINI) -->
+<div id="game-page" class="container">
+<div style="width:100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<span id="game-avatar" style="font-size: 24px;">🤖</span>
+<span id="game-name" style="font-weight:600; font-size:16px;">Pemain</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="background: #ffd32a; padding: 6px 15px; border-radius: 15px; font-weight: bold; font-size: 14px;" id="score-container">💰 <span id="score">0</span></div>
+<button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-weight: bold;">✕</button>
+</div>
 </div>
 
-        <p id="result" style="min-height:25px; font-weight:bold; margin-top:10px; font-size:18px;"></p>
-    </div>
+<div id="game-level-title" style="font-size: 14px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px;">Sila Tunggu...</div>
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px;">
+<button class="nav-arrow" id="prev-soalan" onclick="prevSoalan()">⬅️</button>
+<div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase;" id="level-text">SOALAN 1</div>
+<button class="nav-arrow" id="next-soalan" onclick="nextSoalan()">➡️</button>
+</div>
+
+<p id="game-question" style="margin: 10px 0; font-size: 14px; line-height: 1.4;">Memuatkan soalan...</p>
+
+<div class="video-wrapper">
+<video id="game-video" autoplay playsinline><source id="video-source" src="" type="video/mp4"></video>
+</div>
+
+<div class="tab-container">
+<button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
+<button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button>
+<button id="btn-video-toggle" class="tab-btn" style="flex:0.4;" onclick="toggleVideo()">⏸️</button>
+</div>
+
+<div id="tab-content" class="tab-content-area"></div>
+
+<!-- CONTAINER HURUF BANTUAN (KELUAR LEPAS BELI) -->
+<div id="scramble-container" style="display:none; margin-bottom: 10px;">
+<div style="font-size: 10px; color: #6c5ce7; font-weight: bold; margin-bottom: 5px;">HURUF BANTUAN:</div>
+<div id="scramble-letters" style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;"></div>
+</div>
+
+<!-- 1. RUANG JAWAPAN -->
+<input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
+
+<!-- 2. BUTANG BELI KLU -->
+<button id="btn-buy-hint" onclick="buyHint()" style="background: #f1c40f; color: #000; border: none; border-radius: 15px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; margin-bottom: 10px; width: 80%; box-shadow: 0 4px 0 #d35400;">
+💡 BELI KLU (💰4)
+</button>
+
+<!-- 3. BUTANG HANTAR -->
+<button class="btn-main btn-submit" id="submit-btn" onclick="checkAnswer()" style="margin-top: 5px; margin-bottom: 20px;">HANTAR 🚀</button>
+
+<!-- SECTION CARI JAWAPAN (SCROLLABLE) -->
+<div class="hint-section">
+<div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px; text-align: center;">BUNTU? CARI JAWAPAN DI SINI ✨</div>
+<div style="font-size: 10px; color: #a29bfe; margin-bottom: 10px; text-align: center; font-style: italic;">Semakin anda skrol, semakin kuat ingatan kosa kata! 🧠</div>
+<div class="hint-list" id="clue-list"></div>
+</div>
+
+<p id="result" style="min-height:25px; font-weight:bold; margin-top:10px; font-size:18px;"></p>
+</div>
 
     <!-- 5. SETTINGS PAGE -->
     <div id="settings-page">
@@ -390,6 +408,26 @@ for (let i = 0; i < nodes.length; i++) {
 
             document.getElementById('result').innerText = "";
             document.getElementById('score').innerText = score;
+            // RESET POWER-UP UNTUK SOALAN BARU
+
+//document.getElementById('scramble-container').style.display = 'none';
+//document.getElementById('btn-buy-hint').style.display = isAnswered ? 'none' : 'block';
+
+    // --- SISTEM INGATAN KLU (FIXED) ---
+    let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
+    
+    if (isAnswered) {
+        // Kalau dah jawab, sorok semua
+        document.getElementById('scramble-container').style.display = 'none';
+        document.getElementById('btn-buy-hint').style.display = 'none';
+    } else if (boughtHints.includes(idx)) {
+        // Kalau BELUM jawab tapi PERNAH beli klu, terus tunjuk!
+        renderScramble(); 
+    } else {
+        // Kalau baru pertama kali sampai & belum beli
+        document.getElementById('scramble-container').style.display = 'none';
+        document.getElementById('btn-buy-hint').style.display = 'block';
+    }
         }
 
         function checkAnswer() {
@@ -545,14 +583,67 @@ console.log("Selesaikan soalan ni dulu, bro!");
         function showQuitPage() { showPage('quit-page'); }
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
         function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
-        function confirmReset() { localStorage.clear(); window.location.reload(); }
+        function confirmReset() { localStorage.clear(); // Ini akan padam semua termasuk jaguh_bought_hints
+window.location.reload(); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
 
         document.addEventListener("visibilitychange", function() {
             const v = document.getElementById('game-video');
             if (document.hidden && v) { v.pause(); document.getElementById('btn-video-toggle').innerText = "▶️"; }
         });
+
+function buyHint() {
+    // 1. Ambil rekod klu yang pernah dibeli dari simpanan (localStorage)
+    let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
+    
+    // 2. Kalau dah pernah beli untuk level ni, terus tunjuk klu (jangan tolak koin)
+    if (boughtHints.includes(currentLevel)) {
+        renderScramble();
+        return;
+    }
+
+    // 3. Proses tolak koin (hanya kalau belum pernah beli)
+    if (score < 4) {
+        alert("Koin tak cukup! Kena kumpul koin lagi. 💰");
+        return;
+    }
+
+    // Tolak koin & simpan score baru
+    score -= 4;
+    localStorage.setItem('jaguh_score', score);
+    document.getElementById('score').innerText = score;
+
+    // 4. Simpan level ni dalam senarai "Dah Beli"
+    boughtHints.push(currentLevel);
+    localStorage.setItem('jaguh_bought_hints', JSON.stringify(boughtHints));
+
+    // 5. Tampilkan klu kat skrin
+    renderScramble();
+}
+
        
+function renderScramble() {
+    const data = gameData[currentLevel];
+    const word = data.word.toUpperCase();
+    
+    // Pecahkan huruf dan bersepahkan secara rawak
+    const scrambledArray = word.split('').sort(() => Math.random() - 0.5);
+    const displayArea = document.getElementById('scramble-letters');
+    
+    displayArea.innerHTML = "";
+    scrambledArray.forEach(char => {
+        const box = document.createElement('span');
+        box.innerText = char;
+        // Styling huruf bantuan
+        box.style.cssText = "background: #fff; border: 2px solid #6c5ce7; color: #6c5ce7; padding: 5px 12px; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 3px 0 #eeebff;";
+        displayArea.appendChild(box);
+    });
+    
+    // Sorok butang beli, tunjuk container huruf
+    document.getElementById('scramble-container').style.display = 'block';
+    document.getElementById('btn-buy-hint').style.display = 'none';
+} 
+        
     </script>
 </body>
 </html>
