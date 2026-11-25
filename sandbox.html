@@ -234,7 +234,20 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
     </div>
 
     <!-- OTHER MODALS -->
-    <div id="quit-page"><div class="container" style="display:flex;"><h1>🥺</h1><button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button><button class="btn-main btn-alt" onclick="renderMap()">PETA LEVEL</button></div></div>
+<div id="quit-page">
+<div class="container" style="display:flex;">
+<!-- Tajuk utama (saiz sederhana) -->
+<h1 style="font-size: 24px; margin-bottom: 10px;">MAHU REHAT? 🥺</h1>
+
+<!-- Penerangan (saiz kecil & warna lembut sikit) -->
+<p style="font-size: 14px; color: #636e72; margin-bottom: 25px; line-height: 1.5; padding: 0 10px;">
+Jangan risau! Progress anda disimpan secara automatik pada peranti ini.
+</p>
+
+<button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button>
+<button class="btn-main btn-alt" onclick="renderMap()">Ya. Kembali ke PETA LEVEL</button>
+</div>
+</div>
     <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan? Semua koin akan hilang.</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET SEMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
 
     <audio id="snd-kaching" src="audio/win.wav"></audio>
@@ -245,7 +258,8 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
         let gameData = [];
         let startX = 0, currentClueIdx = 0, playCount = 0;
         const SHARE_LINK = "https://pixeldove.sellhiz.win/product/misi-pemulihan-3m-basic-copy?sh=cp";
-
+        //superadmin role
+        const SECRET_KEY = "mmr0518";
         const ranks = [
             { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
             { title: "Pengembara Gigih 🗺️", range: [101, 150] }, { title: "Perajurit Perkasa 🛡️", range: [151, 200] },
@@ -332,6 +346,10 @@ for (let i = 0; i < nodes.length; i++) {
         
         function loadLevel(idx) {
             const data = gameData[idx]; if (!data) return;
+
+            //role superadmin
+            const isAdmin = localStorage.getItem('jaguh_name') === SECRET_KEY;
+
             const video = document.getElementById('game-video');
             video.muted = isMuted; 
             const levelNum = Math.floor(idx / 50) + 1;
@@ -366,7 +384,10 @@ for (let i = 0; i < nodes.length; i++) {
     }
 
             document.getElementById('prev-soalan').disabled = (idx === 0);
-            document.getElementById('next-soalan').disabled = (idx >= maxLevelReached);
+            
+// MOD ADMIN: Butang 'Next' sentiasa boleh ditekan kalau guna mmr0518
+    document.getElementById('next-soalan').disabled = isAdmin ? (idx >= gameData.length - 1) : (idx >= maxLevelReached);
+
             document.getElementById('result').innerText = "";
             document.getElementById('score').innerText = score;
         }
@@ -458,27 +479,55 @@ for (let i = 0; i < nodes.length; i++) {
 
         function renderMap() {
             const area = document.getElementById('map-area'); area.innerHTML = "";
+
+   // Check kalau nama yang didaftar ialah mmr0518
+    const isAdmin = localStorage.getItem('jaguh_name') === SECRET_KEY;
+            
             ranks.forEach((r, i) => {
                 let div = document.createElement('div'); div.className = "map-section";
                 div.innerHTML = `<div class="map-section-title">Level ${i+1}: ${r.title}</div>`;
                 let grid = document.createElement('div'); grid.className = "level-grid";
                 for (let l = r.range[0]; l <= Math.min(r.range[1], gameData.length); l++) {
                     let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
-                    if (l <= maxLevelReached + 1) { node.classList.add('unlocked'); if (l === maxLevelReached + 1) node.classList.add('current'); node.onclick = () => startLevel(l - 1); }
-                    grid.appendChild(node);
-                }
-                div.appendChild(grid); area.appendChild(div);
+
+ // MOD ADMIN: Kalau isAdmin TRUE, semua node jadi 'unlocked'
+            if (l <= maxLevelReached + 1 || isAdmin) { 
+            node.classList.add('unlocked');
+            if (l === maxLevelReached + 1)                                     node.classList.add('current');
+            node.onclick = () => startLevel(l - 1);
+            }
+            grid.appendChild(node);
+            }
+            div.appendChild(grid); 
+            area.appendChild(div);
             });
             showPage('map-page');
         }
-
-        function toggleVideo() { 
+function toggleVideo() { 
             const v = document.getElementById('game-video'); const b = document.getElementById('btn-video-toggle'); 
             if (v.paused) { if(playCount >= 3) playCount = 0; v.play(); b.innerText = "⏸️"; } 
             else { v.pause(); b.innerText = "▶️"; } 
         }
         function prevSoalan() { if (currentLevel > 0) { currentLevel--; loadLevel(currentLevel); } }
-        function nextSoalan() { if (currentLevel < maxLevelReached) { currentLevel++; loadLevel(currentLevel); } }
+       function nextSoalan() {
+// 1. Check dulu dia ni admin ke bukan
+const isAdmin = localStorage.getItem('jaguh_name') === SECRET_KEY;
+
+// 2. Kalau dia dah lepas level tu (currentLevel < maxLevelReached)
+// ATAU dia adalah admin (|| isAdmin), baru boleh jalan
+if (currentLevel < maxLevelReached || isAdmin) {
+
+// 3. Check juga supaya tak terlepas lebih dari jumlah soalan yang ada
+if (currentLevel < gameData.length - 1) {
+currentLevel++;
+loadLevel(currentLevel);
+}
+} else {
+// Kalau user biasa cuba skip level yang belum unlock,
+// kita boleh bagi amaran (optional)
+console.log("Selesaikan soalan ni dulu, bro!");
+}
+}
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
       
         function initClues() {
@@ -503,6 +552,7 @@ for (let i = 0; i < nodes.length; i++) {
             const v = document.getElementById('game-video');
             if (document.hidden && v) { v.pause(); document.getElementById('btn-video-toggle').innerText = "▶️"; }
         });
+       
     </script>
 </body>
 </html>
