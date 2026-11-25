@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.6.0
+VERSION: 6.7.0
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -410,8 +410,24 @@ for (let i = 0; i < nodes.length; i++) {
             document.getElementById('score').innerText = score;
             // RESET POWER-UP UNTUK SOALAN BARU
 
-document.getElementById('scramble-container').style.display = 'none';
-document.getElementById('btn-buy-hint').style.display = isAnswered ? 'none' : 'block';
+//document.getElementById('scramble-container').style.display = 'none';
+//document.getElementById('btn-buy-hint').style.display = isAnswered ? 'none' : 'block';
+
+    // --- SISTEM INGATAN KLU (FIXED) ---
+    let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
+    
+    if (isAnswered) {
+        // Kalau dah jawab, sorok semua
+        document.getElementById('scramble-container').style.display = 'none';
+        document.getElementById('btn-buy-hint').style.display = 'none';
+    } else if (boughtHints.includes(idx)) {
+        // Kalau BELUM jawab tapi PERNAH beli klu, terus tunjuk!
+        renderScramble(); 
+    } else {
+        // Kalau baru pertama kali sampai & belum beli
+        document.getElementById('scramble-container').style.display = 'none';
+        document.getElementById('btn-buy-hint').style.display = 'block';
+    }
         }
 
         function checkAnswer() {
@@ -567,36 +583,67 @@ console.log("Selesaikan soalan ni dulu, bro!");
         function showQuitPage() { showPage('quit-page'); }
         function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
         function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
-        function confirmReset() { localStorage.clear(); window.location.reload(); }
+        function confirmReset() { localStorage.clear(); // Ini akan padam semua termasuk jaguh_bought_hints
+window.location.reload(); }
         document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
 
         document.addEventListener("visibilitychange", function() {
             const v = document.getElementById('game-video');
             if (document.hidden && v) { v.pause(); document.getElementById('btn-video-toggle').innerText = "▶️"; }
         });
+
+function buyHint() {
+    // 1. Ambil rekod klu yang pernah dibeli dari simpanan (localStorage)
+    let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
+    
+    // 2. Kalau dah pernah beli untuk level ni, terus tunjuk klu (jangan tolak koin)
+    if (boughtHints.includes(currentLevel)) {
+        renderScramble();
+        return;
+    }
+
+    // 3. Proses tolak koin (hanya kalau belum pernah beli)
+    if (score < 4) {
+        alert("Koin tak cukup! Kena kumpul koin lagi. 💰");
+        return;
+    }
+
+    // Tolak koin & simpan score baru
+    score -= 4;
+    localStorage.setItem('jaguh_score', score);
+    document.getElementById('score').innerText = score;
+
+    // 4. Simpan level ni dalam senarai "Dah Beli"
+    boughtHints.push(currentLevel);
+    localStorage.setItem('jaguh_bought_hints', JSON.stringify(boughtHints));
+
+    // 5. Tampilkan klu kat skrin
+    renderScramble();
+}
+
+       
+function renderScramble() {
+    const data = gameData[currentLevel];
+    const word = data.word.toUpperCase();
+    
+    // Pecahkan huruf dan bersepahkan secara rawak
+    const scrambledArray = word.split('').sort(() => Math.random() - 0.5);
+    const displayArea = document.getElementById('scramble-letters');
+    
+    displayArea.innerHTML = "";
+    scrambledArray.forEach(char => {
+        const box = document.createElement('span');
+        box.innerText = char;
+        // Styling huruf bantuan
+        box.style.cssText = "background: #fff; border: 2px solid #6c5ce7; color: #6c5ce7; padding: 5px 12px; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 3px 0 #eeebff;";
+        displayArea.appendChild(box);
+    });
+    
+    // Sorok butang beli, tunjuk container huruf
+    document.getElementById('scramble-container').style.display = 'block';
+    document.getElementById('btn-buy-hint').style.display = 'none';
+} 
         
-       function buyHint() {
-if (score < 4) {
-alert("Koin tak cukup! Kena kumpul koin lagi. 💰");
-return;
-}
-score -= 4;
-localStorage.setItem('jaguh_score', score);
-document.getElementById('score').innerText = score;
-const data = gameData[currentLevel];
-const word = data.word.toUpperCase();
-const scrambledArray = word.split('').sort(() => Math.random() - 0.5);
-const displayArea = document.getElementById('scramble-letters');
-displayArea.innerHTML = "";
-scrambledArray.forEach(char => {
-const box = document.createElement('span');
-box.innerText = char;
-box.style.cssText = "background: #fff; border: 2px solid #6c5ce7; color: #6c5ce7; padding: 5px 12px; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 3px 0 #eeebff;";
-displayArea.appendChild(box);
-});
-document.getElementById('scramble-container').style.display = 'block';
-document.getElementById('btn-buy-hint').style.display = 'none';
-}
     </script>
 </body>
 </html>
