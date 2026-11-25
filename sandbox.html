@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.3.0
+VERSION: 6.4.0
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -192,6 +192,18 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
             <button id="btn-video-toggle" class="tab-btn" style="flex:0.4;" onclick="toggleVideo()">⏸️</button>
         </div>
         <div id="tab-content" class="tab-content-area"></div>
+        
+<!-- Bahagian Papar Huruf Terabur -->
+<div id="scramble-container" style="display:none; margin-bottom: 10px; animation: slideIn 0.3s ease;">
+    <div style="font-size: 10px; color: #6c5ce7; font-weight: bold; margin-bottom: 5px;">HURUF BANTUAN:</div>
+    <div id="scramble-letters" style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;"></div>
+</div>
+
+<!-- Butang Beli Hint -->
+<button id="btn-buy-hint" onclick="buyHint()" style="background: #f1c40f; color: #000; border: none; border-radius: 15px; padding: 8px 15px; font-weight: bold; font-size: 12px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 0 #d35400; transition: 0.2s;">
+    💡 BELI HURUF TERABUR (💰4)
+</button>
+
         <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
 
 <!-- BUTANG HANTAR JAWAPAN -->
