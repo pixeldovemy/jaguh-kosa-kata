@@ -328,12 +328,21 @@ for (let i = 0; i < nodes.length; i++) {
 
         function startLevel(idx) { currentLevel = idx; loadLevel(currentLevel); initClues(); showPage('game-page'); }
 
+// --- BAHAGIAN SCRIPT YANG DIKEMASKINI ---
+        
         function loadLevel(idx) {
             const data = gameData[idx]; if (!data) return;
             const video = document.getElementById('game-video');
             video.muted = isMuted; 
             const levelNum = Math.floor(idx / 50) + 1;
             playCount = 0; document.getElementById('btn-video-toggle').innerText = "⏸️";
+            
+// Status sama ada level ni dah pernah dijawab
+            
+    const isAnswered = idx < maxLevelReached;
+    const inputField = document.getElementById('user-input');
+    const submitBtn = document.getElementById('submit-btn');
+    
             document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); 
             document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); 
             document.getElementById('game-level-title').innerText = `LEVEL ${levelNum}: ${ranks[levelNum-1].title}`;
@@ -342,6 +351,19 @@ for (let i = 0; i < nodes.length; i++) {
             document.getElementById('video-source').src = data.vid;
             video.load();
             toggleTab('q'); 
+
+// LOGIC BARU: Sembunyikan input & butang jika sudah dijawab
+    if (isAnswered) {
+        inputField.style.display = 'none';
+        submitBtn.style.display = 'none';
+    } else {
+        inputField.style.display = 'block';
+        submitBtn.style.display = 'block';
+        inputField.value = ""; 
+        inputField.focus(); // Terus fokus untuk user taip
+    }
+
+            
             document.getElementById('submit-btn').style.display = idx < maxLevelReached ? 'none' : 'block';
             document.getElementById('prev-soalan').disabled = (idx === 0);
             document.getElementById('next-soalan').disabled = (idx >= maxLevelReached);
@@ -352,6 +374,9 @@ for (let i = 0; i < nodes.length; i++) {
         function checkAnswer() {
             const input = document.getElementById('user-input').value.toLowerCase().trim();
             const data = gameData[currentLevel];
+
+ // Elakkan check kalau input kosong
+    if (!input) return;
             if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
                 if(!isMuted) document.getElementById('snd-kaching').play();
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
@@ -359,6 +384,11 @@ for (let i = 0; i < nodes.length; i++) {
                 if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
                 document.getElementById('result').innerText = "BETUL! 💰+10";
                 document.getElementById('result').style.color = "#2ed573";
+
+// Sembunyikan terus lepas betul supaya tak boleh spam Enter
+        inputField.style.display = 'none';
+        submitBtn.style.display = 'none';
+                
                 setTimeout(() => { currentLevel++; if (currentLevel < gameData.length) loadLevel(currentLevel); else showDashboard(); }, 2000);
             } else {
                 if(!isMuted) document.getElementById('snd-aww').play();
