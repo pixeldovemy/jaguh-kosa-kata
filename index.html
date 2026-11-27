@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.1.0
+VERSION: 7.2.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -128,9 +128,36 @@ DEVELOPER: PIXEL DOVE STUDIO
 
         .nav-arrow { background:none; border:none; cursor:pointer; font-size:24px; transition: 0.2s; padding: 0 10px; }
         .nav-arrow:disabled { filter: grayscale(1); cursor: not-allowed; opacity: 0.3; }
+    
+/* NOTIFIKASI JAGUH CUSTOM */
+#custom-alert {
+    position: fixed; 
+    top: 20px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    background: #ff4757; 
+    color: white; 
+    padding: 15px 30px;
+    border-radius: 25px; 
+    font-weight: 600; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    display: none; 
+    z-index: 10000; 
+    animation: popDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    min-width: 280px;
+    border: 3px solid #ffffff;
+}
+
+@keyframes popDown {
+    from { top: -100px; opacity: 0; }
+    to { top: 20px; opacity: 1; }
+}
+    
     </style>
 </head>
 <body>
+
+    <div id="custom-alert">Mesej Notifikasi</div>
 
     <!-- 0. SECURITY GATE (PINTU UTAMA) -->
     <div id="security-page" class="container" style="display: none;">
@@ -289,6 +316,18 @@ Jangan risau! Progress anda disimpan secara automatik pada peranti ini.
     <audio id="snd-aww" src="audio/wrong.wav"></audio>
 
     <script>
+
+        function jaguhAlert(msg, color = "#ff4757") {
+            const alertBox = document.getElementById('custom-alert');
+            alertBox.innerText = msg;
+            alertBox.style.background = color;
+            alertBox.style.display = 'block';
+            
+            // Hilang automatik lepas 2.5 saat
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 2500);
+        }
         let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = 'q', isMuted = false;
         let gameData = [];
         let startX = 0, currentClueIdx = 0, playCount = 0;
@@ -337,34 +376,34 @@ for (let i = 0; i < nodes.length; i++) {
 };
 
 // Function baru untuk load data soalan
-function initGame() {
-    fetch('./data.json?v=' + Date.now())
-        .then(res => res.json())
-        .then(data => {
-            gameData = data;
-            syncStats();
-            if (localStorage.getItem('jaguh_name')) showDashboard(); 
-            else showPage('startup-page');
-        })
-        .catch(err => { 
-            console.error("Data error:", err); 
-            alert("Ralat memuatkan data. Sila pastikan data.json wujud.");
-            showPage('startup-page'); 
-        });
-}
+        function initGame() {
+            fetch('./data.json?v=' + Date.now())
+                .then(res => res.json())
+                .then(data => {
+                    gameData = data;
+                    syncStats();
+                    if (localStorage.getItem('jaguh_name')) showDashboard(); 
+                    else showPage('startup-page');
+                })
+                .catch(err => { 
+                    console.error("Data error:", err); 
+                    jaguhAlert("Ralat memuatkan data. Sila pastikan data.json wujud.");
+                    showPage('startup-page'); 
+                });
+        }
 
 // Function untuk verify password
-function verifyAccess() {
-    const code = document.getElementById('access-code').value.trim();
-    if (code === "JAGUH2024") { // TUKAR PASSWORD KAU KAT SINI
-        localStorage.setItem('jaguh_authorized', 'true');
-        confetti({ particleCount: 100, spread: 70 });
-        alert("Akses Diterima! Selamat Datang Jaguh.");
-        initGame();
-    } else {
-        alert("Kod Akses Salah! Sila dapatkan kod yang sah.");
-    }
-}
+        function verifyAccess() {
+            const code = document.getElementById('access-code').value.trim();
+            if (code === "JAGUH2024") { // TUKAR PASSWORD KAU KAT SINI
+                localStorage.setItem('jaguh_authorized', 'true');
+                confetti({ particleCount: 100, spread: 70 });
+                jaguhAlert("Akses Diterima! Selamat Datang Jaguh.");
+                initGame();
+            } else {
+                jaguhAlert("Kod Akses Salah! Sila dapatkan kod yang sah.");
+            }
+        }
 // --- SAMPAI SINI ---
 
         function syncStats() {
@@ -380,7 +419,8 @@ function verifyAccess() {
 
         function shareGame() { 
             if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata', text: 'Jom main game teka kosa kata ni!', url: SHARE_LINK }); } 
-            else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } 
+            else { navigator.clipboard.writeText(SHARE_LINK); 
+jaguhAlert("Link disalin!", "#6c5ce7");} 
         }
 
         function printQuestions(isRandom) {
@@ -398,7 +438,7 @@ function verifyAccess() {
 
         function saveAndStart() {
             const n = document.getElementById('player-name').value.trim();
-            if (!n) return alert("Sila letak nama!");
+            if (!n) return jaguhAlert("Sila letak nama!");
             localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar);
             startLevel(maxLevelReached);
         }
@@ -688,7 +728,7 @@ function buyHint() {
 
     // 3. Proses tolak koin (hanya kalau belum pernah beli)
     if (score < 4) {
-        alert("Koin tak cukup! Kena kumpul koin lagi. 💰");
+        jaguhAlert("Koin tak cukup! Kena kumpul koin lagi. 💰");
         return;
     }
 
