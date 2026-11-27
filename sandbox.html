@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.7.0
+VERSION: 6.8.0
 DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
@@ -395,6 +395,13 @@ for (let i = 0; i < nodes.length; i++) {
     } else {
         inputField.style.display = 'block';
         submitBtn.style.display = 'block';
+
+// --- TAMBAH DUA BARIS NI UNTUK SAFETY ---
+    submitBtn.disabled = false; 
+    submitBtn.style.opacity = "1";
+    inputField.disabled = false;
+    // ---------------------------------------
+    
         inputField.value = ""; 
         setTimeout(() => 
         inputField.focus(), 100); // Guna timeout sikit supaya focus lebih stabil
@@ -438,9 +445,16 @@ for (let i = 0; i < nodes.length; i++) {
     const input = inputField.value.toLowerCase().trim();
             const data = gameData[currentLevel];
 
- // Elakkan check kalau input kosong
     if (!input) return;
             if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
+
+        // --- FIX BERMULA DI SINI ---
+        submitBtn.disabled = true; // Matikan butang terus!
+        inputField.disabled = true; // Matikan input supaya tak boleh taip lagi
+        submitBtn.style.opacity = "0.5"; // Bagi nampak visual "off"
+        // --- FIX TAMAT ---
+
+                
                 if(!isMuted) document.getElementById('snd-kaching').play();
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 score += 10; localStorage.setItem('jaguh_score', score);
@@ -448,11 +462,21 @@ for (let i = 0; i < nodes.length; i++) {
                 document.getElementById('result').innerText = "BETUL! 💰+10";
                 document.getElementById('result').style.color = "#2ed573";
 
-// Kunci terus input & butang sejurus lepas betul
-        inputField.style.display = 'none';
-        submitBtn.style.display = 'none';
-                
-                setTimeout(() => { currentLevel++; if (currentLevel < gameData.length) loadLevel(currentLevel); else showDashboard(); }, 2000);
+                document.getElementById('score').innerText = score;
+
+        setTimeout(() => { 
+            currentLevel++; 
+            if (currentLevel < gameData.length) {
+                // Reset balik status butang/input untuk level baru
+                submitBtn.disabled = false;
+                inputField.disabled = false;
+                submitBtn.style.opacity = "1";
+                loadLevel(currentLevel); 
+            } else { 
+                showDashboard(); 
+            } 
+        }, 2000);
+
             } else {
                 if(!isMuted) document.getElementById('snd-aww').play();
                 document.getElementById('result').innerText = "Opps! Cuba lagi 🙊";
