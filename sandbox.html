@@ -564,13 +564,17 @@ function verifyAccess() {
             if(inner) { inner.style.transform = `translateX(-${idx * 50}%)`; currentClueIdx = idx; }
             dots.forEach((d, i) => { if(i === idx) d.classList.add('active'); else d.classList.remove('active'); });
         }
-
+        
         function showPage(id) { 
-            const pages = ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
+            // Tambah 'security-page' dalam list ni
+            const pages = ['security-page', 'startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
             pages.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = 'none'; });
+            
             const v = document.getElementById('game-video');
             if (id !== 'game-page' && v) v.pause();
-            const target = document.getElementById(id); if(target) target.style.display = 'flex';
+            
+            const target = document.getElementById(id); 
+            if(target) target.style.display = 'flex';
         }
 
         function showDashboard() { 
