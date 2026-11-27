@@ -387,7 +387,7 @@ for (let i = 0; i < nodes.length; i++) {
 
    // 3. SECURITY CHECK (LOGIC BARU)
     if (localStorage.getItem('jaguh_authorized') === 'true') {
-        initGame(); // Dah login? Terus load data
+        initGame(true); // Dah login? Terus load data
     } else {
         showPage('security-page'); // Belum login? Tahan kat pintu
     }
