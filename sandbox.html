@@ -417,6 +417,7 @@ for (let i = 0; i < nodes.length; i++) {
                 localStorage.setItem('jaguh_authorized', 'true');
                 confetti({ particleCount: 100, spread: 70 });
                 jaguhAlert("Akses Diterima! Selamat Datang Jaguh!","#2ed573");
+                initGame();
                 showPage('welcome-page');
             } else {
                 jaguhAlert("Kod Akses Salah! Sila dapatkan kod yang sah.");
