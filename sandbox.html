@@ -184,7 +184,7 @@ DEVELOPER: PIXEL DOVE STUDIO
             <small style="color: #6c5ce7; font-weight: bold; text-transform: uppercase;">Misi Anda:</small><br>
             <span style="font-size: 13px; color: #444;">Tonton video, teka aksi, dan kumpul koin emas untuk jadi Jaguh Ulung!</span>
         </div>
-        <button class="btn-main" onclick="showPage('startup-page')">SAYA SEDIA! ⚔️</button>
+        <button class="btn-main" onclick="mulaMisi()">SAYA SEDIA! ⚔️</button>
     </div>
     
     <!-- 1. STARTUP -->
@@ -400,13 +400,11 @@ for (let i = 0; i < nodes.length; i++) {
                 .then(data => {
                     gameData = data;
                     syncStats();
-                    if (localStorage.getItem('jaguh_name')) showDashboard(); 
-                    else showPage('startup-page');
+                   console.log("Data Jaguh Ready!");
                 })
                 .catch(err => { 
                     console.error("Data error:", err); 
-                    jaguhAlert("Ralat memuatkan data. Sila pastikan data.json wujud.");
-                    showPage('startup-page'); 
+                    jaguhAlert("Ralat memuatkan data. Sila pastikan data.json wujud.","#ff4757"); 
                 });
         }
 
@@ -425,6 +423,14 @@ for (let i = 0; i < nodes.length; i++) {
         }
 // --- SAMPAI SINI ---
 
+        function mulaMisi() {
+    // Sekarang baru kita tentukan nak ke mana
+    if (localStorage.getItem('jaguh_name')) {
+    showDashboard();
+    } else {
+    showPage('startup-page');
+    }
+    }
         function syncStats() {
             maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0;
             score = parseInt(localStorage.getItem('jaguh_score')) || 0;
