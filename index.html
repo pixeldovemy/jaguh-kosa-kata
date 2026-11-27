@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 6.8.1
+VERSION: 6.9.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -8,7 +8,14 @@ DEVELOPER: PIXEL DOVE STUDIO
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
     <title>JAGUH KOSA KATA - PIXEL DOVE STUDIO</title>
+   <link rel="manifest" href="manifest.json">
+   <meta name="theme-color" content="#6c5ce7">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+   <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
+    
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -667,7 +674,15 @@ function renderScramble() {
     document.getElementById('scramble-container').style.display = 'block';
     document.getElementById('btn-buy-hint').style.display = 'none';
 } 
-        
+
+   if ('serviceWorker' in navigator) {
+     window.addEventListener('load', () => {
+       navigator.serviceWorker.register('/sw.js')
+         .then(reg => console.log('Service Worker registered!', reg))
+         .catch(err => console.error('Service Worker failed!', err));
+     });
+   }
+
     </script>
 </body>
 </html>
