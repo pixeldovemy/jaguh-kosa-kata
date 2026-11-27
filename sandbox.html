@@ -394,13 +394,16 @@ for (let i = 0; i < nodes.length; i++) {
 };
 
 // Function baru untuk load data soalan
-        function initGame() {
+        function initGame(isReturning = false) {
             fetch('./data.json?v=' + Date.now())
                 .then(res => res.json())
                 .then(data => {
                     gameData = data;
                     syncStats();
                    console.log("Data Jaguh Ready!");
+                    if (isReturning) {
+mulaMisi(); // Terus ke Dashboard/Startup kalau pembeli lama
+}
                 })
                 .catch(err => { 
                     console.error("Data error:", err); 
