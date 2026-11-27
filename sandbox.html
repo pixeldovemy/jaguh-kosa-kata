@@ -1,14 +1,21 @@
 <!--
-PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.8.0
-DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
+PROJECT: JAGUH KOSA KATA
+VERSION: 6.9.0
+DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAGUH KOSA KATA AI - PIXEL DOVE STUDIO</title>
+   
+    <title>JAGUH KOSA KATA - PIXEL DOVE STUDIO</title>
+   <link rel="manifest" href="manifest.json">
+   <meta name="theme-color" content="#6c5ce7">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+   <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
+    
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -334,7 +341,7 @@ for (let i = 0; i < nodes.length; i++) {
         }
 
         function shareGame() { 
-            if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } 
+            if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata', text: 'Jom main game teka kosa kata ni!', url: SHARE_LINK }); } 
             else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } 
         }
 
@@ -342,7 +349,7 @@ for (let i = 0; i < nodes.length; i++) {
             let dataToPrint = [...gameData];
             if (isRandom) dataToPrint.sort(() => Math.random() - 0.5);
             let printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Latihan Jaguh Kosa Kata AI</title><style>body{font-family:sans-serif; padding:40px;} .q-box{margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;} .ans{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; font-size:11px; margin-top:50px;}</style></head><body><h1>JAGUH KOSA KATA AI - MOD LATIHAN</h1>');
+            printWindow.document.write('<html><head><title>Latihan Jaguh Kosa Kata</title><style>body{font-family:sans-serif; padding:40px;} .q-box{margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;} .ans{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; font-size:11px; margin-top:50px;}</style></head><body><h1>JAGUH KOSA KATA - MOD LATIHAN</h1>');
             dataToPrint.forEach((item, index) => { printWindow.document.write(`<div class="q-box"><b>Soalan ${index+1}:</b> ${item.q || 'Teka aksi ini'}<br><i>Contoh: ${item.example || '______'}</i></div>`); });
             printWindow.document.write('<div style="page-break-before:always;"><h2>Skema Jawapan</h2><div class="ans">');
             dataToPrint.forEach((item, index) => { printWindow.document.write(`<div>${index+1}. ${item.word}</div>`); });
@@ -667,7 +674,15 @@ function renderScramble() {
     document.getElementById('scramble-container').style.display = 'block';
     document.getElementById('btn-buy-hint').style.display = 'none';
 } 
-        
+
+   if ('serviceWorker' in navigator) {
+     window.addEventListener('load', () => {
+       navigator.serviceWorker.register('/sw.js')
+         .then(reg => console.log('Service Worker registered!', reg))
+         .catch(err => console.error('Service Worker failed!', err));
+     });
+   }
+
     </script>
 </body>
 </html>
