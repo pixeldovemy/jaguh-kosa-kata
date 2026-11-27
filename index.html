@@ -1,14 +1,21 @@
 <!--
-PROJECT: JAGUH KOSA KATA AI
-VERSION: 6.8.0
-DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
+PROJECT: JAGUH KOSA KATA
+VERSION: 7.0.0
+DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAGUH KOSA KATA AI - PIXEL DOVE STUDIO</title>
+   
+    <title>JAGUH KOSA KATA - PIXEL DOVE STUDIO</title>
+   <link rel="manifest" href="manifest.json">
+   <meta name="theme-color" content="#6c5ce7">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+   <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
+    
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -125,6 +132,16 @@ DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 </head>
 <body>
 
+    <!-- 0. SECURITY GATE (PINTU UTAMA) -->
+    <div id="security-page" class="container" style="display: none;">
+        <h1 class="brand">AKSES JAGUH</h1>
+        <p style="color: #636e72; font-size: 14px;">Sila masukkan kod akses anda</p>
+        <div style="font-size: 50px; margin: 20px 0;">🔐</div>
+        <input type="password" id="access-code" placeholder="Kod Rahsia..." style="letter-spacing: 5px;">
+        <button class="btn-main" onclick="verifyAccess()">MASUK SEKARANG 🚀</button>
+        <p style="font-size: 11px; color: #a29bfe; cursor: pointer;" onclick="window.location.href='KAU_LETAK_LINK_SELLHIZ_KAT_SINI'">Belum ada kod? Dapatkan di sini.</p>
+    </div>
+    
     <!-- 1. STARTUP -->
     <div id="startup-page" class="container">
         <h1 class="brand">JAGUH KOSA KATA</h1>
@@ -311,16 +328,44 @@ for (let i = 0; i < nodes.length; i++) {
             document.getElementById('sound-toggle').checked = !isMuted;
             if (video) video.muted = isMuted;
 
-            fetch('./data.json?v=' + Date.now())
-                .then(res => res.json())
-                .then(data => {
-                    gameData = data;
-                    syncStats();
-                    if (localStorage.getItem('jaguh_name')) showDashboard(); 
-                    else showPage('startup-page');
-                })
-                .catch(err => { console.error("Data error:", err); showPage('startup-page'); });
-        };
+   // 3. SECURITY CHECK (LOGIC BARU)
+    if (localStorage.getItem('jaguh_authorized') === 'true') {
+        initGame(); // Dah login? Terus load data
+    } else {
+        showPage('security-page'); // Belum login? Tahan kat pintu
+    }
+};
+
+// Function baru untuk load data soalan
+function initGame() {
+    fetch('./data.json?v=' + Date.now())
+        .then(res => res.json())
+        .then(data => {
+            gameData = data;
+            syncStats();
+            if (localStorage.getItem('jaguh_name')) showDashboard(); 
+            else showPage('startup-page');
+        })
+        .catch(err => { 
+            console.error("Data error:", err); 
+            alert("Ralat memuatkan data. Sila pastikan data.json wujud.");
+            showPage('startup-page'); 
+        });
+}
+
+// Function untuk verify password
+function verifyAccess() {
+    const code = document.getElementById('access-code').value.trim();
+    if (code === "JAGUH2024") { // TUKAR PASSWORD KAU KAT SINI
+        localStorage.setItem('jaguh_authorized', 'true');
+        confetti({ particleCount: 100, spread: 70 });
+        alert("Akses Diterima! Selamat Datang Jaguh.");
+        initGame();
+    } else {
+        alert("Kod Akses Salah! Sila dapatkan kod yang sah.");
+    }
+}
+// --- SAMPAI SINI ---
 
         function syncStats() {
             maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0;
@@ -334,7 +379,7 @@ for (let i = 0; i < nodes.length; i++) {
         }
 
         function shareGame() { 
-            if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata AI', text: 'Jom main game teka kosa kata AI ni!', url: SHARE_LINK }); } 
+            if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata', text: 'Jom main game teka kosa kata ni!', url: SHARE_LINK }); } 
             else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } 
         }
 
@@ -342,7 +387,7 @@ for (let i = 0; i < nodes.length; i++) {
             let dataToPrint = [...gameData];
             if (isRandom) dataToPrint.sort(() => Math.random() - 0.5);
             let printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Latihan Jaguh Kosa Kata AI</title><style>body{font-family:sans-serif; padding:40px;} .q-box{margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;} .ans{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; font-size:11px; margin-top:50px;}</style></head><body><h1>JAGUH KOSA KATA AI - MOD LATIHAN</h1>');
+            printWindow.document.write('<html><head><title>Latihan Jaguh Kosa Kata</title><style>body{font-family:sans-serif; padding:40px;} .q-box{margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;} .ans{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; font-size:11px; margin-top:50px;}</style></head><body><h1>JAGUH KOSA KATA - MOD LATIHAN</h1>');
             dataToPrint.forEach((item, index) => { printWindow.document.write(`<div class="q-box"><b>Soalan ${index+1}:</b> ${item.q || 'Teka aksi ini'}<br><i>Contoh: ${item.example || '______'}</i></div>`); });
             printWindow.document.write('<div style="page-break-before:always;"><h2>Skema Jawapan</h2><div class="ans">');
             dataToPrint.forEach((item, index) => { printWindow.document.write(`<div>${index+1}. ${item.word}</div>`); });
@@ -519,13 +564,17 @@ for (let i = 0; i < nodes.length; i++) {
             if(inner) { inner.style.transform = `translateX(-${idx * 50}%)`; currentClueIdx = idx; }
             dots.forEach((d, i) => { if(i === idx) d.classList.add('active'); else d.classList.remove('active'); });
         }
-
+        
         function showPage(id) { 
-            const pages = ['startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
+            // Tambah 'security-page' dalam list ni
+            const pages = ['security-page', 'startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
             pages.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = 'none'; });
+            
             const v = document.getElementById('game-video');
             if (id !== 'game-page' && v) v.pause();
-            const target = document.getElementById(id); if(target) target.style.display = 'flex';
+            
+            const target = document.getElementById(id); 
+            if(target) target.style.display = 'flex';
         }
 
         function showDashboard() { 
@@ -667,7 +716,15 @@ function renderScramble() {
     document.getElementById('scramble-container').style.display = 'block';
     document.getElementById('btn-buy-hint').style.display = 'none';
 } 
-        
+
+   if ('serviceWorker' in navigator) {
+     window.addEventListener('load', () => {
+       navigator.serviceWorker.register('/sw.js')
+         .then(reg => console.log('Service Worker registered!', reg))
+         .catch(err => console.error('Service Worker failed!', err));
+     });
+   }
+
     </script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+### Copy & Simpan "Project Passport" Ni:
+
+> PROJEK: JAGUH KOSA KATA AI (#version)
+> DEVELOPER: Pixel Dove Studio
+> TEKNOLOGI: HTML/JS/CSS (PWA), GitHub + Vercel.
+> MODUL JUALAN: Sellhiz (External Link/Embed).
+> STATUS TERKINI: UI dah mantap, sistem koin & rank dah jalan. Tengah fasa *fixing* Security (Password Gate) & PWA compliance (Manifest/Service Worker).
+> MATLAMAT: Jual sebagai App kosa kata interaktif (No-Download) untuk pelajar/mak ayah.
+> ARAHAN UNTUK AI: Teruskan jadi 'Content Coach' STUDIO AI PRO. Fokus pada idea marketing (Affiliate Studio, Poster Maker, Voiceover AI) dan penyelesaian teknikal coding.
+
+attach latest working code (HTML)
