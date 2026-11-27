@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.0.0
+VERSION: 7.1.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -500,7 +500,12 @@ function verifyAccess() {
         // --- FIX TAMAT ---
 
                 
-                if(!isMuted) document.getElementById('snd-kaching').play();
+               
+                if(!isMuted) {
+                    const sndWin = document.getElementById('snd-kaching');
+                    sndWin.currentTime = 0; // RESET bunyi ke permulaan
+                    sndWin.play();
+                }
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 score += 10; localStorage.setItem('jaguh_score', score);
                 if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
@@ -523,7 +528,13 @@ function verifyAccess() {
         }, 2000);
 
             } else {
-                if(!isMuted) document.getElementById('snd-aww').play();
+             
+            if(!isMuted) {
+                const sndWrong = document.getElementById('snd-aww');
+                sndWrong.currentTime = 0; // RESET bunyi ke permulaan
+                sndWrong.play();
+            }
+
                 document.getElementById('result').innerText = "Opps! Cuba lagi 🙊";
                 document.getElementById('result').style.color = "#ff4757";
             }
