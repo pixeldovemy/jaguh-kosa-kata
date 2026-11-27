@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.2.0
+VERSION: 7.3.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -167,6 +167,24 @@ DEVELOPER: PIXEL DOVE STUDIO
         <input type="password" id="access-code" placeholder="Kod Rahsia..." style="letter-spacing: 5px;">
         <button class="btn-main" onclick="verifyAccess()">MASUK SEKARANG 🚀</button>
         <p style="font-size: 11px; color: #a29bfe; cursor: pointer;" onclick="window.location.href='KAU_LETAK_LINK_SELLHIZ_KAT_SINI'">Belum ada kod? Dapatkan di sini.</p>
+    </div>
+
+    
+    <!-- 0.5 INTRO / WELCOME PAGE -->
+    <div id="welcome-page" class="container" style="display: none;">
+        <div id="welcome-hero-area" style="width: 100%; margin-bottom: 20px;">
+            <!-- Nanti kita letak gambar Hero hasil Image Generator kat sini -->
+            <div style="font-size: 80px;">🏆</div> 
+        </div>
+        <h1 class="brand">SELAMAT DATANG, PAHLAWAN!</h1>
+        <p style="color: #636e72; font-size: 15px; line-height: 1.6; padding: 0 10px;">
+            Dunia kosa kata kini dalam bahaya. Hanya anda yang mampu memulihkan semula bahasa kita dengan kuasa kebijaksanaan.
+        </p>
+        <div style="background: #eeebff; padding: 15px; border-radius: 20px; margin-bottom: 25px; border-left: 5px solid #6c5ce7; text-align: left;">
+            <small style="color: #6c5ce7; font-weight: bold; text-transform: uppercase;">Misi Anda:</small><br>
+            <span style="font-size: 13px; color: #444;">Tonton video, teka aksi, dan kumpul koin emas untuk jadi Jaguh Ulung!</span>
+        </div>
+        <button class="btn-main" onclick="mulaMisi()">SAYA SEDIA! ⚔️</button>
     </div>
     
     <!-- 1. STARTUP -->
@@ -369,26 +387,27 @@ for (let i = 0; i < nodes.length; i++) {
 
    // 3. SECURITY CHECK (LOGIC BARU)
     if (localStorage.getItem('jaguh_authorized') === 'true') {
-        initGame(); // Dah login? Terus load data
+        initGame(true); // Dah login? Terus load data
     } else {
         showPage('security-page'); // Belum login? Tahan kat pintu
     }
 };
 
 // Function baru untuk load data soalan
-        function initGame() {
+        function initGame(isReturning = false) {
             fetch('./data.json?v=' + Date.now())
                 .then(res => res.json())
                 .then(data => {
                     gameData = data;
                     syncStats();
-                    if (localStorage.getItem('jaguh_name')) showDashboard(); 
-                    else showPage('startup-page');
+                   console.log("Data Jaguh Ready!");
+                    if (isReturning) {
+mulaMisi(); // Terus ke Dashboard/Startup kalau pembeli lama
+}
                 })
                 .catch(err => { 
                     console.error("Data error:", err); 
-                    jaguhAlert("Ralat memuatkan data. Sila pastikan data.json wujud.");
-                    showPage('startup-page'); 
+                    jaguhAlert("Ralat memuatkan data. Sila pastikan data.json wujud.","#ff4757"); 
                 });
         }
 
@@ -400,12 +419,21 @@ for (let i = 0; i < nodes.length; i++) {
                 confetti({ particleCount: 100, spread: 70 });
                 jaguhAlert("Akses Diterima! Selamat Datang Jaguh!","#2ed573");
                 initGame();
+                showPage('welcome-page');
             } else {
                 jaguhAlert("Kod Akses Salah! Sila dapatkan kod yang sah.");
             }
         }
 // --- SAMPAI SINI ---
 
+        function mulaMisi() {
+    // Sekarang baru kita tentukan nak ke mana
+    if (localStorage.getItem('jaguh_name')) {
+    showDashboard();
+    } else {
+    showPage('startup-page');
+    }
+    }
         function syncStats() {
             maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0;
             score = parseInt(localStorage.getItem('jaguh_score')) || 0;
@@ -618,7 +646,7 @@ jaguhAlert("Link disalin!", "#6c5ce7");}
         
         function showPage(id) { 
             // Tambah 'security-page' dalam list ni
-            const pages = ['security-page', 'startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
+            const pages = ['security-page','welcome-page','startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
             pages.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = 'none'; });
             
             const v = document.getElementById('game-video');
