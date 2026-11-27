@@ -395,6 +395,13 @@ for (let i = 0; i < nodes.length; i++) {
     } else {
         inputField.style.display = 'block';
         submitBtn.style.display = 'block';
+
+// --- TAMBAH DUA BARIS NI UNTUK SAFETY ---
+    submitBtn.disabled = false; 
+    submitBtn.style.opacity = "1";
+    inputField.disabled = false;
+    // ---------------------------------------
+    
         inputField.value = ""; 
         setTimeout(() => 
         inputField.focus(), 100); // Guna timeout sikit supaya focus lebih stabil
