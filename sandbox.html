@@ -387,7 +387,7 @@ for (let i = 0; i < nodes.length; i++) {
                 })
                 .catch(err => { 
                     console.error("Data error:", err); 
-                    alert("Ralat memuatkan data. Sila pastikan data.json wujud.");
+                    jaguhAlert("Ralat memuatkan data. Sila pastikan data.json wujud.");
                     showPage('startup-page'); 
                 });
         }
@@ -398,10 +398,10 @@ for (let i = 0; i < nodes.length; i++) {
             if (code === "JAGUH2024") { // TUKAR PASSWORD KAU KAT SINI
                 localStorage.setItem('jaguh_authorized', 'true');
                 confetti({ particleCount: 100, spread: 70 });
-                alert("Akses Diterima! Selamat Datang Jaguh.");
+                jaguhAlert("Akses Diterima! Selamat Datang Jaguh.");
                 initGame();
             } else {
-                alert("Kod Akses Salah! Sila dapatkan kod yang sah.");
+                jaguhAlert("Kod Akses Salah! Sila dapatkan kod yang sah.");
             }
         }
 // --- SAMPAI SINI ---
@@ -419,7 +419,8 @@ for (let i = 0; i < nodes.length; i++) {
 
         function shareGame() { 
             if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata', text: 'Jom main game teka kosa kata ni!', url: SHARE_LINK }); } 
-            else { navigator.clipboard.writeText(SHARE_LINK); alert("Link disalin!"); } 
+            else { navigator.clipboard.writeText(SHARE_LINK); 
+jaguhAlert("Link disalin!", "#6c5ce7");} 
         }
 
         function printQuestions(isRandom) {
@@ -437,7 +438,7 @@ for (let i = 0; i < nodes.length; i++) {
 
         function saveAndStart() {
             const n = document.getElementById('player-name').value.trim();
-            if (!n) return alert("Sila letak nama!");
+            if (!n) return jaguhAlert("Sila letak nama!");
             localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar);
             startLevel(maxLevelReached);
         }
@@ -727,7 +728,7 @@ function buyHint() {
 
     // 3. Proses tolak koin (hanya kalau belum pernah beli)
     if (score < 4) {
-        alert("Koin tak cukup! Kena kumpul koin lagi. 💰");
+        jaguhAlert("Koin tak cukup! Kena kumpul koin lagi. 💰");
         return;
     }
 
