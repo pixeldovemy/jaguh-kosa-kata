@@ -755,7 +755,7 @@ function checkAnswer() {
             btnQ.classList.remove('active'); btnH.classList.remove('active');
             if (t === 'q') {
                 btnQ.classList.add('active');
-                area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${(data.example || '').replace(/_+/g, `<b style='color:#6c5ce7;'>${isAnswered ? data.word.toLowerCase() : '______'}</b>`)}"`;
+                area.innerHTML = `<b>${isAnswered ? 'Contoh Soalan'}:</b><br>"${(data.example || '').replace(/_+/g, `<b style='color:#6c5ce7;'>${isAnswered ? data.word.toLowerCase() : '______'}</b>`)}"`;
             } else {
                 btnH.classList.add('active');
                 area.innerHTML = `
