@@ -1,20 +1,19 @@
 <!--
 PROJECT: JAGUH KOSA KATA
 VERSION: 7.8.0
-DEVELOPER: PIXEL DOVE STUDIO
+DEVELOPER: PIXEL DOVE STUDIO + STUDIO AI PRO
 -->
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
     <title>JAGUH KOSA KATA - PIXEL DOVE STUDIO</title>
-   <link rel="manifest" href="manifest.json">
-   <meta name="theme-color" content="#6c5ce7">
-   <meta name="apple-mobile-web-app-capable" content="yes">
-   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-   <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6c5ce7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
     
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -28,7 +27,7 @@ DEVELOPER: PIXEL DOVE STUDIO
 
         .container { 
             background: rgba(255, 255, 255, 0.98); 
-            padding: 25px 15px; /* Luaskan content rapat ke tepi */
+            padding: 25px 15px;
             border-radius: 40px; 
             box-shadow: 0 25px 50px rgba(0,0,0,0.3); 
             max-width: 480px; width: 100%; 
@@ -37,963 +36,347 @@ DEVELOPER: PIXEL DOVE STUDIO
             display: none; flex-direction: column; align-items: center;
         }
 
-        #startup-page, #dashboard-page, #map-page, #game-page { flex-direction: column; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
         h1.brand { color: #6c5ce7; font-size: 32px; margin: 10px 0; text-transform: uppercase; letter-spacing: -1px; width: 100%; }
-        .avatar-circle { font-size: 70px; background: #eeebff; width: 110px; height: 110px; line-height: 110px; border-radius: 50%; margin: 10px auto 15px; border: 5px solid #6c5ce7; flex-shrink: 0; }
-        .player-name-big { font-size: 24px; font-weight: 600; color: #2d3436; margin-bottom: 5px; word-break: break-word; }
-        .rank-badge { font-size: 14px; color: #6c5ce7; font-weight: bold; background: #eeebff; padding: 6px 18px; border-radius: 20px; margin-bottom: 25px; display: inline-block; border: 1px solid #d1d1ff; }
         
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; width: 100%; }
-        .stat-card { background: #f1f2f6; padding: 15px; border-radius: 25px; border: 2px solid #fff; }
-        .stat-value { display: block; font-size: 26px; font-weight: 600; color: #2d3436; }
-        .stat-label { font-size: 10px; color: #636e72; text-transform: uppercase; font-weight: bold; }
+        /* NOTIFIKASI CUSTOM */
+        #custom-alert {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #ff4757; color: white; padding: 15px 30px;
+            border-radius: 25px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none; z-index: 10000; animation: popDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 280px; border: 3px solid #ffffff;
+        }
+        @keyframes popDown { from { top: -100px; opacity: 0; } to { top: 20px; opacity: 1; } }
 
-        #map-area { max-height: 60vh; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; scrollbar-width: thin; width: 100%; }
-        .map-section { margin-bottom: 30px; text-align: left; width: 100%; }
-        .map-section-title { font-size: 13px; color: #6c5ce7; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; padding-bottom: 5px; line-height: 1.4; }
-        .level-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .level-node { aspect-ratio: 1; background: #f1f2f6; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #ccc; cursor: not-allowed; border: 2px solid #eee; }
-        .level-node.unlocked { background: #fff; border-color: #6c5ce7; color: #6c5ce7; cursor: pointer; }
-        .level-node.current { background: #6c5ce7; color: #fff; border-color: #6c5ce7; box-shadow: 0 0 15px rgba(108, 92, 231, 0.4); }
+        /* STREAK BAR STYLE */
+        .streak-container { display: flex; gap: 10px; justify-content: center; align-items: center; margin: 10px 0 20px 0; background: rgba(238, 235, 255, 0.5); padding: 10px; border-radius: 50px; }
+        .streak-dot { width: 15px; height: 15px; background: #d1d1ff; border-radius: 50%; transition: 0.4s all; }
+        .streak-dot.active { background: #6c5ce7; transform: scale(1.3); box-shadow: 0 0 15px rgba(108, 92, 231, 0.6); }
+        .streak-dot.bonus { width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; background: #ffd32a; font-size: 14px; }
+        .streak-dot.bonus.active { background: #f1c40f; box-shadow: 0 0 20px rgba(241, 196, 15, 0.8); }
 
-        .btn-main { padding: 18px; background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; box-shadow: 0 8px 0 #4834d4; transition: 0.2s; margin-bottom: 15px; display: block; text-decoration: none; text-align:center; }
+        /* GRID HINT & PANEL */
+        .hint-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; padding: 10px; }
+        .hint-item { background: #f8f9fa; padding: 12px 2px; border-radius: 15px; font-size: 11px; color: #636e72; border: 1px solid #eee; text-align: center; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .hint-item.active { background: #6c5ce7; color: white; border-color: #6c5ce7; }
+        .meaning-panel { grid-column: 1 / -1; background: #eeebff; color: #6c5ce7; padding: 18px; border-radius: 20px; font-size: 13px; line-height: 1.5; margin: 5px 0 10px 0; border-left: 8px solid #6c5ce7; animation: slideDown 0.3s ease-out; text-align: left; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* BUTTONS & INPUTS */
+        .btn-main { padding: 18px; background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; box-shadow: 0 8px 0 #4834d4; transition: 0.2s; margin-bottom: 15px; text-decoration: none; }
         .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #4834d4; }
-        .btn-alt { background: #b2bec3; box-shadow: 0 8px 0 #95a5a6; color: white; }
-        .btn-submit { padding: 14px; font-size: 16px; width: 80%; margin: 15px auto 0; }
-        .btn-gear { background: #f1f2f6; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-
-        .video-wrapper { 
-            width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 15px; 
-            background: #000; aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center;
-        }
-
-        video { width: 100%; height: 100%; display: block; object-fit: cover; }
-        
-        .tab-container { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; width: 100%; }
-        .tab-btn { background: #f1f2f6; border: 1px solid #ddd; padding: 10px 15px; border-radius: 12px; cursor: pointer; font-size: 12px; color: #666; flex: 1; }
-        .tab-btn.active { background: #6c5ce7 !important; color: white !important; border-color: #6c5ce7 !important; }
-        
-        .tab-content-area { 
-            display: none; font-size: 14px; color: #444; background: #eeebff; padding: 15px; border-radius: 18px; margin-bottom: 15px; 
-            text-align: left; border-left: 6px solid #6c5ce7; min-height: 70px; line-height: 1.5; width: 100%;
-            overflow: hidden; position: relative; animation: slideIn 0.3s ease-out;
-        }
-
-        .clue-slider-wrap { width: 100%; overflow: hidden; cursor: grab; user-select: none; }
-        .clue-slider-inner { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
-        .clue-slide { width: 50%; flex-shrink: 0; padding-right: 15px; padding-top: 5px; pointer-events: none; word-wrap: break-word; }
-        
-        .clue-dots { position: absolute; top: 10px; right: 15px; display: flex; gap: 6px; z-index: 10; }
-        .dot { width: 20px; height: 5px; border-radius: 10px; background: #d1d1ff; cursor: pointer; transition: all 0.3s ease; }
-        .dot.active { background: #6c5ce7; width: 30px; }
-
+        .btn-alt { background: #b2bec3; box-shadow: 0 8px 0 #95a5a6; }
         input { padding: 16px; width: 100%; border: 3px solid #eee; border-radius: 22px; margin-bottom: 15px; font-size: 18px; text-align: center; outline: none; }
         
-        /* HINT SECTION OPTIMIZED v6.2.3 */
-        .hint-section { 
-            margin-top: 10px; background: #ffffff; padding: 15px 10px; border-radius: 30px; 
-            border: 2px solid #eeebff; width: 100%; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.05);
-        }
-        
-        /* CONTAINER GRID KEKAL 3 KOLUM */
-        .hint-list { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 8px; 
-            max-height: 400px; 
-            overflow-y: auto; 
-            padding: 10px;
-        }
-        
-        /* ITEM PERKATAAN */
-        .hint-item { 
-            background: #f8f9fa; 
-            padding: 12px 2px; 
-            border-radius: 15px; 
-            font-size: 11px; 
-            color: #636e72; 
-            border: 1px solid #eee; 
-            text-align: center; 
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        
-        .hint-item.active {
-            background: #6c5ce7;
-            color: white;
-            border-color: #6c5ce7;
-            transform: scale(0.95);
-        }
-        
-    
-        .meaning-panel {
-            grid-column: 1 / -1; /* Penuhi lebar 3 kolum */
-            background: #eeebff;
-            color: #6c5ce7;
-            padding: 18px;
-            border-radius: 20px;
-            font-size: 13px;
-            line-height: 1.5;
-            margin: 5px 0 10px 0;
-            border-left: 8px solid #6c5ce7;
-            animation: slideDown 0.3s ease-out;
-            text-align: left;
-            box-shadow: inset 0 0 10px rgba(108, 92, 231, 0.1);
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .hint-item:hover { background: #eeebff; color: #6c5ce7; border-color: #6c5ce7; }
-
-        /* SETTINGS SPECIFIC CSS */
-        #quit-page, #reset-modal, #settings-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.98); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
-        .setting-row { display: flex; justify-content: space-between; align-items: center; background: #f1f2f6; padding: 15px 20px; border-radius: 20px; margin-bottom: 15px; border: 2px solid #fff; width: 100%; }
-        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #6c5ce7; }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        .nav-arrow { background:none; border:none; cursor:pointer; font-size:24px; transition: 0.2s; padding: 0 10px; }
-        .nav-arrow:disabled { filter: grayscale(1); cursor: not-allowed; opacity: 0.3; }
-    
-/* NOTIFIKASI JAGUH CUSTOM */
-#custom-alert {
-    position: fixed; 
-    top: 20px; 
-    left: 50%; 
-    transform: translateX(-50%);
-    background: #ff4757; 
-    color: white; 
-    padding: 15px 30px;
-    border-radius: 25px; 
-    font-weight: 600; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    display: none; 
-    z-index: 10000; 
-    animation: popDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    min-width: 280px;
-    border: 3px solid #ffffff;
-}
-
-@keyframes popDown {
-    from { top: -100px; opacity: 0; }
-    to { top: 20px; opacity: 1; }
-}
-    
-/* STREAK BAR CANDY STYLE */
-.streak-container {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    margin: 10px 0 20px 0;
-    background: rgba(238, 235, 255, 0.5);
-    padding: 10px;
-    border-radius: 50px;
-}
-
-.streak-dot {
-    width: 15px;
-    height: 15px;
-    background: #d1d1ff;
-    border-radius: 50%;
-    transition: 0.4s all cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.streak-dot.active {
-    background: #6c5ce7;
-    transform: scale(1.3);
-    box-shadow: 0 0 15px rgba(108, 92, 231, 0.6);
-}
-
-.streak-dot.bonus {
-    width: 25px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #ffd32a;
-    font-size: 14px;
-}
-
-.streak-dot.bonus.active {
-    background: #f1c40f;
-    box-shadow: 0 0 20px rgba(241, 196, 15, 0.8);
-}
-    
+        /* OTHER STYLES */
+        .avatar-circle { font-size: 70px; background: #eeebff; width: 110px; height: 110px; line-height: 110px; border-radius: 50%; margin: 10px auto 15px; border: 5px solid #6c5ce7; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; width: 100%; }
+        .stat-card { background: #f1f2f6; padding: 15px; border-radius: 25px; }
+        .stat-value { display: block; font-size: 26px; font-weight: 600; }
+        .video-wrapper { width: 100%; border-radius: 30px; overflow: hidden; border: 6px solid #f1f2f6; margin-bottom: 15px; aspect-ratio: 16/9; background: #000; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .tab-btn { background: #f1f2f6; border: 1px solid #ddd; padding: 10px; border-radius: 12px; cursor: pointer; font-size: 12px; flex: 1; }
+        .tab-btn.active { background: #6c5ce7; color: white; }
     </style>
 </head>
 <body>
 
-    <div id="custom-alert">Mesej Notifikasi</div>
+    <div id="custom-alert">Notifikasi</div>
 
-    <!-- 0. SECURITY GATE (PINTU UTAMA) -->
-    <div id="security-page" class="container" style="display: none;">
+    <!-- 0. SECURITY GATE -->
+    <div id="security-page" class="container">
         <h1 class="brand">AKSES JAGUH</h1>
-        <p style="color: #636e72; font-size: 14px;">Sila masukkan kod akses anda</p>
+        <p>Sila masukkan kod akses anda</p>
         <div style="font-size: 50px; margin: 20px 0;">🔐</div>
         <input type="password" id="access-code" placeholder="Kod Rahsia..." style="letter-spacing: 5px;">
         <button class="btn-main" onclick="verifyAccess()">MASUK SEKARANG 🚀</button>
-        <p style="font-size: 11px; color: #a29bfe; cursor: pointer;" onclick="window.location.href='KAU_LETAK_LINK_SELLHIZ_KAT_SINI'">Belum ada kod? Dapatkan di sini.</p>
+        <p style="font-size: 11px; color: #a29bfe; cursor: pointer;" onclick="window.location.href='https://pixeldove.sellhiz.win/'">Belum ada kod? Dapatkan di sini.</p>
     </div>
 
-    
-    <!-- 0.5 INTRO / WELCOME PAGE -->
-    <div id="welcome-page" class="container" style="display: none;">
-        <div id="welcome-hero-area" style="width: 100%; margin-bottom: 20px;">
-            <!-- Nanti kita letak gambar Hero hasil Image Generator kat sini -->
-            <div style="font-size: 80px;">🏆</div> 
-        </div>
-        <h1 class="brand">SELAMAT DATANG, PAHLAWAN!</h1>
-        <p style="color: #636e72; font-size: 15px; line-height: 1.6; padding: 0 10px;">
-            Dunia kosa kata kini dalam bahaya. Hanya anda yang mampu memulihkan semula bahasa kita dengan kuasa kebijaksanaan.
-        </p>
-        <div style="background: #eeebff; padding: 15px; border-radius: 20px; margin-bottom: 25px; border-left: 5px solid #6c5ce7; text-align: left;">
-            <small style="color: #6c5ce7; font-weight: bold; text-transform: uppercase;">Misi Anda:</small><br>
-            <span style="font-size: 13px; color: #444;">Tonton video, teka aksi, dan kumpul koin emas untuk jadi Jaguh Ulung!</span>
-        </div>
+    <!-- 0.5 WELCOME PAGE -->
+    <div id="welcome-page" class="container">
+        <div style="font-size: 80px; margin-bottom: 20px;">🏆</div>
+        <h1 class="brand">SELAMAT DATANG!</h1>
+        <p>Dunia kosa kata menanti anda. Tonton video, teka aksi, dan kumpul koin emas!</p>
         <button class="btn-main" onclick="mulaMisi()">SAYA SEDIA! ⚔️</button>
     </div>
-    
+
     <!-- 1. STARTUP -->
     <div id="startup-page" class="container">
         <h1 class="brand">JAGUH KOSA KATA</h1>
-        <p style="color: #636e72; font-size: 14px;">Daftar profil jaguh anda</p>
         <input type="text" id="player-name" placeholder="Nama Hero..." maxlength="12">
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0; width: 100%;">
-            <div class="avatar-item" style="cursor:pointer; font-size:35px; background:#f1f2f6; border-radius:20px; padding:12px;" onclick="selectAvatar(this, '🤖')">🤖</div>
-            <div class="avatar-item" style="cursor:pointer; font-size:35px; background:#f1f2f6; border-radius:20px; padding:12px;" onclick="selectAvatar(this, '👨‍🚀')">👨‍🚀</div>
-            <div class="avatar-item" style="cursor:pointer; font-size:35px; background:#f1f2f6; border-radius:20px; padding:12px;" onclick="selectAvatar(this, '🥷')">🥷</div>
-            <div class="avatar-item" style="cursor:pointer; font-size:35px; background:#f1f2f6; border-radius:20px; padding:12px;" onclick="selectAvatar(this, '🦸‍♀️')">🦸‍♀️</div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; width: 100%;">
+            <div class="avatar-item" style="font-size:35px; cursor:pointer;" onclick="selectAvatar(this, '🤖')">🤖</div>
+            <div class="avatar-item" style="font-size:35px; cursor:pointer;" onclick="selectAvatar(this, '👨‍🚀')">👨‍🚀</div>
+            <div class="avatar-item" style="font-size:35px; cursor:pointer;" onclick="selectAvatar(this, '🥷')">🥷</div>
+            <div class="avatar-item" style="font-size:35px; cursor:pointer;" onclick="selectAvatar(this, '🦸‍♀️')">🦸‍♀️</div>
         </div>
         <button class="btn-main" onclick="saveAndStart()">JOM MULA 🚀</button>
     </div>
 
     <!-- 2. DASHBOARD -->
     <div id="dashboard-page" class="container">
-        <div style="width: 100%; display: flex; justify-content: flex-end;">
-            <button class="btn-gear" onclick="openSettings()">⚙️</button>
-        </div>
-        <h1 class="brand" style="margin-top: -10px;">PROFIL JAGUH</h1>
+        <h1 class="brand">PROFIL JAGUH</h1>
         <div class="avatar-circle" id="dash-avatar">🤖</div>
-        <div class="player-name-big" id="dash-name">Pemain</div>
-        <div id="dash-gelaran" class="rank-badge">PELAJAR TEKUN 🎓</div>
+        <div id="dash-name" style="font-size: 24px; font-weight: 600;">Pemain</div>
         <div class="stats-grid">
-            <div class="stat-card"><span class="stat-value" id="dash-level">1</span><span class="stat-label">Soalan</span></div>
-            <div class="stat-card"><span class="stat-value" id="dash-score-display">0</span><span class="stat-label">Koin</span></div>
+            <div class="stat-card"><span class="stat-value" id="dash-level">1</span><span>Soalan</span></div>
+            <div class="stat-card"><span class="stat-value" id="dash-score-display">0</span><span>Koin</span></div>
         </div>
         <button class="btn-main" onclick="renderMap()">SAMBUNG MAIN 🔥</button>
-        <button class="btn-main btn-alt" onclick="openResetModal()">RESET DATA</button>
     </div>
 
     <!-- 3. LEVEL MAP -->
     <div id="map-page" class="container">
-        <div style="width:100%; display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button onclick="showDashboard()" style="background:none; border:none; color:#6c5ce7; font-weight:bold; cursor:pointer; font-size:16px;">← PROFIL</button>
-            <h1 class="brand" style="margin:0; font-size:20px; width:auto;">PETA LEVEL</h1>
-            <button class="btn-gear" onclick="openSettings()">⚙️</button>
+        <h1 class="brand">PETA LEVEL</h1>
+        <div id="map-area" style="width: 100%; max-height: 60vh; overflow-y: auto;"></div>
+        <button class="btn-main btn-alt" onclick="showDashboard()" style="margin-top: 20px;">KEMBALI</button>
+    </div>
+
+    <!-- 4. GAME PAGE -->
+    <div id="game-page" class="container">
+        <div style="width:100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div id="game-name" style="font-weight:600;">Pemain</div>
+            <div style="background: #ffd32a; padding: 6px 15px; border-radius: 15px; font-weight: bold;">💰 <span id="score">0</span></div>
         </div>
-        <div id="map-area"></div>
-    </div>
 
-   <!-- 4. GAME PAGE (VERSI TERKINI) -->
-<div id="game-page" class="container">
-<div style="width:100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-<div style="display: flex; align-items: center; gap: 10px;">
-<span id="game-avatar" style="font-size: 24px;">🤖</span>
-<span id="game-name" style="font-weight:600; font-size:16px;">Pemain</span>
-</div>
-<div style="display: flex; align-items: center; gap: 8px;">
-<div style="background: #ffd32a; padding: 6px 15px; border-radius: 15px; font-weight: bold; font-size: 14px;" id="score-container">💰 <span id="score">0</span></div>
-<button onclick="showQuitPage()" style="background: #ff4757; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-weight: bold;">✕</button>
-</div>
-</div>
-
-<div id="game-level-title" style="font-size: 14px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px;">Sila Tunggu...</div>
-
-<div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px;">
-<button class="nav-arrow" id="prev-soalan" onclick="prevSoalan()">⬅️</button>
-<div style="font-size: 11px; color: #a29bfe; font-weight: bold; text-transform: uppercase;" id="level-text">SOALAN 1</div>
-<button class="nav-arrow" id="next-soalan" onclick="nextSoalan()">➡️</button>
-</div>
-
-<div class="streak-container" id="streak-bar">
-    <div class="streak-dot"></div>
-    <div class="streak-dot"></div>
-    <div class="streak-dot"></div>
-    <div class="streak-dot"></div>
-    <div class="streak-dot bonus" title="Bonus Ganjaran!">🎁</div>
-</div>
-<div id="streak-msg" style="font-size: 10px; color: #6c5ce7; font-weight: bold; margin-top: -15px; margin-bottom: 15px;">STREAK BIJAKSANA: 0/5</div>
-
-<p id="game-question" style="margin: 10px 0; font-size: 14px; line-height: 1.4;">Memuatkan soalan...</p>
-
-<div class="video-wrapper">
-<video id="game-video" autoplay playsinline><source id="video-source" src="" type="video/mp4"></video>
-</div>
-
-<div class="tab-container">
-<button id="btn-tab-q" class="tab-btn" onclick="toggleTab('q')">Contoh Soalan</button>
-<button id="btn-tab-h" class="tab-btn" onclick="toggleTab('h')">Perlu Klu?</button>
-<button id="btn-video-toggle" class="tab-btn" style="flex:0.4;" onclick="toggleVideo()">⏸️</button>
-</div>
-
-<div id="tab-content" class="tab-content-area"></div>
-
-<!-- CONTAINER HURUF BANTUAN (KELUAR LEPAS BELI) -->
-<div id="scramble-container" style="display:none; margin-bottom: 10px;">
-<div style="font-size: 10px; color: #6c5ce7; font-weight: bold; margin-bottom: 5px;">HURUF BANTUAN:</div>
-<div id="scramble-letters" style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;"></div>
-</div>
-
-<!-- 1. RUANG JAWAPAN -->
-<input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
-
-<!-- 2. BUTANG BELI KLU -->
-<button id="btn-buy-hint" onclick="buyHint()" style="background: #f1c40f; color: #000; border: none; border-radius: 15px; padding: 10px; font-weight: bold; font-size: 12px; cursor: pointer; margin-bottom: 10px; width: 80%; box-shadow: 0 4px 0 #d35400;">
-💡 BELI KLU (💰4)
-</button>
-
-<!-- 3. BUTANG HANTAR -->
-<button class="btn-main btn-submit" id="submit-btn" onclick="checkAnswer()" style="margin-top: 5px; margin-bottom: 20px;">HANTAR 🚀</button>
-
-<!-- SECTION CARI JAWAPAN (SCROLLABLE) -->
-<div class="hint-section">
-<div style="font-size: 11px; color: #6c5ce7; font-weight: bold; margin-bottom: 2px; text-align: center;">BUNTU? CARI JAWAPAN DI SINI ✨</div>
-<div style="font-size: 10px; color: #a29bfe; margin-bottom: 10px; text-align: center; font-style: italic;">Semakin anda skrol, semakin kuat ingatan kosa kata! 🧠</div>
-<div class="hint-list" id="clue-list"></div>
-</div>
-
-<p id="result" style="min-height:25px; font-weight:bold; margin-top:10px; font-size:18px;"></p>
-</div>
-
-    <!-- 5. SETTINGS PAGE -->
-    <div id="settings-page">
-        <div class="container" style="display:flex; max-height: 90vh; overflow-y: auto; padding-top: 30px;">
-            <h1 class="brand">TETAPAN</h1>
-            <div class="setting-row">
-                <span style="font-size:14px; font-weight:600;">Bunyi Permainan</span>
-                <label class="switch"><input type="checkbox" id="sound-toggle" checked onchange="toggleSound()"><span class="slider"></span></label>
-            </div>
-            <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:15px; border: 2px solid #fff; width:100%;">
-                <b style="color:#6c5ce7; display:block; margin-bottom:10px; font-size:14px;">Cetak Soalan & Jawapan</b>
-                <button class="btn-main" style="padding:10px; font-size:12px; margin-bottom:8px; background:#6c5ce7;" onclick="printQuestions(false)">IKUT URUTAN 📄</button>
-                <button class="btn-main" style="padding:10px; font-size:12px; background:#a29bfe;" onclick="printQuestions(true)">SOALAN RAWAK 🎲</button>
-            </div>
-            <div style="background:#f1f2f6; padding:20px; border-radius:25px; text-align:left; margin-bottom:20px; width:100%;">
-    <b style="color:#6c5ce7; display:block; margin-bottom:5px; font-size:14px;">Tentang Kami</b>
-    <p style="font-size:12px; color:#666; margin:0; line-height:1.4;">Jaguh Kosa Kata adalah aplikasi pembelajaran Bahasa Melayu interaktif dari Pixel Dove Studio.</p>
-    </div>
-            <button class="btn-main" style="background:#00b894;" onclick="shareGame()">KONGSI GAME DENGAN RAKAN 📢</button>
-            <button class="btn-main btn-alt" onclick="closeSettings()">KEMBALI</button>
-            <div style="margin-top: 10px; font-size: 10px; color: #aaa;">VERSI <span id="v-auto">6.0.0</span> &bull; PIXEL DOVE STUDIO</div>
+        <div class="streak-container" id="streak-bar">
+            <div class="streak-dot"></div><div class="streak-dot"></div><div class="streak-dot"></div><div class="streak-dot"></div><div class="streak-dot bonus">🎁</div>
         </div>
+        
+        <div style="display: flex; justify-content: center; gap: 20px; align-items: center;">
+            <button onclick="prevSoalan()" style="background:none; border:none; font-size:24px; cursor:pointer;">⬅️</button>
+            <div id="level-text" style="font-weight: bold; color: #6c5ce7;">SOALAN 1</div>
+            <button onclick="nextSoalan()" style="background:none; border:none; font-size:24px; cursor:pointer;">➡️</button>
+        </div>
+
+        <div class="video-wrapper">
+            <video id="game-video" autoplay playsinline loop><source id="video-source" src="" type="video/mp4"></video>
+        </div>
+
+        <input type="text" id="user-input" placeholder="Taip jawapan..." autocomplete="off">
+        <button id="btn-buy-hint" class="btn-main" style="background:#f1c40f; box-shadow: 0 8px 0 #d35400; color: #000; font-size: 14px;" onclick="buyHint()">💡 BELI KLU (💰4)</button>
+        <button class="btn-main" id="submit-btn" onclick="checkAnswer()">HANTAR 🚀</button>
+
+        <div class="hint-section" style="width: 100%; background: #fff; border-radius: 25px; padding: 15px; margin-top: 10px;">
+            <div style="font-size: 11px; font-weight: bold; margin-bottom: 10px;">BUNTU? CARI JAWAPAN DI SINI ✨</div>
+            <div class="hint-list" id="clue-list"></div>
+        </div>
+        <p id="result" style="font-weight:bold; margin-top:10px;"></p>
     </div>
-
-    <!-- OTHER MODALS -->
-<div id="quit-page">
-<div class="container" style="display:flex;">
-<!-- Tajuk utama (saiz sederhana) -->
-<h1 style="font-size: 24px; margin-bottom: 10px;">MAHU REHAT? 🥺</h1>
-
-<!-- Penerangan (saiz kecil & warna lembut sikit) -->
-<p style="font-size: 14px; color: #636e72; margin-bottom: 25px; line-height: 1.5; padding: 0 10px;">
-Jangan risau! Progress anda disimpan secara automatik pada peranti ini.
-</p>
-
-<button class="btn-main" onclick="continueGame()">SAMBUNG 🔥</button>
-<button class="btn-main btn-alt" onclick="renderMap()">Ya. Kembali ke PETA LEVEL</button>
-</div>
-</div>
-    <div id="reset-modal"><div class="container" style="display:flex;"><h1>⚠️</h1><p style="font-weight:bold;">Adakah anda pasti mahu memadam semua rekod permainan? Semua koin akan hilang.</p><button class="btn-main" onclick="confirmReset()" style="background:#ff4757;">YA, RESET SEMUA</button><button class="btn-main btn-alt" onclick="closeResetModal()">TIDAK, KEMBALI</button></div></div>
 
     <audio id="snd-kaching" src="audio/win.wav"></audio>
     <audio id="snd-aww" src="audio/wrong.wav"></audio>
 
     <script>
-
-        let noHintStreak = parseInt(localStorage.getItem('jaguh_streak')) || 0;
-
-        function jaguhAlert(msg, color = "#ff4757") {
-            const alertBox = document.getElementById('custom-alert');
-            alertBox.innerText = msg;
-            alertBox.style.background = color;
-            alertBox.style.display = 'block';
-            
-            // Hilang automatik lepas 2.5 saat
-            setTimeout(() => {
-                alertBox.style.display = 'none';
-            }, 2500);
-        }
-        let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", activeTab = 'q', isMuted = false;
-        let gameData = [];
-        let startX = 0, currentClueIdx = 0, playCount = 0;
-        const SHARE_LINK = "https://pixeldove.sellhiz.win/product/misi-pemulihan-3m-basic-copy?sh=cp";
-        //superadmin role
+        let score = 0, currentLevel = 0, maxLevelReached = 0, chosenAvatar = "🤖", isMuted = false;
+        let gameData = [], noHintStreak = parseInt(localStorage.getItem('jaguh_streak')) || 0;
         const SECRET_KEY = "mmr0518";
-        const ranks = [
-            { title: "Pelajar Tekun 🎓", range: [1, 50] }, { title: "Peneroka Pintar 🧭", range: [51, 100] },
-            { title: "Pengembara Gigih 🗺️", range: [101, 150] }, { title: "Perajurit Perkasa 🛡️", range: [151, 200] },
-            { title: "Panglima Gagah ⚔️", range: [201, 250] }, { title: "Pujangga Kreatif ✒️", range: [251, 300] },
-            { title: "Cendekia Bijaksana 🧠", range: [301, 350] }, { title: "Sarjana Arif 📚", range: [351, 400] },
-            { title: "Ilmuwan Terbilang 🏅", range: [401, 450] }, { title: "Jaguh Ulung 🏆", range: [451, 500] }
-        ];
 
         window.onload = function() {
-// Scan comment untuk dapatkan Version
-const nodes = document.childNodes;
-for (let i = 0; i < nodes.length; i++) {
-    if (nodes[i].nodeType === 8) { // 8 adalah Comment Node
-        const match = nodes[i].nodeValue.match(/VERSION:\s*([\d\.]+)/);
-        if (match) {
-            document.getElementById('v-auto').innerText = match[1];
-            break;
-        }
-    }
-}
-  // --- END AUTO VERSION SCANNER ---
-            
-            const video = document.getElementById('game-video');
-            video.onended = function() {
-                playCount++;
-                if (playCount < 3) { video.play(); document.getElementById('btn-video-toggle').innerText = "⏸️"; } 
-                else { document.getElementById('btn-video-toggle').innerText = "▶️"; }
-            };
+            if (localStorage.getItem('jaguh_authorized') === 'true') {
+                initGame(true);
+            } else {
+                showPage('security-page');
+            }
+        };
 
-            isMuted = localStorage.getItem('jaguh_muted') === 'true';
-            document.getElementById('sound-toggle').checked = !isMuted;
-            if (video) video.muted = isMuted;
-
-   // 3. SECURITY CHECK (LOGIC BARU)
-    if (localStorage.getItem('jaguh_authorized') === 'true') {
-        initGame(true); // Dah login? Terus load data
-    } else {
-        showPage('security-page'); // Belum login? Tahan kat pintu
-    }
-};
-
-function initGame(isReturning = false) {
-fetch('./data.json?v=' + Date.now())
-.then(res => res.json())
-.then(data => {
-gameData = data;
-syncStats();
-console.log("Data Jaguh Ready!");
-if (isReturning) {
-mulaMisi(); // Terus hantar ke Dashboard/Startup
-}
-})
-.catch(err => {
-console.error("Data error:", err);
-jaguhAlert("Ralat memuatkan data!", "#ff4757");
-});
-}
-
-// Function untuk verify password
         function verifyAccess() {
             const code = document.getElementById('access-code').value.trim();
-            if (code === "JAGUH2024") { // TUKAR PASSWORD KAU KAT SINI
+            if (code === "JAGUH2024") {
                 localStorage.setItem('jaguh_authorized', 'true');
-                confetti({ particleCount: 100, spread: 70 });
-                jaguhAlert("Akses Diterima! Selamat Datang Jaguh!","#2ed573");
+                confetti({ particleCount: 150, spread: 70 });
+                jaguhAlert("Akses Diterima!", "#2ed573");
                 initGame();
                 showPage('welcome-page');
             } else {
-                jaguhAlert("Kod Akses Salah! Sila dapatkan kod yang sah.");
+                jaguhAlert("Kod Salah!");
             }
         }
-// --- SAMPAI SINI ---
+
+        function initGame(isReturning = false) {
+            fetch('./data.json?v=' + Date.now())
+                .then(res => res.json())
+                .then(data => {
+                    gameData = data;
+                    syncStats();
+                    if (isReturning) mulaMisi();
+                }).catch(() => jaguhAlert("Ralat Data!"));
+        }
 
         function mulaMisi() {
-    // Sekarang baru kita tentukan nak ke mana
-    if (localStorage.getItem('jaguh_name')) {
-    showDashboard();
-    } else {
-    showPage('startup-page');
-    }
-    }
-        function syncStats() {
-            maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0;
-            score = parseInt(localStorage.getItem('jaguh_score')) || 0;
+            if (localStorage.getItem('jaguh_name')) showDashboard();
+            else showPage('startup-page');
         }
 
-        function toggleSound() { 
-            isMuted = !document.getElementById('sound-toggle').checked; 
-            localStorage.setItem('jaguh_muted', isMuted); 
-            document.getElementById('game-video').muted = isMuted;
+        function checkAnswer() {
+            const inputField = document.getElementById('user-input');
+            const submitBtn = document.getElementById('submit-btn');
+            const input = inputField.value.toLowerCase().trim();
+            const data = gameData[currentLevel];
+            if (!input) return;
+
+            if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
+                submitBtn.disabled = true; inputField.disabled = true;
+
+                let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
+                let isStreakBonus = false;
+
+                if (!boughtHints.includes(currentLevel)) noHintStreak++;
+                else { noHintStreak = 0; jaguhAlert("Klu Diguna: Streak Reset!", "#ff4757"); }
+
+                if (noHintStreak >= 5) { score += 30; noHintStreak = 0; isStreakBonus = true; }
+                else score += 10;
+
+                if (isStreakBonus) {
+                    jaguhAlert("STREAK 5X! Bonus +30! 🏆", "#f1c40f");
+                    confetti({ particleCount: 200, spread: 100 });
+                } else {
+                    jaguhAlert("BETUL! 💰+10", "#2ed573");
+                    confetti({ particleCount: 100, spread: 70 });
+                }
+                
+                if(!isMuted) { document.getElementById('snd-kaching').currentTime = 0; document.getElementById('snd-kaching').play(); }
+
+                localStorage.setItem('jaguh_streak', noHintStreak);
+                localStorage.setItem('jaguh_score', score);
+                if (currentLevel === maxLevelReached) { maxLevelReached++; localStorage.setItem('jaguh_max', maxLevelReached); }
+                
+                document.getElementById('score').innerText = score;
+                updateStreakUI();
+
+                setTimeout(() => {
+                    currentLevel++;
+                    if (currentLevel < gameData.length) {
+                        submitBtn.disabled = false; inputField.disabled = false;
+                        loadLevel(currentLevel);
+                    } else showDashboard();
+                }, 2000);
+            } else {
+                if(!isMuted) { document.getElementById('snd-aww').currentTime = 0; document.getElementById('snd-aww').play(); }
+                jaguhAlert("Cuba lagi!");
+            }
         }
 
-        function shareGame() { 
-            if (navigator.share) { navigator.share({ title: 'Jaguh Kosa Kata', text: 'Jom main game teka kosa kata ni!', url: SHARE_LINK }); } 
-            else { navigator.clipboard.writeText(SHARE_LINK); 
-jaguhAlert("Link disalin!", "#6c5ce7");} 
+        function loadLevel(idx) {
+            const data = gameData[idx]; if (!data) return;
+            updateStreakUI();
+            const isAnswered = idx < maxLevelReached;
+            document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name');
+            document.getElementById('level-text').innerText = `SOALAN ${idx + 1}`;
+            document.getElementById('video-source').src = data.vid;
+            document.getElementById('game-video').load();
+            document.getElementById('user-input').value = "";
+            document.getElementById('user-input').style.display = isAnswered ? 'none' : 'block';
+            document.getElementById('submit-btn').style.display = isAnswered ? 'none' : 'block';
+            document.getElementById('btn-buy-hint').style.display = isAnswered ? 'none' : 'block';
+            initClues();
         }
 
-        function printQuestions(isRandom) {
-            let dataToPrint = [...gameData];
-            if (isRandom) dataToPrint.sort(() => Math.random() - 0.5);
-            let printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Latihan Jaguh Kosa Kata</title><style>body{font-family:sans-serif; padding:40px;} .q-box{margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;} .ans{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; font-size:11px; margin-top:50px;}</style></head><body><h1>JAGUH KOSA KATA - MOD LATIHAN</h1>');
-            dataToPrint.forEach((item, index) => { printWindow.document.write(`<div class="q-box"><b>Soalan ${index+1}:</b> ${item.q || 'Teka aksi ini'}<br><i>Contoh: ${item.example || '______'}</i></div>`); });
-            printWindow.document.write('<div style="page-break-before:always;"><h2>Skema Jawapan</h2><div class="ans">');
-            dataToPrint.forEach((item, index) => { printWindow.document.write(`<div>${index+1}. ${item.word}</div>`); });
-            printWindow.document.write('</div></div></body></html>');
-            printWindow.document.close();
-            printWindow.print();
+        function updateStreakUI() {
+            const dots = document.querySelectorAll('.streak-dot');
+            dots.forEach((dot, i) => {
+                if (i < noHintStreak) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+            document.getElementById('streak-msg') ? document.getElementById('streak-msg').innerText = `STREAK BIJAKSANA: ${noHintStreak}/5` : null;
+        }
+
+        function initClues() {
+            const list = document.getElementById('clue-list'); list.innerHTML = "";
+            const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
+            sortedData.forEach((item) => {
+                let btn = document.createElement('div'); btn.className = 'hint-item'; btn.innerText = item.word;
+                btn.setAttribute('data-maksud', item.h1 || "Tiada klu.");
+                btn.onclick = function() { toggleMeaning(this); };
+                list.appendChild(btn);
+            });
+        }
+
+        function toggleMeaning(el) {
+            const list = document.getElementById('clue-list');
+            const allItems = list.querySelectorAll('.hint-item');
+            const existingPanel = list.querySelector('.meaning-panel');
+            const isAlreadyActive = el.classList.contains('active');
+
+            allItems.forEach(item => item.classList.remove('active'));
+            if (existingPanel) existingPanel.remove();
+            if (isAlreadyActive) return;
+
+            el.classList.add('active');
+            const panel = document.createElement('div');
+            panel.className = 'meaning-panel';
+            panel.innerHTML = el.getAttribute('data-maksud');
+
+            const itemsArray = Array.from(allItems);
+            const index = itemsArray.indexOf(el);
+            const rowEndIndex = Math.min(Math.floor(index / 3) * 3 + 2, itemsArray.length - 1);
+            itemsArray[rowEndIndex].after(panel);
+        }
+
+        function jaguhAlert(msg, color = "#ff4757") {
+            const b = document.getElementById('custom-alert');
+            b.innerText = msg; b.style.background = color; b.style.display = 'block';
+            setTimeout(() => b.style.display = 'none', 2500);
+        }
+
+        function showPage(id) {
+            const pages = ['security-page', 'welcome-page', 'startup-page', 'dashboard-page', 'map-page', 'game-page'];
+            pages.forEach(p => document.getElementById(p).style.display = 'none');
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function showDashboard() {
+            syncStats();
+            document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name');
+            document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar');
+            document.getElementById('dash-level').innerText = maxLevelReached + 1;
+            document.getElementById('dash-score-display').innerText = score;
+            showPage('dashboard-page');
+        }
+
+        function renderMap() {
+            const area = document.getElementById('map-area'); area.innerHTML = "";
+            const isAdmin = localStorage.getItem('jaguh_name') === SECRET_KEY;
+            for (let i = 0; i < gameData.length; i++) {
+                let node = document.createElement('div');
+                node.style.cssText = "padding:15px; margin:5px; background:#eee; border-radius:10px; cursor:pointer; display:inline-block; width:50px;";
+                node.innerText = i + 1;
+                if (i <= maxLevelReached || isAdmin) {
+                    node.style.background = "#6c5ce7"; node.style.color = "#fff";
+                    node.onclick = () => { currentLevel = i; loadLevel(i); showPage('game-page'); };
+                }
+                area.appendChild(node);
+            }
+            showPage('map-page');
+        }
+
+        function selectAvatar(el, a) {
+            chosenAvatar = a;
+            document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none");
+            el.style.border = "3px solid #6c5ce7"; el.style.borderRadius = "10px";
         }
 
         function saveAndStart() {
             const n = document.getElementById('player-name').value.trim();
             if (!n) return jaguhAlert("Sila letak nama!");
             localStorage.setItem('jaguh_name', n); localStorage.setItem('jaguh_avatar', chosenAvatar);
-            startLevel(maxLevelReached);
+            currentLevel = maxLevelReached; loadLevel(currentLevel); showPage('game-page');
         }
 
-        function startLevel(idx) { currentLevel = idx; loadLevel(currentLevel); initClues(); showPage('game-page'); }
-
-// --- BAHAGIAN SCRIPT YANG DIKEMASKINI ---
-        
-        function loadLevel(idx) {
-            const data = gameData[idx]; if (!data) return;
-            updateStreakUI();
-            //role superadmin
-            const isAdmin = localStorage.getItem('jaguh_name') === SECRET_KEY;
-
-            const video = document.getElementById('game-video');
-            video.muted = isMuted; 
-            const levelNum = Math.floor(idx / 50) + 1;
-            playCount = 0; document.getElementById('btn-video-toggle').innerText = "⏸️";
-            
-// Status sama ada level ni dah pernah dijawab
-            
-    const isAnswered = idx < maxLevelReached;
-    const inputField = document.getElementById('user-input');
-    const submitBtn = document.getElementById('submit-btn');
-    
-            document.getElementById('game-name').innerText = localStorage.getItem('jaguh_name'); 
-            document.getElementById('game-avatar').innerText = localStorage.getItem('jaguh_avatar'); 
-            document.getElementById('game-level-title').innerText = `LEVEL ${levelNum}: ${ranks[levelNum-1].title}`;
-            document.getElementById('level-text').innerText = `SOALAN ${idx + 1}`;
-            document.getElementById('game-question').innerText = data.q || "Tonton video dan teka aksi ini!";
-            document.getElementById('video-source').src = data.vid;
-            video.load();
-            toggleTab('q'); 
-
-// LOGIC BARU: Sembunyikan input & butang jika sudah dijawab
-    if (isAnswered) {
-        inputField.style.display = 'none';
-        submitBtn.style.display = 'none';
-    } else {
-        inputField.style.display = 'block';
-        submitBtn.style.display = 'block';
-
-// --- TAMBAH DUA BARIS NI UNTUK SAFETY ---
-    submitBtn.disabled = false; 
-    submitBtn.style.opacity = "1";
-    inputField.disabled = false;
-    // ---------------------------------------
-    
-        inputField.value = ""; 
-        setTimeout(() => 
-        inputField.focus(), 100); // Guna timeout sikit supaya focus lebih stabil
-
-    }
-
-            document.getElementById('prev-soalan').disabled = (idx === 0);
-            
-// MOD ADMIN: Butang 'Next' sentiasa boleh ditekan kalau guna mmr0518
-    document.getElementById('next-soalan').disabled = isAdmin ? (idx >= gameData.length - 1) : (idx >= maxLevelReached);
-
-            document.getElementById('result').innerText = "";
-            document.getElementById('score').innerText = score;
-            // RESET POWER-UP UNTUK SOALAN BARU
-
-//document.getElementById('scramble-container').style.display = 'none';
-//document.getElementById('btn-buy-hint').style.display = isAnswered ? 'none' : 'block';
-
-    // --- SISTEM INGATAN KLU (FIXED) ---
-    let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
-    
-    if (isAnswered) {
-        // Kalau dah jawab, sorok semua
-        document.getElementById('scramble-container').style.display = 'none';
-        document.getElementById('btn-buy-hint').style.display = 'none';
-    } else if (boughtHints.includes(idx)) {
-        // Kalau BELUM jawab tapi PERNAH beli klu, terus tunjuk!
-        renderScramble(); 
-    } else {
-        // Kalau baru pertama kali sampai & belum beli
-        document.getElementById('scramble-container').style.display = 'none';
-        document.getElementById('btn-buy-hint').style.display = 'block';
-    }
+        function syncStats() {
+            maxLevelReached = parseInt(localStorage.getItem('jaguh_max')) || 0;
+            score = parseInt(localStorage.getItem('jaguh_score')) || 0;
         }
 
-function checkAnswer() {
-const inputField = document.getElementById('user-input');
-const submitBtn = document.getElementById('submit-btn');
-const input = inputField.value.toLowerCase().trim();
-const data = gameData[currentLevel];
-
-if (!input) return;
-
-// --- JAWAPAN BETUL ---
-if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
-
-// 1. Kunci input supaya tak boleh spam (Safety)
-submitBtn.disabled = true;
-inputField.disabled = true;
-submitBtn.style.opacity = "0.5";
-
-// 2. Logik Streak Bijaksana (Candy Crush Style)
-let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
-let isStreakBonus = false;
-
-if (!boughtHints.includes(currentLevel)) {
-noHintStreak++; // Naik streak kalau TAK guna klu
-} else {
-noHintStreak = 0; // Reset ke 0 kalau guna klu
-jaguhAlert("Klu Diguna: Streak Reset! 🔄", "#ff4757");
-}
-
-// 3. Kira Ganjaran (10 asal + 20 bonus kalau cukup 5 streak)
-if (noHintStreak >= 5) {
-score += 30; // 10 (biasa) + 20 (bonus)
-noHintStreak = 0; // Reset bar balik lepas dapat hadiah 🎁
-isStreakBonus = true;
-} else {
-score += 10;
-}
-
-// 4. Maklum Balas Visual & Bunyi
-if (isStreakBonus) {
-jaguhAlert("LUAR BIASA! Bonus Bijaksana +30 Emas! 🏆", "#f1c40f");
-confetti({ particleCount: 250, spread: 100, origin: { y: 0.3 } });
-} else {
-jaguhAlert("BETUL! 💰+10", "#2ed573");
-confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-}
-
-if(!isMuted) {
-const sndWin = document.getElementById('snd-kaching');
-sndWin.currentTime = 0;
-sndWin.play();
-}
-
-// 5. Simpan Data & Update UI
-localStorage.setItem('jaguh_streak', noHintStreak);
-localStorage.setItem('jaguh_score', score);
-if (currentLevel === maxLevelReached) {
-maxLevelReached++;
-localStorage.setItem('jaguh_max', maxLevelReached);
-}
-
-document.getElementById('score').innerText = score;
-document.getElementById('result').innerText = "BETUL! 🔥";
-document.getElementById('result').style.color = "#2ed573";
-updateStreakUI(); // <--- NI PENTING UNTUK UPDATE DOT
-
-// 6. Ke Level Seterusnya
-setTimeout(() => {
-currentLevel++;
-if (currentLevel < gameData.length) {
-submitBtn.disabled = false;
-inputField.disabled = false;
-submitBtn.style.opacity = "1";
-loadLevel(currentLevel);
-} else {
-showDashboard();
-}
-}, 2000);
-
-} else {
-// --- JAWAPAN SALAH ---
-if(!isMuted) {
-const sndWrong = document.getElementById('snd-aww');
-sndWrong.currentTime = 0;
-sndWrong.play();
-}
-document.getElementById('result').innerText = "Opps! Cuba lagi 🙊";
-document.getElementById('result').style.color = "#ff4757";
-}
-}
-
-        function toggleTab(t) {
-            const data = gameData[currentLevel];
-            const area = document.getElementById('tab-content');
-            const btnQ = document.getElementById('btn-tab-q'); const btnH = document.getElementById('btn-tab-h');
-            const isAnswered = currentLevel < maxLevelReached;
-            btnQ.classList.remove('active'); btnH.classList.remove('active');
-            if (t === 'q') {
-                btnQ.classList.add('active');
-                area.innerHTML = `<b>${isAnswered ? 'Ayat Lengkap' : 'Contoh Soalan'}:</b><br>"${data.example.replace(/_+/g, `<b style='color:#6c5ce7;'>${isAnswered ? data.word.toLowerCase() : '______'}</b>`)}"`;
-            } else {
-                btnH.classList.add('active');
-                area.innerHTML = `
-                    <div class="clue-dots"><div id="dot0" class="dot active" onclick="switchClue(0)"></div><div id="dot1" class="dot" onclick="switchClue(1)"></div></div>
-                    <div class="clue-slider-wrap" id="clue-touch-zone" onmousedown="gestureStart(event)" onmouseup="gestureEnd(event)" ontouchstart="gestureStart(event)" ontouchend="gestureEnd(event)">
-                        <div class="clue-slider-inner" id="clue-inner">
-                            <div class="clue-slide"><b>KLU 1/2:</b><br>${data.h1 || 'Sila rujuk video.'}</div>
-                            <div class="clue-slide"><b>KLU 2/2:</b><br>${data.h2 || 'Hampir tepat! Cuba lagi.'}</div>
-                        </div>
-                    </div>`;
-            }
-            area.style.display = 'block';
-        }
-
-        function gestureStart(e) { startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; }
-        function gestureEnd(e) {
-            let endX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
-            let diff = startX - endX;
-            if (diff > 50) switchClue(1); else if (diff < -50) switchClue(0); 
-        }
-
-        function switchClue(idx) {
-            const inner = document.getElementById('clue-inner'); const dots = document.querySelectorAll('.dot');
-            if(inner) { inner.style.transform = `translateX(-${idx * 50}%)`; currentClueIdx = idx; }
-            dots.forEach((d, i) => { if(i === idx) d.classList.add('active'); else d.classList.remove('active'); });
-        }
-        
-        function showPage(id) { 
-            // Tambah 'security-page' dalam list ni
-            const pages = ['security-page','welcome-page','startup-page', 'dashboard-page', 'map-page', 'game-page', 'quit-page', 'reset-modal', 'settings-page'];
-            pages.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = 'none'; });
-            
-            const v = document.getElementById('game-video');
-            if (id !== 'game-page' && v) v.pause();
-            
-            const target = document.getElementById(id); 
-            if(target) target.style.display = 'flex';
-        }
-
-        function showDashboard() { 
-            syncStats();
-            document.getElementById('dash-name').innerText = localStorage.getItem('jaguh_name') || "Pemain";
-            document.getElementById('dash-avatar').innerText = localStorage.getItem('jaguh_avatar') || "🤖";
-            document.getElementById('dash-level').innerText = maxLevelReached + 1;
-            document.getElementById('dash-score-display').innerText = score;
-            const levelIdx = Math.min(Math.floor(maxLevelReached / 50), ranks.length - 1);
-            document.getElementById('dash-gelaran').innerText = ranks[levelIdx].title;
-            showPage('dashboard-page'); 
-        }
-
-        function renderMap() {
-            const area = document.getElementById('map-area'); area.innerHTML = "";
-
-   // Check kalau nama yang didaftar ialah mmr0518
-    const isAdmin = localStorage.getItem('jaguh_name') === SECRET_KEY;
-            
-            ranks.forEach((r, i) => {
-                let div = document.createElement('div'); div.className = "map-section";
-                div.innerHTML = `<div class="map-section-title">Level ${i+1}: ${r.title}</div>`;
-                let grid = document.createElement('div'); grid.className = "level-grid";
-                for (let l = r.range[0]; l <= Math.min(r.range[1], gameData.length); l++) {
-                    let node = document.createElement('div'); node.className = "level-node"; node.innerText = l;
-
- // MOD ADMIN: Kalau isAdmin TRUE, semua node jadi 'unlocked'
-            if (l <= maxLevelReached + 1 || isAdmin) { 
-            node.classList.add('unlocked');
-            if (l === maxLevelReached + 1)                                     node.classList.add('current');
-            node.onclick = () => startLevel(l - 1);
-            }
-            grid.appendChild(node);
-            }
-            div.appendChild(grid); 
-            area.appendChild(div);
-            });
-            showPage('map-page');
-        }
-function toggleVideo() { 
-            const v = document.getElementById('game-video'); const b = document.getElementById('btn-video-toggle'); 
-            if (v.paused) { if(playCount >= 3) playCount = 0; v.play(); b.innerText = "⏸️"; } 
-            else { v.pause(); b.innerText = "▶️"; } 
-        }
         function prevSoalan() { if (currentLevel > 0) { currentLevel--; loadLevel(currentLevel); } }
-       function nextSoalan() {
-// 1. Check dulu dia ni admin ke bukan
-const isAdmin = localStorage.getItem('jaguh_name') === SECRET_KEY;
+        function nextSoalan() { if (currentLevel < maxLevelReached) { currentLevel++; loadLevel(currentLevel); } }
 
-// 2. Kalau dia dah lepas level tu (currentLevel < maxLevelReached)
-// ATAU dia adalah admin (|| isAdmin), baru boleh jalan
-if (currentLevel < maxLevelReached || isAdmin) {
-
-// 3. Check juga supaya tak terlepas lebih dari jumlah soalan yang ada
-if (currentLevel < gameData.length - 1) {
-currentLevel++;
-loadLevel(currentLevel);
-}
-} else {
-// Kalau user biasa cuba skip level yang belum unlock,
-// kita boleh bagi amaran (optional)
-console.log("Selesaikan soalan ni dulu, bro!");
-}
-}
-        function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
-        
-        function initClues() {
-    const list = document.getElementById('clue-list');
-    if (!list || !gameData || gameData.length === 0) return;
-    list.innerHTML = "";
-
-    // Ambil 100 perkataan & susun A-Z
-    const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
-
-    sortedData.forEach((item, index) => {
-        let btn = document.createElement('div');
-        btn.className = 'hint-item';
-        btn.innerText = item.word;
-        // Simpan maksud dalam atribut data
-        btn.setAttribute('data-maksud', item.h1 || "Maksud belum tersedia.");
-        btn.onclick = function() { toggleMeaning(this); };
-        
-        list.appendChild(btn);
-    });
-}
-
-
-function toggleMeaning(el) {
-    const list = document.getElementById('clue-list');
-    const allItems = list.querySelectorAll('.hint-item');
-    const existingPanel = document.querySelector('.meaning-panel');
-    const isAlreadyActive = el.classList.contains('active');
-
-    // 1. Reset semua butang & buang panel klu yang sedia ada
-    allItems.forEach(item => item.classList.remove('active'));
-    if (existingPanel) existingPanel.remove();
-
-    // 2. Kalau klik butang yang sama, dia tutup je
-    if (isAlreadyActive) return;
-
-    // 3. Highlight butang yang dipilih
-    el.classList.add('active');
-
-    // 4. Buat panel klu baru (KITA BUANG PERKATAAN MAKSUD KAT SINI)
-    const panel = document.createElement('div');
-    panel.className = 'meaning-panel';
-    panel.innerHTML = `${el.getAttribute('data-maksud')}`; // Terus klu, tak ada label
-
-    // 5. LOGIK GRID: Cari butang terakhir dalam row yang sama
-    const itemsArray = Array.from(allItems);
-    const index = itemsArray.indexOf(el);
-    
-    // Kira kedudukan: Kalau row ada 3 item, kita kena cari index 2, 5, 8...
-    const colCount = 3;
-    const rowEndIndex = Math.min(
-        Math.floor(index / colCount) * colCount + (colCount - 1), 
-        itemsArray.length - 1
-    );
-
-    // 6. Masukkan panel klu selepas butang terakhir row tersebut
-    itemsArray[rowEndIndex].after(panel);
-    
-    // Auto-scroll sikit supaya pahlawan nampak klu tu muncul
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-        
-        function openSettings() { showPage('settings-page'); }
-        function closeSettings() { if(localStorage.getItem('jaguh_name')) showDashboard(); else showPage('startup-page'); }
-        function continueGame() { showPage('game-page'); }
-        function showQuitPage() { showPage('quit-page'); }
-        function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
-        function closeResetModal() { document.getElementById('reset-modal').style.display = 'none'; }
-        function confirmReset() { localStorage.clear(); // Ini akan padam semua termasuk jaguh_bought_hints
-window.location.reload(); }
-        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
-
-        document.addEventListener("visibilitychange", function() {
-            const v = document.getElementById('game-video');
-            if (document.hidden && v) { v.pause(); document.getElementById('btn-video-toggle').innerText = "▶️"; }
-        });
-
-    function buyHint() {
-        // 1. Ambil rekod klu yang pernah dibeli dari simpanan (localStorage)
-    let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
-    
-    // 2. Kalau dah pernah beli untuk level ni, terus tunjuk klu (jangan tolak koin)
-    if (boughtHints.includes(currentLevel)) {
-        renderScramble();
-        return;
-    }
-
-    // 3. Proses tolak koin (hanya kalau belum pernah beli)
-    if (score < 4) {
-        jaguhAlert("Koin tak cukup! Kena kumpul koin lagi. 💰");
-        return;
-    }
-
-    // Tolak koin & simpan score baru
-    score -= 4;
-    localStorage.setItem('jaguh_score', score);
-    document.getElementById('score').innerText = score;
-
-    // 4. Simpan level ni dalam senarai "Dah Beli"
-    boughtHints.push(currentLevel);
-    localStorage.setItem('jaguh_bought_hints', JSON.stringify(boughtHints));
-
-    // 5. Tampilkan klu kat skrin
-    renderScramble();
-}
-
-       
-    function renderScramble() {
-    const data = gameData[currentLevel];
-    const word = data.word.toUpperCase();
-    
-    // Pecahkan huruf dan bersepahkan secara rawak
-    const scrambledArray = word.split('').sort(() => Math.random() - 0.5);
-    const displayArea = document.getElementById('scramble-letters');
-    
-    displayArea.innerHTML = "";
-    scrambledArray.forEach(char => {
-        const box = document.createElement('span');
-        box.innerText = char;
-        // Styling huruf bantuan
-        box.style.cssText = "background: #fff; border: 2px solid #6c5ce7; color: #6c5ce7; padding: 5px 12px; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 0 3px 0 #eeebff;";
-        displayArea.appendChild(box);
-    });
-    
-    // Sorok butang beli, tunjuk container huruf
-    document.getElementById('scramble-container').style.display = 'block';
-    document.getElementById('btn-buy-hint').style.display = 'none';
-} 
-
-   if ('serviceWorker' in navigator) {
-     window.addEventListener('load', () => {
-       navigator.serviceWorker.register('/sw.js')
-         .then(reg => console.log('Service Worker registered!', reg))
-         .catch(err => console.error('Service Worker failed!', err));
-     });
-   }
-
-function updateStreakUI() {
-    const dots = document.querySelectorAll('.streak-dot');
-    const msg = document.getElementById('streak-msg');
-    
-    dots.forEach((dot, index) => {
-        if (index < noHintStreak) {
-            dot.classList.add('active');
-        } else {
-            dot.classList.remove('active');
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW Registered'));
         }
-    });
-    
-    msg.innerText = `STREAK BIJAKSANA: ${noHintStreak}/5`;
-}
-        
     </script>
 </body>
 </html>
