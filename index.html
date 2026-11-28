@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.4.0
+VERSION: 7.5.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -108,39 +108,52 @@ DEVELOPER: PIXEL DOVE STUDIO
             max-height: 280px; overflow-y: auto; padding: 5px; scrollbar-width: thin;
         }
         
-        .hint-item { 
-            background: #f8f9fa; padding: 12px 2px; border-radius: 15px; font-size: 11px; 
-            color: #636e72; border: 1px solid #eee; text-align: center; font-weight: 600;
-            transition: 0.3s; cursor: default; word-break: break-all;
+        /* ITEM PERKATAAN - Kekalkan rupa asal */
+        .hint-item {
+            background: #f8f9fa; 
+            padding: 12px 2px; 
+            border-radius: 15px; 
+            font-size: 11px; 
+            color: #636e72; 
+            border: 1px solid #eee; 
+            text-align: center; 
+            font-weight: 600;
+            transition: 0.3s; 
+            cursor: pointer; 
+            word-break: break-all;
+            width: 100%; /* Biar dia lebar macam butang asal */
         }
 
         /* WRAPPER UNTUK ITEM PERKATAAN */
         .hint-wrapper {
             position: relative;
-            display: inline-block;
+            width: 100%; /* Penuhkan satu petak grid */
+            display: flex;
+            justify-content: center;
         }
         
-        /* RUPA PARAS BUBBLE MAKSUD */
+
+        /* BUBBLE - Kecilkan sikit supaya tak serabut skrin fon */
         .meaning-bubble {
             position: absolute;
-            bottom: 125%; /* Muncul kat atas perkataan */
+            bottom: 110%; /* Naik atas sikit dari butang */
             left: 50%;
             transform: translateX(-50%);
-            background: #6c5ce7; /* Ikut tema purple kau */
+            background: #6c5ce7; 
             color: white;
-            padding: 8px 12px;
+            padding: 10px;
             border-radius: 12px;
             font-size: 10px;
-            width: 140px; 
+            width: 120px; /* Jangan lebar sangat */
             text-align: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: none; /* Sorok asal */
-            z-index: 100;
-            line-height: 1.4;
-            pointer-events: none; /* Supaya tak kacau klik seterusnya */
+            display: none;
+            z-index: 1000;
+            line-height: 1.3;
+            pointer-events: none;
             border: 2px solid #ffffff;
         }
-        
+                
         /* ANAK PANAH BUBBLE */
         .meaning-bubble::after {
             content: "";
@@ -150,7 +163,7 @@ DEVELOPER: PIXEL DOVE STUDIO
             transform: translateX(-50%);
             border-width: 6px;
             border-style: solid;
-            border-color: #ffffff transparent transparent transparent;
+            border-color: #6c5ce7 transparent transparent transparent;
         }
         
         /* KELAS AKTIF UNTUK TUNJUK BUBBLE */
@@ -772,27 +785,26 @@ console.log("Selesaikan soalan ni dulu, bro!");
         
       // --- GANTI BAHAGIAN NI SAHAJA ---
 function initClues() {
-const list = document.getElementById('clue-list');
-if (!list || !gameData || gameData.length === 0) return;
-list.innerHTML = "";
+    const list = document.getElementById('clue-list');
+    if (!list || !gameData || gameData.length === 0) return;
+    list.innerHTML = "";
 
-// Ambil 100 perkataan pertama dan susun A-Z
-const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
+    // Ambil 100 perkataan dan susun A-Z
+    const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
 
-sortedData.forEach(item => {
-let wrapper = document.createElement('div');
-wrapper.className = 'hint-wrapper';
+    sortedData.forEach(item => {
+        let wrapper = document.createElement('div');
+        wrapper.className = 'hint-wrapper'; // Wrapper ni akan duduk dalam grid cell
+        
+        const maksud = item.h1 || "Maksud belum tersedia.";
 
-// Maksud diambil dari h1 (Klu 1)
-const maksud = item.h1 || "Maksud belum tersedia.";
-
-wrapper.innerHTML = `
-<div class="meaning-bubble">${maksud}</div>
-<span class="hint-item" onclick="toggleMeaning(this)">${item.word}</span>
-`;
-
-list.appendChild(wrapper);
-});
+        wrapper.innerHTML = `
+            <div class="meaning-bubble">${maksud}</div>
+            <div class="hint-item" onclick="toggleMeaning(this)">${item.word}</div>
+        `;
+        
+        list.appendChild(wrapper);
+    });
 }
 
 // Function untuk buka/tutup bubble maksud
