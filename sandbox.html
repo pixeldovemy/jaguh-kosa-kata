@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.5.0
+VERSION: 7.6.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -103,13 +103,18 @@ DEVELOPER: PIXEL DOVE STUDIO
             border: 2px solid #eeebff; width: 100%; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.05);
         }
         
+        /* CONTAINER GRID KEKAL 3 KOLUM */
         .hint-list { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; 
-            max-height: 280px; overflow-y: auto; padding: 5px; scrollbar-width: thin;
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 8px; 
+            max-height: 400px; 
+            overflow-y: auto; 
+            padding: 10px;
         }
         
-        /* ITEM PERKATAAN - Kekalkan rupa asal */
-        .hint-item {
+        /* ITEM PERKATAAN */
+        .hint-item { 
             background: #f8f9fa; 
             padding: 12px 2px; 
             border-radius: 15px; 
@@ -118,63 +123,35 @@ DEVELOPER: PIXEL DOVE STUDIO
             border: 1px solid #eee; 
             text-align: center; 
             font-weight: 600;
-            transition: 0.3s; 
-            cursor: pointer; 
-            word-break: break-all;
-            width: 100%; /* Biar dia lebar macam butang asal */
-        }
-
-        /* WRAPPER UNTUK ITEM PERKATAAN */
-        .hint-wrapper {
-            position: relative;
-            width: 100%; /* Penuhkan satu petak grid */
-            display: flex;
-            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
         }
         
-
-        /* BUBBLE - Kecilkan sikit supaya tak serabut skrin fon */
-        .meaning-bubble {
-            position: absolute;
-            bottom: 110%; /* Naik atas sikit dari butang */
-            left: 50%;
-            transform: translateX(-50%);
-            background: #6c5ce7; 
+        .hint-item.active {
+            background: #6c5ce7;
             color: white;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 10px;
-            width: 120px; /* Jangan lebar sangat */
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 1000;
-            line-height: 1.3;
-            pointer-events: none;
-            border: 2px solid #ffffff;
-        }
-                
-        /* ANAK PANAH BUBBLE */
-        .meaning-bubble::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 6px;
-            border-style: solid;
-            border-color: #6c5ce7 transparent transparent transparent;
+            border-color: #6c5ce7;
+            transform: scale(0.95);
         }
         
-        /* KELAS AKTIF UNTUK TUNJUK BUBBLE */
-        .hint-wrapper.active .meaning-bubble {
-            display: block;
-            animation: popUp 0.2s ease-out;
+        /* PANEL MAKSUD - AKAN AMBIL RUANG 1 ROW PENUH */
+        .meaning-panel {
+            grid-column: 1 / -1; /* Rahsia dia kat sini: Penuhkan 3 kolum */
+            background: #eeebff;
+            color: #6c5ce7;
+            padding: 15px;
+            border-radius: 18px;
+            font-size: 12px;
+            line-height: 1.4;
+            margin: 5px 0;
+            border-left: 6px solid #6c5ce7;
+            animation: slideDown 0.3s ease-out;
+            text-align: left;
         }
         
-        @keyframes popUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(5px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .hint-item:hover { background: #eeebff; color: #6c5ce7; border-color: #6c5ce7; }
@@ -783,43 +760,49 @@ console.log("Selesaikan soalan ni dulu, bro!");
 }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
         
-      // --- GANTI BAHAGIAN NI SAHAJA ---
-function initClues() {
+        function initClues() {
     const list = document.getElementById('clue-list');
     if (!list || !gameData || gameData.length === 0) return;
     list.innerHTML = "";
 
-    // Ambil 100 perkataan dan susun A-Z
+    // Ambil 100 perkataan & susun A-Z
     const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
 
-    sortedData.forEach(item => {
-        let wrapper = document.createElement('div');
-        wrapper.className = 'hint-wrapper'; // Wrapper ni akan duduk dalam grid cell
+    sortedData.forEach((item, index) => {
+        let btn = document.createElement('div');
+        btn.className = 'hint-item';
+        btn.innerText = item.word;
+        // Simpan maksud dalam atribut data
+        btn.setAttribute('data-maksud', item.h1 || "Maksud belum tersedia.");
+        btn.onclick = function() { toggleMeaning(this); };
         
-        const maksud = item.h1 || "Maksud belum tersedia.";
-
-        wrapper.innerHTML = `
-            <div class="meaning-bubble">${maksud}</div>
-            <div class="hint-item" onclick="toggleMeaning(this)">${item.word}</div>
-        `;
-        
-        list.appendChild(wrapper);
+        list.appendChild(btn);
     });
 }
 
-// Function untuk buka/tutup bubble maksud
 function toggleMeaning(el) {
-const parent = el.parentElement;
+    const allItems = document.querySelectorAll('.hint-item');
+    const existingPanel = document.querySelector('.meaning-panel');
+    const isAlreadyActive = el.classList.contains('active');
 
-// Tutup bubble lain yang tengah terbuka supaya tak serabut
-document.querySelectorAll('.hint-wrapper').forEach(w => {
-if (w !== parent) w.classList.remove('active');
-});
+    // 1. Buang semua status active & buang panel lama
+    allItems.forEach(item => item.classList.remove('active'));
+    if (existingPanel) existingPanel.remove();
 
-// Toggle (buka/tutup) bubble yang ditekan
-parent.classList.toggle('active');
+    // 2. Kalau pahlawan klik butang yang sama, dia cuma tutup (toggle off)
+    if (isAlreadyActive) return;
+
+    // 3. Set butang baru jadi active
+    el.classList.add('active');
+
+    // 4. Buat panel maksud baru
+    const panel = document.createElement('div');
+    panel.className = 'meaning-panel';
+    panel.innerHTML = `<b>MAKSUD:</b><br>${el.getAttribute('data-maksud')}`;
+
+    // 5. Masukkan panel selepas butang yang diklik
+    el.after(panel);
 }
-// --- SAMPAI SINI ---
         
         function openSettings() { showPage('settings-page'); }
         function closeSettings() { if(localStorage.getItem('jaguh_name')) showDashboard(); else showPage('startup-page'); }
