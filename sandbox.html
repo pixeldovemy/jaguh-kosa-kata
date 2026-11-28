@@ -487,23 +487,22 @@ for (let i = 0; i < nodes.length; i++) {
     }
 };
 
-// Function baru untuk load data soalan
-        function initGame(isReturning = false) {
-            fetch('./data.json?v=' + Date.now())
-                .then(res => res.json())
-                .then(data => {
-                    gameData = data;
-                    syncStats();
-                   console.log("Data Jaguh Ready!");
-                    if (isReturning) {
-mulaMisi(); // Terus ke Dashboard/Startup kalau pembeli lama
+function initGame(isReturning = false) {
+    fetch('./data.json?v=' + Date.now())
+        .then(res => res.json())
+        .then(data => {
+            gameData = data;
+            syncStats();
+            console.log("Data Jaguh Ready!");
+            if (isReturning) {
+                mulaMisi(); // Terus hantar ke Dashboard/Startup
+            }
+        })
+        .catch(err => { 
+            console.error("Data error:", err); 
+            jaguhAlert("Ralat memuatkan data!", "#ff4757"); 
+        });
 }
-                })
-                .catch(err => { 
-                    console.error("Data error:", err); 
-                    jaguhAlert("Ralat memuatkan data. Sila pastikan data.json wujud.","#ff4757"); 
-                });
-        }
 
 // Function untuk verify password
         function verifyAccess() {
@@ -655,7 +654,7 @@ function checkAnswer() {
     // --- JAWAPAN BETUL ---
     if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
         
-        // 1. Kunci input supaya tak boleh spam
+        // 1. Kunci input (Safety)
         submitBtn.disabled = true;
         inputField.disabled = true;
         submitBtn.style.opacity = "0.5";
@@ -665,16 +664,16 @@ function checkAnswer() {
         let isStreakBonus = false;
         
         if (!boughtHints.includes(currentLevel)) {
-            noHintStreak++; 
+            noHintStreak++; // Naik streak
         } else {
-            noHintStreak = 0; 
+            noHintStreak = 0; // Reset kalau guna klu
             jaguhAlert("Klu Diguna: Streak Reset! 🔄", "#ff4757");
         }
         
-        // 3. Kira Ganjaran (Bonus vs Biasa)
+        // 3. Kira Ganjaran (10 asal + 20 bonus kalau cukup 5 streak)
         if (noHintStreak >= 5) {
-            score += 30; // Hadiah (10 asal + 20 bonus)
-            noHintStreak = 0; // Reset bar streak
+            score += 30; 
+            noHintStreak = 0; // Reset bar balik lepas dapat 🎁
             isStreakBonus = true;
         } else {
             score += 10;
@@ -695,7 +694,7 @@ function checkAnswer() {
             sndWin.play();
         }
 
-        // 5. Simpan Progress & Update UI
+        // 5. Simpan Data & Update UI
         localStorage.setItem('jaguh_streak', noHintStreak);
         localStorage.setItem('jaguh_score', score);
         if (currentLevel === maxLevelReached) { 
@@ -703,13 +702,12 @@ function checkAnswer() {
             localStorage.setItem('jaguh_max', maxLevelReached); 
         }
 
-         // 6. UPDATE UI
         document.getElementById('score').innerText = score;
         document.getElementById('result').innerText = "BETUL! 🔥";
         document.getElementById('result').style.color = "#2ed573";
-        updateStreakUI();
+        updateStreakUI(); // Panggil fungsi dot menyala
 
-        // 7. PERGI LEVEL SETERUSNYA
+        // 6. Ke Level Seterusnya
         setTimeout(() => { 
             currentLevel++; 
             if (currentLevel < gameData.length) {
