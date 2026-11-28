@@ -488,20 +488,20 @@ for (let i = 0; i < nodes.length; i++) {
 };
 
 function initGame(isReturning = false) {
-    fetch('./data.json?v=' + Date.now())
-        .then(res => res.json())
-        .then(data => {
-            gameData = data;
-            syncStats();
-            console.log("Data Jaguh Ready!");
-            if (isReturning) {
-                mulaMisi(); // Terus hantar ke Dashboard/Startup
-            }
-        })
-        .catch(err => { 
-            console.error("Data error:", err); 
-            jaguhAlert("Ralat memuatkan data!", "#ff4757"); 
-        });
+fetch('./data.json?v=' + Date.now())
+.then(res => res.json())
+.then(data => {
+gameData = data;
+syncStats();
+console.log("Data Jaguh Ready!");
+if (isReturning) {
+mulaMisi(); // Terus hantar ke Dashboard/Startup
+}
+})
+.catch(err => {
+console.error("Data error:", err);
+jaguhAlert("Ralat memuatkan data!", "#ff4757");
+});
 }
 
 // Function untuk verify password
@@ -644,92 +644,92 @@ jaguhAlert("Link disalin!", "#6c5ce7");}
         }
 
 function checkAnswer() {
-    const inputField = document.getElementById('user-input');
-    const submitBtn = document.getElementById('submit-btn');
-    const input = inputField.value.toLowerCase().trim();
-    const data = gameData[currentLevel];
+const inputField = document.getElementById('user-input');
+const submitBtn = document.getElementById('submit-btn');
+const input = inputField.value.toLowerCase().trim();
+const data = gameData[currentLevel];
 
-    if (!input) return;
+if (!input) return;
 
-    // --- JAWAPAN BETUL ---
-    if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
-        
-        // 1. Kunci input (Safety)
-        submitBtn.disabled = true;
-        inputField.disabled = true;
-        submitBtn.style.opacity = "0.5";
+// --- JAWAPAN BETUL ---
+if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
 
-        // 2. Logik Streak Bijaksana
-        let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
-        let isStreakBonus = false;
-        
-        if (!boughtHints.includes(currentLevel)) {
-            noHintStreak++; // Naik streak
-        } else {
-            noHintStreak = 0; // Reset kalau guna klu
-            jaguhAlert("Klu Diguna: Streak Reset! 🔄", "#ff4757");
-        }
-        
-        // 3. Kira Ganjaran (10 asal + 20 bonus kalau cukup 5 streak)
-        if (noHintStreak >= 5) {
-            score += 30; 
-            noHintStreak = 0; // Reset bar balik lepas dapat 🎁
-            isStreakBonus = true;
-        } else {
-            score += 10;
-        }
+// 1. Kunci input supaya tak boleh spam (Safety)
+submitBtn.disabled = true;
+inputField.disabled = true;
+submitBtn.style.opacity = "0.5";
 
-        // 4. Maklum Balas Visual & Bunyi
-        if (isStreakBonus) {
-            jaguhAlert("LUAR BIASA! Bonus Bijaksana +30 Emas! 🏆", "#f1c40f");
-            confetti({ particleCount: 250, spread: 100, origin: { y: 0.3 } });
-        } else {
-            jaguhAlert("BETUL! 💰+10", "#2ed573");
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-        }
+// 2. Logik Streak Bijaksana (Candy Crush Style)
+let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
+let isStreakBonus = false;
 
-        if(!isMuted) {
-            const sndWin = document.getElementById('snd-kaching');
-            sndWin.currentTime = 0;
-            sndWin.play();
-        }
+if (!boughtHints.includes(currentLevel)) {
+noHintStreak++; // Naik streak kalau TAK guna klu
+} else {
+noHintStreak = 0; // Reset ke 0 kalau guna klu
+jaguhAlert("Klu Diguna: Streak Reset! 🔄", "#ff4757");
+}
 
-        // 5. Simpan Data & Update UI
-        localStorage.setItem('jaguh_streak', noHintStreak);
-        localStorage.setItem('jaguh_score', score);
-        if (currentLevel === maxLevelReached) { 
-            maxLevelReached++; 
-            localStorage.setItem('jaguh_max', maxLevelReached); 
-        }
+// 3. Kira Ganjaran (10 asal + 20 bonus kalau cukup 5 streak)
+if (noHintStreak >= 5) {
+score += 30; // 10 (biasa) + 20 (bonus)
+noHintStreak = 0; // Reset bar balik lepas dapat hadiah 🎁
+isStreakBonus = true;
+} else {
+score += 10;
+}
 
-        document.getElementById('score').innerText = score;
-        document.getElementById('result').innerText = "BETUL! 🔥";
-        document.getElementById('result').style.color = "#2ed573";
-        updateStreakUI(); // Panggil fungsi dot menyala
+// 4. Maklum Balas Visual & Bunyi
+if (isStreakBonus) {
+jaguhAlert("LUAR BIASA! Bonus Bijaksana +30 Emas! 🏆", "#f1c40f");
+confetti({ particleCount: 250, spread: 100, origin: { y: 0.3 } });
+} else {
+jaguhAlert("BETUL! 💰+10", "#2ed573");
+confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+}
 
-        // 6. Ke Level Seterusnya
-        setTimeout(() => { 
-            currentLevel++; 
-            if (currentLevel < gameData.length) {
-                submitBtn.disabled = false;
-                inputField.disabled = false;
-                submitBtn.style.opacity = "1";
-                loadLevel(currentLevel); 
-            } else { 
-                showDashboard(); 
-            } 
-        }, 2000);
+if(!isMuted) {
+const sndWin = document.getElementById('snd-kaching');
+sndWin.currentTime = 0;
+sndWin.play();
+}
 
-    } else {
-        // --- JAWAPAN SALAH ---
-        if(!isMuted) {
-            const sndWrong = document.getElementById('snd-aww');
-            sndWrong.currentTime = 0;
-            sndWrong.play();
-        }
-        document.getElementById('result').innerText = "Opps! Cuba lagi 🙊";
-        document.getElementById('result').style.color = "#ff4757";
-    }
+// 5. Simpan Data & Update UI
+localStorage.setItem('jaguh_streak', noHintStreak);
+localStorage.setItem('jaguh_score', score);
+if (currentLevel === maxLevelReached) {
+maxLevelReached++;
+localStorage.setItem('jaguh_max', maxLevelReached);
+}
+
+document.getElementById('score').innerText = score;
+document.getElementById('result').innerText = "BETUL! 🔥";
+document.getElementById('result').style.color = "#2ed573";
+updateStreakUI(); // <--- NI PENTING UNTUK UPDATE DOT
+
+// 6. Ke Level Seterusnya
+setTimeout(() => {
+currentLevel++;
+if (currentLevel < gameData.length) {
+submitBtn.disabled = false;
+inputField.disabled = false;
+submitBtn.style.opacity = "1";
+loadLevel(currentLevel);
+} else {
+showDashboard();
+}
+}, 2000);
+
+} else {
+// --- JAWAPAN SALAH ---
+if(!isMuted) {
+const sndWrong = document.getElementById('snd-aww');
+sndWrong.currentTime = 0;
+sndWrong.play();
+}
+document.getElementById('result').innerText = "Opps! Cuba lagi 🙊";
+document.getElementById('result').style.color = "#ff4757";
+}
 }
 
         function toggleTab(t) {
