@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.3.0
+VERSION: 7.7.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -103,15 +103,56 @@ DEVELOPER: PIXEL DOVE STUDIO
             border: 2px solid #eeebff; width: 100%; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.05);
         }
         
+        /* CONTAINER GRID KEKAL 3 KOLUM */
         .hint-list { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; 
-            max-height: 280px; overflow-y: auto; padding: 5px; scrollbar-width: thin;
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 8px; 
+            max-height: 400px; 
+            overflow-y: auto; 
+            padding: 10px;
         }
         
+        /* ITEM PERKATAAN */
         .hint-item { 
-            background: #f8f9fa; padding: 12px 2px; border-radius: 15px; font-size: 11px; 
-            color: #636e72; border: 1px solid #eee; text-align: center; font-weight: 600;
-            transition: 0.3s; cursor: default; word-break: break-all;
+            background: #f8f9fa; 
+            padding: 12px 2px; 
+            border-radius: 15px; 
+            font-size: 11px; 
+            color: #636e72; 
+            border: 1px solid #eee; 
+            text-align: center; 
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        
+        .hint-item.active {
+            background: #6c5ce7;
+            color: white;
+            border-color: #6c5ce7;
+            transform: scale(0.95);
+        }
+        
+    
+        .meaning-panel {
+            grid-column: 1 / -1; /* Penuhi lebar 3 kolum */
+            background: #eeebff;
+            color: #6c5ce7;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 5px 0 10px 0;
+            border-left: 8px solid #6c5ce7;
+            animation: slideDown 0.3s ease-out;
+            text-align: left;
+            box-shadow: inset 0 0 10px rgba(108, 92, 231, 0.1);
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .hint-item:hover { background: #eeebff; color: #6c5ce7; border-color: #6c5ce7; }
@@ -719,16 +760,67 @@ console.log("Selesaikan soalan ni dulu, bro!");
 }
 }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
-      
+        
         function initClues() {
-            const list = document.getElementById('clue-list');
-            list.innerHTML = "";
-            const sortedWords = gameData.slice(0, 100).map(d => d.word).sort((a, b) => a.localeCompare(b));
-            sortedWords.forEach(word => {
-                let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = word;
-                list.appendChild(s);
-            });
-        }
+    const list = document.getElementById('clue-list');
+    if (!list || !gameData || gameData.length === 0) return;
+    list.innerHTML = "";
+
+    // Ambil 100 perkataan & susun A-Z
+    const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
+
+    sortedData.forEach((item, index) => {
+        let btn = document.createElement('div');
+        btn.className = 'hint-item';
+        btn.innerText = item.word;
+        // Simpan maksud dalam atribut data
+        btn.setAttribute('data-maksud', item.h1 || "Maksud belum tersedia.");
+        btn.onclick = function() { toggleMeaning(this); };
+        
+        list.appendChild(btn);
+    });
+}
+
+
+function toggleMeaning(el) {
+    const list = document.getElementById('clue-list');
+    const allItems = list.querySelectorAll('.hint-item');
+    const existingPanel = document.querySelector('.meaning-panel');
+    const isAlreadyActive = el.classList.contains('active');
+
+    // 1. Reset semua butang & buang panel klu yang sedia ada
+    allItems.forEach(item => item.classList.remove('active'));
+    if (existingPanel) existingPanel.remove();
+
+    // 2. Kalau klik butang yang sama, dia tutup je
+    if (isAlreadyActive) return;
+
+    // 3. Highlight butang yang dipilih
+    el.classList.add('active');
+
+    // 4. Buat panel klu baru (KITA BUANG PERKATAAN MAKSUD KAT SINI)
+    const panel = document.createElement('div');
+    panel.className = 'meaning-panel';
+    panel.innerHTML = `${el.getAttribute('data-maksud')}`; // Terus klu, tak ada label
+
+    // 5. LOGIK GRID: Cari butang terakhir dalam row yang sama
+    const itemsArray = Array.from(allItems);
+    const index = itemsArray.indexOf(el);
+    
+    // Kira kedudukan: Kalau row ada 3 item, kita kena cari index 2, 5, 8...
+    const colCount = 3;
+    const rowEndIndex = Math.min(
+        Math.floor(index / colCount) * colCount + (colCount - 1), 
+        itemsArray.length - 1
+    );
+
+    // 6. Masukkan panel klu selepas butang terakhir row tersebut
+    itemsArray[rowEndIndex].after(panel);
+    
+    // Auto-scroll sikit supaya pahlawan nampak klu tu muncul
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+        
         function openSettings() { showPage('settings-page'); }
         function closeSettings() { if(localStorage.getItem('jaguh_name')) showDashboard(); else showPage('startup-page'); }
         function continueGame() { showPage('game-page'); }
@@ -744,8 +836,8 @@ window.location.reload(); }
             if (document.hidden && v) { v.pause(); document.getElementById('btn-video-toggle').innerText = "▶️"; }
         });
 
-function buyHint() {
-    // 1. Ambil rekod klu yang pernah dibeli dari simpanan (localStorage)
+    function buyHint() {
+        // 1. Ambil rekod klu yang pernah dibeli dari simpanan (localStorage)
     let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
     
     // 2. Kalau dah pernah beli untuk level ni, terus tunjuk klu (jangan tolak koin)
@@ -774,7 +866,7 @@ function buyHint() {
 }
 
        
-function renderScramble() {
+    function renderScramble() {
     const data = gameData[currentLevel];
     const word = data.word.toUpperCase();
     
