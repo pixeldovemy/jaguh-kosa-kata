@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.6.0
+VERSION: 7.7.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -134,19 +134,20 @@ DEVELOPER: PIXEL DOVE STUDIO
             transform: scale(0.95);
         }
         
-        /* PANEL MAKSUD - AKAN AMBIL RUANG 1 ROW PENUH */
+    
         .meaning-panel {
-            grid-column: 1 / -1; /* Rahsia dia kat sini: Penuhkan 3 kolum */
+            grid-column: 1 / -1; /* Penuhi lebar 3 kolum */
             background: #eeebff;
             color: #6c5ce7;
-            padding: 15px;
-            border-radius: 18px;
-            font-size: 12px;
-            line-height: 1.4;
-            margin: 5px 0;
-            border-left: 6px solid #6c5ce7;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 5px 0 10px 0;
+            border-left: 8px solid #6c5ce7;
             animation: slideDown 0.3s ease-out;
             text-align: left;
+            box-shadow: inset 0 0 10px rgba(108, 92, 231, 0.1);
         }
         
         @keyframes slideDown {
@@ -780,28 +781,44 @@ console.log("Selesaikan soalan ni dulu, bro!");
     });
 }
 
+
 function toggleMeaning(el) {
-    const allItems = document.querySelectorAll('.hint-item');
+    const list = document.getElementById('clue-list');
+    const allItems = list.querySelectorAll('.hint-item');
     const existingPanel = document.querySelector('.meaning-panel');
     const isAlreadyActive = el.classList.contains('active');
 
-    // 1. Buang semua status active & buang panel lama
+    // 1. Reset semua butang & buang panel klu yang sedia ada
     allItems.forEach(item => item.classList.remove('active'));
     if (existingPanel) existingPanel.remove();
 
-    // 2. Kalau pahlawan klik butang yang sama, dia cuma tutup (toggle off)
+    // 2. Kalau klik butang yang sama, dia tutup je
     if (isAlreadyActive) return;
 
-    // 3. Set butang baru jadi active
+    // 3. Highlight butang yang dipilih
     el.classList.add('active');
 
-    // 4. Buat panel maksud baru
+    // 4. Buat panel klu baru (KITA BUANG PERKATAAN MAKSUD KAT SINI)
     const panel = document.createElement('div');
     panel.className = 'meaning-panel';
-    panel.innerHTML = `<b>MAKSUD:</b><br>${el.getAttribute('data-maksud')}`;
+    panel.innerHTML = `${el.getAttribute('data-maksud')}`; // Terus klu, tak ada label
 
-    // 5. Masukkan panel selepas butang yang diklik
-    el.after(panel);
+    // 5. LOGIK GRID: Cari butang terakhir dalam row yang sama
+    const itemsArray = Array.from(allItems);
+    const index = itemsArray.indexOf(el);
+    
+    // Kira kedudukan: Kalau row ada 3 item, kita kena cari index 2, 5, 8...
+    const colCount = 3;
+    const rowEndIndex = Math.min(
+        Math.floor(index / colCount) * colCount + (colCount - 1), 
+        itemsArray.length - 1
+    );
+
+    // 6. Masukkan panel klu selepas butang terakhir row tersebut
+    itemsArray[rowEndIndex].after(panel);
+    
+    // Auto-scroll sikit supaya pahlawan nampak klu tu muncul
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
         
         function openSettings() { showPage('settings-page'); }
