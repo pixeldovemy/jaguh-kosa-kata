@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.3.0
+VERSION: 7.4.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -112,6 +112,56 @@ DEVELOPER: PIXEL DOVE STUDIO
             background: #f8f9fa; padding: 12px 2px; border-radius: 15px; font-size: 11px; 
             color: #636e72; border: 1px solid #eee; text-align: center; font-weight: 600;
             transition: 0.3s; cursor: default; word-break: break-all;
+        }
+
+        /* WRAPPER UNTUK ITEM PERKATAAN */
+        .hint-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* RUPA PARAS BUBBLE MAKSUD */
+        .meaning-bubble {
+            position: absolute;
+            bottom: 125%; /* Muncul kat atas perkataan */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #6c5ce7; /* Ikut tema purple kau */
+            color: white;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 10px;
+            width: 140px; 
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none; /* Sorok asal */
+            z-index: 100;
+            line-height: 1.4;
+            pointer-events: none; /* Supaya tak kacau klik seterusnya */
+            border: 2px solid #ffffff;
+        }
+        
+        /* ANAK PANAH BUBBLE */
+        .meaning-bubble::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: #ffffff transparent transparent transparent;
+        }
+        
+        /* KELAS AKTIF UNTUK TUNJUK BUBBLE */
+        .hint-wrapper.active .meaning-bubble {
+            display: block;
+            animation: popUp 0.2s ease-out;
+        }
+        
+        @keyframes popUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(5px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
         .hint-item:hover { background: #eeebff; color: #6c5ce7; border-color: #6c5ce7; }
@@ -720,14 +770,56 @@ console.log("Selesaikan soalan ni dulu, bro!");
 }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
       
-        function initClues() {
-            const list = document.getElementById('clue-list');
-            list.innerHTML = "";
-            const sortedWords = gameData.slice(0, 100).map(d => d.word).sort((a, b) => a.localeCompare(b));
-            sortedWords.forEach(word => {
-                let s = document.createElement('span'); s.className = 'hint-item'; s.innerText = word;
-                list.appendChild(s);
-            });
+function initClues() {
+    const list = document.getElementById('clue-list');
+    if (!list) return; // Safety check
+    list.innerHTML = "";
+
+    // Kita ambil 100 perkataan pertama dan susun ikut A-Z
+    const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
+
+    sortedData.forEach(item => {
+        let wrapper = document.createElement('div');
+        wrapper.className = 'hint-wrapper';
+        
+        // Ambil maksud dari Klu 1 (h1)
+        const maksud = item.h1 || "Maksud belum tersedia.";
+
+        wrapper.innerHTML = `
+            <div class="meaning-bubble">${maksud}</div>
+            <span class="hint-item" onclick="toggleMeaning(this)">${item.word}</span>
+        `;
+        
+        list.appendChild(wrapper);
+    });
+}
+
+// Function untuk buka/tutup bubble
+function toggleMeaning(el) {
+    const parent = el.parentElement;
+    
+    // Tutup bubble lain yang tengah terbuka (supaya tak serabut)
+    document.querySelectorAll('.hint-wrapper').forEach(w => {
+        if (w !== parent) w.classList.remove('active');
+    });
+
+    // Buka/tutup bubble yang ditekan
+    parent.classList.toggle('active');
+}
+
+    // Function baru untuk buka/tutup bubble
+    function toggleMeaning(el) {
+    const parent = el.parentElement;
+    
+    // Cari kalau ada bubble lain yang tengah terbuka, kita tutup dulu
+    document.querySelectorAll('.hint-wrapper').forEach(w => {
+        if (w !== parent) w.classList.remove('active');
+    });
+
+    // Toggle (buka/tutup) bubble yang ditekan
+    parent.classList.toggle('active');
+}
+  });
         }
         function openSettings() { showPage('settings-page'); }
         function closeSettings() { if(localStorage.getItem('jaguh_name')) showDashboard(); else showPage('startup-page'); }
@@ -744,8 +836,8 @@ window.location.reload(); }
             if (document.hidden && v) { v.pause(); document.getElementById('btn-video-toggle').innerText = "▶️"; }
         });
 
-function buyHint() {
-    // 1. Ambil rekod klu yang pernah dibeli dari simpanan (localStorage)
+    function buyHint() {
+        // 1. Ambil rekod klu yang pernah dibeli dari simpanan (localStorage)
     let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
     
     // 2. Kalau dah pernah beli untuk level ni, terus tunjuk klu (jangan tolak koin)
@@ -774,7 +866,7 @@ function buyHint() {
 }
 
        
-function renderScramble() {
+    function renderScramble() {
     const data = gameData[currentLevel];
     const word = data.word.toUpperCase();
     
