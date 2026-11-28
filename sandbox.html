@@ -1,6 +1,6 @@
 <!--
 PROJECT: JAGUH KOSA KATA
-VERSION: 7.7.0
+VERSION: 7.8.0
 DEVELOPER: PIXEL DOVE STUDIO
 -->
 <!DOCTYPE html>
@@ -652,42 +652,50 @@ function checkAnswer() {
 
     if (!input) return;
 
-    // JAWAPAN BETUL
+    // --- JAWAPAN BETUL ---
     if (input === data.word.toLowerCase() || (data.root && input === data.root.toLowerCase())) {
         
-        // 1. Matikan butang & input (Logic Safety kau)
+        // 1. Kunci input supaya tak boleh spam
         submitBtn.disabled = true;
         inputField.disabled = true;
         submitBtn.style.opacity = "0.5";
 
         // 2. Logik Streak Bijaksana
         let boughtHints = JSON.parse(localStorage.getItem('jaguh_bought_hints')) || [];
+        let isStreakBonus = false;
         
         if (!boughtHints.includes(currentLevel)) {
-            noHintStreak++; // Naik streak kalau TAK beli klu
+            noHintStreak++; 
         } else {
-            noHintStreak = 0; // Reset kalau pahlawan "manja" guna klu
+            noHintStreak = 0; 
             jaguhAlert("Klu Diguna: Streak Reset! 🔄", "#ff4757");
         }
-
-        // 3. Cek Reward Milestone (5x Streak)
+        
+        // 3. Kira Ganjaran (Bonus vs Biasa)
         if (noHintStreak >= 5) {
-            score += 20; // Bonus besar!
-            noHintStreak = 0; // Reset bar balik
-            confetti({ particleCount: 200, spread: 100, origin: { y: 0.3 } });
-            jaguhAlert("LUAR BIASA! Bonus Bijaksana +20 Emas! 🏆", "#f1c40f");
+            score += 30; // Hadiah (10 asal + 20 bonus)
+            noHintStreak = 0; // Reset bar streak
+            isStreakBonus = true;
         } else {
             score += 10;
+        }
+
+        // 4. Maklum Balas Visual & Bunyi
+        if (isStreakBonus) {
+            jaguhAlert("LUAR BIASA! Bonus Bijaksana +30 Emas! 🏆", "#f1c40f");
+            confetti({ particleCount: 250, spread: 100, origin: { y: 0.3 } });
+        } else {
             jaguhAlert("BETUL! 💰+10", "#2ed573");
-            if(!isMuted) {
-                const sndWin = document.getElementById('snd-kaching');
-                sndWin.currentTime = 0;
-                sndWin.play();
-            }
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         }
 
-        // 4. Simpan Progress
+        if(!isMuted) {
+            const sndWin = document.getElementById('snd-kaching');
+            sndWin.currentTime = 0;
+            sndWin.play();
+        }
+
+        // 5. Simpan Progress & Update UI
         localStorage.setItem('jaguh_streak', noHintStreak);
         localStorage.setItem('jaguh_score', score);
         if (currentLevel === maxLevelReached) { 
@@ -695,13 +703,12 @@ function checkAnswer() {
             localStorage.setItem('jaguh_max', maxLevelReached); 
         }
 
-        // 5. Update UI
         document.getElementById('score').innerText = score;
         document.getElementById('result').innerText = "BETUL! 🔥";
         document.getElementById('result').style.color = "#2ed573";
-        updateStreakUI(); // Panggil biar dot menyala!
+        updateStreakUI();
 
-        // 6. Pergi Level Seterusnya
+        // 6. Pergi ke Level Seterusnya
         setTimeout(() => { 
             currentLevel++; 
             if (currentLevel < gameData.length) {
@@ -715,7 +722,7 @@ function checkAnswer() {
         }, 2000);
 
     } else {
-        // JAWAPAN SALAH
+        // --- JAWAPAN SALAH ---
         if(!isMuted) {
             const sndWrong = document.getElementById('snd-aww');
             sndWrong.currentTime = 0;
