@@ -769,58 +769,46 @@ console.log("Selesaikan soalan ni dulu, bro!");
 }
 }
         function selectAvatar(el, a) { chosenAvatar = a; document.querySelectorAll('.avatar-item').forEach(i => i.style.border = "none"); el.style.border = "3px solid #6c5ce7"; }
-      
+        
+      // --- GANTI BAHAGIAN NI SAHAJA ---
 function initClues() {
-    const list = document.getElementById('clue-list');
-    if (!list) return; // Safety check
-    list.innerHTML = "";
+const list = document.getElementById('clue-list');
+if (!list || !gameData || gameData.length === 0) return;
+list.innerHTML = "";
 
-    // Kita ambil 100 perkataan pertama dan susun ikut A-Z
-    const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
+// Ambil 100 perkataan pertama dan susun A-Z
+const sortedData = [...gameData].slice(0, 100).sort((a, b) => a.word.localeCompare(b.word));
 
-    sortedData.forEach(item => {
-        let wrapper = document.createElement('div');
-        wrapper.className = 'hint-wrapper';
-        
-        // Ambil maksud dari Klu 1 (h1)
-        const maksud = item.h1 || "Maksud belum tersedia.";
+sortedData.forEach(item => {
+let wrapper = document.createElement('div');
+wrapper.className = 'hint-wrapper';
 
-        wrapper.innerHTML = `
-            <div class="meaning-bubble">${maksud}</div>
-            <span class="hint-item" onclick="toggleMeaning(this)">${item.word}</span>
-        `;
-        
-        list.appendChild(wrapper);
-    });
+// Maksud diambil dari h1 (Klu 1)
+const maksud = item.h1 || "Maksud belum tersedia.";
+
+wrapper.innerHTML = `
+<div class="meaning-bubble">${maksud}</div>
+<span class="hint-item" onclick="toggleMeaning(this)">${item.word}</span>
+`;
+
+list.appendChild(wrapper);
+});
 }
 
-// Function untuk buka/tutup bubble
+// Function untuk buka/tutup bubble maksud
 function toggleMeaning(el) {
-    const parent = el.parentElement;
-    
-    // Tutup bubble lain yang tengah terbuka (supaya tak serabut)
-    document.querySelectorAll('.hint-wrapper').forEach(w => {
-        if (w !== parent) w.classList.remove('active');
-    });
+const parent = el.parentElement;
 
-    // Buka/tutup bubble yang ditekan
-    parent.classList.toggle('active');
+// Tutup bubble lain yang tengah terbuka supaya tak serabut
+document.querySelectorAll('.hint-wrapper').forEach(w => {
+if (w !== parent) w.classList.remove('active');
+});
+
+// Toggle (buka/tutup) bubble yang ditekan
+parent.classList.toggle('active');
 }
-
-    // Function baru untuk buka/tutup bubble
-    function toggleMeaning(el) {
-    const parent = el.parentElement;
-    
-    // Cari kalau ada bubble lain yang tengah terbuka, kita tutup dulu
-    document.querySelectorAll('.hint-wrapper').forEach(w => {
-        if (w !== parent) w.classList.remove('active');
-    });
-
-    // Toggle (buka/tutup) bubble yang ditekan
-    parent.classList.toggle('active');
-}
-  });
-        }
+// --- SAMPAI SINI ---
+        
         function openSettings() { showPage('settings-page'); }
         function closeSettings() { if(localStorage.getItem('jaguh_name')) showDashboard(); else showPage('startup-page'); }
         function continueGame() { showPage('game-page'); }
