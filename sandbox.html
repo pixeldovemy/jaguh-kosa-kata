@@ -703,12 +703,13 @@ function checkAnswer() {
             localStorage.setItem('jaguh_max', maxLevelReached); 
         }
 
+         // 6. UPDATE UI
         document.getElementById('score').innerText = score;
         document.getElementById('result').innerText = "BETUL! 🔥";
         document.getElementById('result').style.color = "#2ed573";
         updateStreakUI();
 
-        // 6. Pergi ke Level Seterusnya
+        // 7. PERGI LEVEL SETERUSNYA
         setTimeout(() => { 
             currentLevel++; 
             if (currentLevel < gameData.length) {
